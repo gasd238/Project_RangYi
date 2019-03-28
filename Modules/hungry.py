@@ -1,5 +1,6 @@
 import requests
 import datetime
+import re
 from bs4 import BeautifulSoup
 url='http://www.gsm.hs.kr/xboard/board.php?tbnum=8'
 source_code=requests.get(url)
@@ -24,6 +25,8 @@ def hungry():
             meal=today[2].getText()
     meal=meal.split('\n')
     for i in range(0, len(meal)):
+        if noma.match(meal[i]):
+            del meal[i]
         if meal[i].startswith('*'):
             del meal[i:]
             break
