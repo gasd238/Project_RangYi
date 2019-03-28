@@ -6,6 +6,7 @@ import datetime
 from Modules.hungry import *
 from Modules.morning import *
 from Modules.help import *
+from Modules.Annseq import *
 
 # Variables
 client = discord.Client()
@@ -31,13 +32,13 @@ class MafiaManager:
 mafia = MafiaManager()
 
 # Music --
-def check_queue(id):
+def check_queue(id, channel):
     if queues[id]!=[]:
         player = queues[id].pop(0)
         del musiclist[0]
         embed=discord.Embed(title="재생하겠느니라!!", description=player.title+"\n"+player.url)
-        say = client.send_message(client.get_channel(id), embed=embed)
-        asyncio.run_coroutine_threadsafe(coro, client.loop)
+        say = client.send_message(client.get_channel(channel), embed=embed)
+        asyncio.run_coroutine_threadsafe(say, client.loop)
         player.volume=0.5
         player.start()
 
@@ -131,19 +132,19 @@ async def on_message(message):
         voice_client = client.voice_client_in(server)
         msg1 = message.content.split(' ')
         url = msg1[1]
-        player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
+        player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id, message.channel.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
         player.volume = 0.5
         player.start()
         embed=discord.Embed(title="재생하겠느니라!!", description=player.title+"\n"+player.url)
         await client.send_message(message.channel, embed=embed)
-        
+    
     # 음악 예약
     if message.content.startswith('!예약'):
         msg1 = message.content.split(' ')
         url = msg1[1]
         server = message.server
         voice_client = client.voice_client_in(server)
-        player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
+        player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id, message.channel.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
 
         if server.id in queues:
             queues[server.id].append(player)
@@ -176,6 +177,11 @@ async def on_message(message):
     if message.content.startswith('!삭제'):
         msg = message.content.split(' ')
         await client.purge_from(message.channel, limit=int(msg[1]))
+    
+    if message.content == '!발표':
+        annsequence = rand()
+        embed = discord.Embed(title='발표순서이니라!!', description = annsequence, color=0xf7cac9)
+        await client.send_message(message.channel, embed=embed) 
         
 
 # 실행
