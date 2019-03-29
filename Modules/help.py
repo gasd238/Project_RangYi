@@ -11,6 +11,7 @@ def create_help_embed():
     embed.add_field(name='!예약 [링크]', value='처음 재생될 노래 다음에 나올 노래들을 예약하는 기능이니라~', inline=False)
     embed.add_field(name='!큐 보기/삭제', value='보기는 재생목록을 모두 보여주고 삭제는 모든 예약곡을 삭제하느니라~', inline=False)
     embed.add_field(name='!삭제 [갯수]', value='메세지를 삭제하는 기능이니라~ 단 99개 이하만 삭제할 수 있느니라...', inline=False)
+    embed.add_field(name='!발표', value='발표 순서를 랜덤으로 결정해주는 기능이니라~ ', inline=False)
     embed.set_image(url="https://raw.githubusercontent.com/gasd238/Bot_making/master/A004-1.jpg?token=AnMt0IVBed_SRGN7GL1yA54J_Y_D86O8ks5cmsYtwA%3D%3D")
     embed.set_author(name="랑이", icon_url="https://raw.githubusercontent.com/gasd238/Bot_making/master/A004-1.jpg?token=AnMt0IVBed_SRGN7GL1yA54J_Y_D86O8ks5cmsYtwA%3D%3D")
     return embed
