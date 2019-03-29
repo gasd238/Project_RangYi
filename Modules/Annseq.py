@@ -6,9 +6,9 @@ def rand():
     num = ['1','2','3','4','5','6','7','8','9']
     for j in range(0, 9):
         if j % 2 == 1:
-            sequence = sequence + man[j] +' '+ num.pop(int(randint(0, len(num)-1))) + '\n'
+            sequence = sequence + num[j] +' '+ man.pop(int(randint(0, len(man)-1))) + '\n'
         else:
-            sequence = sequence + man[j] +' '+ num.pop(int(randint(0, len(num)-1))) + ' '
+            sequence = sequence + num[j] +' '+ man.pop(int(randint(0, len(man)-1))) + ' '
     return sequence
 
 
