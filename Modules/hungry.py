@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 url='http://www.gsm.hs.kr/xboard/board.php?tbnum=8'
 source_code=requests.get(url)
 plain_text=source_code.text
-
+noma = re.compile('[0-9]+')
 soup=BeautifulSoup(plain_text, 'html.parser')
 def hungry():
     now=datetime.datetime.now()
