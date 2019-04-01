@@ -26,15 +26,6 @@ def check_queue(id, channel):
         player.volume=0.5
         player.start()
 
-def reserv(id, player):
-    if id in queues:
-        queues[id].append(player)
-    else:
-        queues[id] = [player]
-    say = client.send_message(message.channel,'예약 완료 했느니라!')
-    asyncio.run_coroutine_threadsafe(say, client.loop)
-    musiclist.append(player.title+"\n"+url)
-
 # Discord Client
 @client.event
 async def on_ready():
@@ -58,7 +49,7 @@ async def on_message(message):
     # 봇 설명
     if message.content == "!설명":
         createdEmbed = create_help_embed()
-        await client.send_message(message.channel, embed=createdEmbed, color=0xf7cac9)
+        await client.send_message(message.channel, embed=createdEmbed)
 
     # 급식 파싱
     if message.content == '!급식':
@@ -68,12 +59,12 @@ async def on_message(message):
         else:
             for i in range(0, len(cmeal)):
                 descriptions=descriptions+'- '+cmeal[i]+'\n'
-        embed = discord.Embed(title="오늘의 급식이니라!~~",description=descriptions, color=0xf7cac9)
+        embed = discord.Embed(title="오늘의 급식이니라!~~",description=descriptions, colour=0xf7cac9)
         await client.send_message(message.channel, embed=embed)
 
     # 봇 분양 관련
     if message.content == '!분양':
-        embed = discord.Embed(title="링크를 보내주겠느니라!!", color=0xf7cac9)
+        embed = discord.Embed(title="링크를 보내주겠느니라!!", colour=0xf7cac9)
         embed.set_author(name='봇 추가 링크', url='https://discordapp.com/api/oauth2/authorize?client_id=517176814804926484&permissions=8&scope=bot')
         await client.send_message(message.channel, embed=embed)
 
@@ -94,9 +85,10 @@ async def on_message(message):
 
     # 음악 종료
     if message.content == '!종료':
-        queues = {}
-        musiclist = []
         server = message.server
+        del queues[server.id]
+        for i in range(0, len(musiclist)):
+            del musiclist[0]
         voice_client = client.voice_client_in(server)
         await voice_client.disconnect()
         await client.send_message(message.channel, '종료했느니라!!')
@@ -117,10 +109,17 @@ async def on_message(message):
     
     # 음악 예약
     if message.content.startswith('!예약'):
+        msg1 = message.content.split(' ')
         url = msg1[1]
+        server = message.server
         voice_client = client.voice_client_in(server)
         player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id, message.channel.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
-        reserv(server.id, player)        
+        if server.id in queues:
+            queues[server.id].append(player)
+        else:
+            queues[server.id] = [player]
+        await client.send_message(message.channel,'예약 완료 했느니라!')
+        musiclist.append(player.title+"\n"+url)      
 
     # 음악 큐
     if message.content.startswith('!큐'):
