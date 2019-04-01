@@ -7,29 +7,13 @@ from Modules.hungry import *
 from Modules.morning import *
 from Modules.help import *
 from Modules.Annseq import *
+from selenium import webdriver
+from Modules.search import *
 
 # Variables
 client = discord.Client()
 queues = {}
 musiclist = []
-mCount = 1
-
-# Class
-class MafiaManager:
-    def __init__(self):
-        self.GameStates = 0
-        self.GameMember = []
-
-    def MemberAdd(self, user):
-        self.GameMember.append(user)
-
-    def start(self):
-        coro = client.send_message(client.get_channel('560275698095357973'), "시작합니다!")
-        asyncio.run_coroutine_threadsafe(coro, client.loop)
-        
-
-# Instance
-mafia = MafiaManager()
 
 # Music --
 def check_queue(id, channel):
@@ -41,6 +25,15 @@ def check_queue(id, channel):
         asyncio.run_coroutine_threadsafe(say, client.loop)
         player.volume=0.5
         player.start()
+
+def reserv(id, player):
+    if id in queues:
+        queues[id].append(player)
+    else:
+        queues[id] = [player]
+    say = client.send_message(message.channel,'예약 완료 했느니라!')
+    asyncio.run_coroutine_threadsafe(say, client.loop)
+    musiclist.append(player.title+"\n"+url)
 
 # Discord Client
 @client.event
@@ -56,34 +49,16 @@ async def on_message(message):
     now = datetime.datetime.now()
     descriptions=''
     resings = ''
+    title = ''
 
     # Bot이 하는 말은 반응하지 않음
     if message.author.bot:
         return None 
 
-    # 마피아 연결
-    if message.content == "!마피아":
-        if mafia.GameStates == 0: 
-            mafia.MemberAdd(message.author)
-            role = discord.utils.get(message.server.roles, name='mafia')
-            await client.add_roles(message.author, role)
-        else:
-            # 게임이 이미 진행중이다
-            await client.send_message(message.channel, "이미 게임이 진행중이니라!")
-
-    # 마피아 나가기
-    if message.content == "!마피아 나가기":
-        role = discord.utils.get(message.server.roles, name='mafia')
-        await client.remove_roles(message.author, role)
-
-    # 마피아 시작
-    if message.content == "!마피아 시작":
-        mafia.start()
-
     # 봇 설명
     if message.content == "!설명":
         createdEmbed = create_help_embed()
-        await client.send_message(message.channel, embed=createdEmbed)
+        await client.send_message(message.channel, embed=createdEmbed, color=0xf7cac9)
 
     # 급식 파싱
     if message.content == '!급식':
@@ -119,6 +94,8 @@ async def on_message(message):
 
     # 음악 종료
     if message.content == '!종료':
+        queues = {}
+        musiclist = []
         server = message.server
         voice_client = client.voice_client_in(server)
         await voice_client.disconnect()
@@ -140,49 +117,44 @@ async def on_message(message):
     
     # 음악 예약
     if message.content.startswith('!예약'):
-        msg1 = message.content.split(' ')
         url = msg1[1]
-        server = message.server
         voice_client = client.voice_client_in(server)
         player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id, message.channel.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
-
-        if server.id in queues:
-            queues[server.id].append(player)
-        else:
-            queues[server.id] = [player]
-        await client.send_message(message.channel,'예약 완료 했느니라!')
-        musiclist.append(player.title+"\n"+url)
+        reserv(server.id, player)        
 
     # 음악 큐
     if message.content.startswith('!큐'):
-        num = 0
         server = message.server
         msg1 = message.content.split(" ")
         check = msg1[1]
         # 큐 보기
         if check =='보기':
-            for i in musiclist:
-                resings = resings + i + '\n\n'
+            for i in range(0, len(musiclist)):
+                resings = resings + i+1 + '번 예약곡' + '-' + ' ' + musiclist[i] + '\n\n'
             embed = discord.Embed(title='대기중인 곡들이니라~', description = resings, color=0xf7cac9)
             await client.send_message(message.channel, embed=embed)
         # 큐에 있는 음악 삭제
         if check=='삭제':
-            while num<len(musiclist):
-                del musiclist[0]
-                num = num+1
-            del queues[server.id]
-            await client.send_message(message.channel,'예약중인 음악을 전부 취소 했느니라!')
+            del musiclist[int(msg1[2])-1]
+            del queues[server.id][int(msg1[2])-1]
+            await client.send_message(message.channel, msg1[2]+ '번 예약곡을 취소 했느니라!')
 
     #서버 글 삭제
     if message.content.startswith('!삭제'):
         msg = message.content.split(' ')
         await client.purge_from(message.channel, limit=int(msg[1]))
     
+    #발표 순서 정하기
     if message.content == '!발표':
         annsequence = rand()
         embed = discord.Embed(title='발표순서이니라!!', description = annsequence, color=0xf7cac9)
         await client.send_message(message.channel, embed=embed) 
-        
+
+    #링크 검색
+    if message.content.startswith('!검색'):
+        msg1 = message.content.split(' ')
+        await client.send_message(message.channel, embed=get_video_link(msg1[1:]))
+    
 
 # 실행
 client.run('NTE3MTc2ODE0ODA0OTI2NDg0.Dt_YxA.V5rqQnIId1IVWr7oOZ-J18nmC5k')
