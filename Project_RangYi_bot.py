@@ -10,6 +10,7 @@ from Modules.Annseq import *
 from selenium import webdriver
 from Modules.search import *
 from Modules.image import *
+from Modules.user import *
 
 # Variables
 client = discord.Client()
@@ -45,7 +46,9 @@ async def on_message(message):
 
     # Bot이 하는 말은 반응하지 않음
     if message.author.bot:
-        return None 
+        return None
+
+    levelIncrease(message.author.id, message.content)
 
     # 봇 설명
     if message.content == "!설명":
