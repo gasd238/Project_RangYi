@@ -9,6 +9,7 @@ from Modules.help import *
 from Modules.Annseq import *
 from selenium import webdriver
 from Modules.search import *
+from Modules.image import *
 
 # Variables
 client = discord.Client()
@@ -153,6 +154,15 @@ async def on_message(message):
     if message.content.startswith('!검색'):
         msg1 = message.content.split(' ')
         await client.send_message(message.channel, embed=get_video_link(msg1[1:]))
+
+    if message.content.startswith('!사진'):
+        msg1 = message.content.split(' ')
+        await client.send_message(message.channel, embed=search_image(msg1[1:]))
+    
+    if message.content == '!시뮬':
+        embed = discord.Embed(title = "랑이 연애 시뮬레이터", description = "<@"+message.author.id+">" + ' ' + "나와 놀아주러 왔구나!", colour = 0xf7cac9)
+        embed.set_image(url='https://postfiles.pstatic.net/MjAxOTA0MDJfMjcg/MDAxNTU0MTc5NTgyNTYx.8IWLYICA0SyYKGzlMAodT1Bx9i-FCnMw3DSDvMhUiH4g.Pn14U9OyaKyaJLlkFXrgo1OwkzptEP0P8n0HOACaS6Ig.JPEG.gasd238/BandPhoto_5258877056.jpg?type=w580')
+        await client.send_message(message.channel, embed = embed)
     
 
 # 실행
