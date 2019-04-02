@@ -7,7 +7,7 @@ def get_video_link(titleli):
     title = ''
     for i in titleli:
         title = title + i + ' '
-    chromedriver_dir = '크롬드라이버 '
+    chromedriver_dir = 'C:\chromedriver.exe'
     driver = webdriver.Chrome(chromedriver_dir)
     driver.get('https://www.youtube.com/results?search_query='+ title)
     source = driver.page_source
