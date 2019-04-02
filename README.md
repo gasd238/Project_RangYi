@@ -28,6 +28,7 @@
  - 먼저 디스코드 봇을 만들기 만드는 방법은 [여기](https://blog.naver.com/wpdus2694?Redirect=Log&logNo=221192640522) 
  - 만든 후 봇 토큰을 복사해 Project_RangYi_Bot.py 파일 맨 아래 Bot_Token 부분을 당신의 봇 토큰으로 변경
  - 그다음 Project_RangYi_Bot.py를 실행 해서 
+ 
  Logged in as
  
  (당신의 봇 이름)
@@ -35,3 +36,5 @@
  (봇 id)
  
   이렇게 출력됬을시 성공
+
+ - 디스코드 봇을 만드는 방법에 나온 서버에 봇 추가하는 방법대로 원하는 서버에 봇을 추가하면 됨(단 당신이 관리자 권한을 가지고 있는 서버만 )
