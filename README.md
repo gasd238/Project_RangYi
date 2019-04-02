@@ -21,5 +21,5 @@
 1. 위 requirement 에 있는 것들을 다운 받기
  - 2, 3, 4, 7번 은 pip 를 통해 다운 가능
  - 5번은 환경 변수 설정 해야 사용 가능 방법은 [여기](http://blog.naver.com/PostView.nhn?blogId=chandong83&logNo=221165275268&parentCategoryNo=&categoryNo=112&viewDate=&isShowPopularPosts=false&from=postView)
- - 6번은 깃허브에 올려 놓았음으로 위치 알아두시면 됩니다.(search.py 파일에 있는 크롬드라이버 위치를 당신 컴퓨터 기준에 맞게 바꾸시면 됩니다.)
+ - 6번은 함께 올려 놓았음으로 설치된 위치만 알아두시면 됩니다.(search.py 파일에 있는 크롬드라이버 위치를 당신 컴퓨터 기준에 맞게 바꾸시면 됩니다.)
  - 1번은 3.6 이하 버전을 사용을 권장 합니다.(3.7이상 버전 discord.py 사용 )
