@@ -25,12 +25,12 @@ def levelIncrease(user, message):
     return isLevelup
 
 
-def showLevel(user, isLeveledUp=False):
+def showLevel(user, isLevelUp=False):
     userid = user.id
     with open('../Data/userdata.json', 'r', encoding='utf-8') as userdata:
         data = userdata.read()
     data = json.loads(data)
-    if isLeveledUp:
+    if isLevelUp:
         strings = ":fireworks: {}님이 {} 레벨이 되었습니다.\n다음 레벨까지 {} XP 남았습니다.".format(user.name, data['users'][str(userid)]['level'],
                                                                 data['users'][str(userid)]['targetxp'] -
                                                                 data['users'][str(userid)]['currentxp'])

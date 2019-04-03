@@ -48,6 +48,7 @@ async def on_message(message):
     if message.author.bot:
         return None
 
+    # 경험치 상승 처리
     if levelIncrease(message.author, message.content):
         await client.send_message(message.channel, showLevel(message.author, True))
 
@@ -168,9 +169,14 @@ async def on_message(message):
         embed.set_image(url='https://postfiles.pstatic.net/MjAxOTA0MDJfMjcg/MDAxNTU0MTc5NTgyNTYx.8IWLYICA0SyYKGzlMAodT1Bx9i-FCnMw3DSDvMhUiH4g.Pn14U9OyaKyaJLlkFXrgo1OwkzptEP0P8n0HOACaS6Ig.JPEG.gasd238/BandPhoto_5258877056.jpg?type=w580')
         await client.send_message(message.channel, embed = embed)
 
-    # 링크 검색
+    # 유저 관련
     if message.content.startswith('!레벨'):
-        await client.send_message(message.channel, showLevel(message.author, True))
+
+        msg1 = message.content.split(' ')
+        if len(msg1) > 1:
+            await client.send_message(message.channel, showLevel(message.author))  # 유저 지정 처리
+        else:
+            await client.send_message(message.channel, showLevel(message.author))
 
 
 # 실행
