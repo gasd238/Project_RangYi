@@ -48,7 +48,8 @@ async def on_message(message):
     if message.author.bot:
         return None
 
-    levelIncrease(message.author.id, message.content)
+    if levelIncrease(message.author, message.content):
+        await client.send_message(message.channel, showLevel(message.author, True))
 
     # 봇 설명
     if message.content == "!설명":
@@ -166,7 +167,11 @@ async def on_message(message):
         embed = discord.Embed(title = "랑이 연애 시뮬레이터", description = "<@"+message.author.id+">" + ' ' + "나와 놀아주러 왔구나!", colour = 0xf7cac9)
         embed.set_image(url='https://postfiles.pstatic.net/MjAxOTA0MDJfMjcg/MDAxNTU0MTc5NTgyNTYx.8IWLYICA0SyYKGzlMAodT1Bx9i-FCnMw3DSDvMhUiH4g.Pn14U9OyaKyaJLlkFXrgo1OwkzptEP0P8n0HOACaS6Ig.JPEG.gasd238/BandPhoto_5258877056.jpg?type=w580')
         await client.send_message(message.channel, embed = embed)
-    
+
+    # 링크 검색
+    if message.content.startswith('!레벨'):
+        await client.send_message(message.channel, showLevel(message.author, True))
+
 
 # 실행
 client.run('NTE3MTc2ODE0ODA0OTI2NDg0.Dt_YxA.V5rqQnIId1IVWr7oOZ-J18nmC5k')
