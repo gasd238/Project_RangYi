@@ -30,5 +30,4 @@ def get_video_link(titleli):
                 test1 = entire[i].get('href')
                 link = 'https://www.youtube.com'+test1
                 embed.add_field(name=str(i+1)+'번째 영상',value=entireText + '\n링크 : '+link)           
-    
     return embed

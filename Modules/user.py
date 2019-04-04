@@ -5,7 +5,7 @@ import math
 def levelIncrease(user, message):
     userid = user.id
     isLevelup = False
-    with open('../Data/userdata.json', 'r', encoding='utf-8') as userdata:
+    with open('Data/userdata.json', 'r', encoding='utf-8') as userdata:
         data = userdata.read()
     data = json.loads(data)
     if str(userid) not in data['users']:
@@ -19,23 +19,22 @@ def levelIncrease(user, message):
         data['users'][str(userid)]['level'] += 1
         data['users'][str(userid)]['targetxp'] += LevelExpGetter(data['users'][str(userid)]['level'])
         isLevelup = True
-    print(data)
-    with open('../Data/userdata.json', 'w', encoding='utf-8') as userdata:
+    with open('Data/userdata.json', 'w', encoding='utf-8') as userdata:
         json.dump(data, userdata, ensure_ascii=False, indent="\t")
     return isLevelup
 
 
 def showLevel(user, isLevelUp=False):
     userid = user.id
-    with open('../Data/userdata.json', 'r', encoding='utf-8') as userdata:
+    with open('Data/userdata.json', 'r', encoding='utf-8') as userdata:
         data = userdata.read()
     data = json.loads(data)
     if isLevelUp:
-        strings = ":fireworks: {}님이 {} 레벨이 되었습니다.\n다음 레벨까지 {} XP 남았습니다.".format(user.name, data['users'][str(userid)]['level'],
+        strings = ":fireworks: **{}**가 **{} 레벨**이 되었느니라!!.\n다음 레벨까지 **{} XP** 남았느니라~~".format(user.name, data['users'][str(userid)]['level'],
                                                                 data['users'][str(userid)]['targetxp'] -
                                                                 data['users'][str(userid)]['currentxp'])
     else:
-        strings = "{}님은 {} 레벨입니다.\n다음 레벨까지 {} XP 남았습니다.".format(user.name, data['users'][str(userid)]['level'],
+        strings = "**{}**는 **{} 레벨**이니라~\n다음 레벨까지 **{} XP** 남았느니라~~".format(user.name, data['users'][str(userid)]['level'],
                                                                 data['users'][str(userid)]['targetxp'] -
                                                                 data['users'][str(userid)]['currentxp'])
     return strings

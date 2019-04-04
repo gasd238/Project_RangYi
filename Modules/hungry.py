@@ -2,12 +2,13 @@ import requests
 import datetime
 import re
 from bs4 import BeautifulSoup
-url='http://www.gsm.hs.kr/xboard/board.php?tbnum=8'
-source_code=requests.get(url)
-plain_text=source_code.text
-noma = re.compile('[0-9]+')
-soup=BeautifulSoup(plain_text, 'html.parser')
+
 def hungry():
+    url='http://www.gsm.hs.kr/xboard/board.php?tbnum=8'
+    source_code=requests.get(url)
+    plain_text=source_code.text
+    noma = re.compile('[0-9]+')
+    soup=BeautifulSoup(plain_text, 'html.parser')
     now=datetime.datetime.now()
     temp=soup.find_all('div', class_="food_list_box")
     if now.weekday() == 4 and now.hour>=13 or now.weekday() == 5 or now.weekday() == 6 and now.hour < 19:
@@ -33,5 +34,6 @@ def hungry():
     cmeal=[]
     for i in range(0,len(meal)):
         meal[i]=meal[i].split('\xa0')
+        meal[i][0] = meal[i][0].strip('/')
         cmeal.append(meal[i][0])
     return cmeal

@@ -3,6 +3,7 @@ import asyncio
 import discord
 import youtube_dl
 import datetime
+import re
 from Modules.hungry import *
 from Modules.morning import *
 from Modules.help import *
@@ -16,6 +17,9 @@ from Modules.user import *
 client = discord.Client()
 queues = {}
 musiclist = []
+suedUser = {}
+sueingUser = {}
+nowfighting = False
 
 # Music --
 def check_queue(id, channel):
@@ -27,7 +31,6 @@ def check_queue(id, channel):
         asyncio.run_coroutine_threadsafe(say, client.loop)
         player.volume=0.5
         player.start()
-
 # Discord Client
 @client.event
 async def on_ready():
@@ -39,6 +42,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    noma = re.compile('[0-9]+')
     now = datetime.datetime.now()
     descriptions=''
     resings = ''
@@ -70,8 +74,7 @@ async def on_message(message):
 
     # 봇 분양 관련
     if message.content == '!분양':
-        embed = discord.Embed(title="링크를 보내주겠느니라!!", colour=0xf7cac9)
-        embed.set_author(name='봇 추가 링크', url='https://discordapp.com/api/oauth2/authorize?client_id=517176814804926484&permissions=8&scope=bot')
+        embed = discord.Embed(title="링크를 보내주겠느니라!!", description = '여기', url = 'https://discordapp.com/api/oauth2/authorize?client_id=517176814804926484&permissions=8&scope=bot', colour=0xf7cac9)
         await client.send_message(message.channel, embed=embed)
 
     # 아침운동 정보
@@ -160,10 +163,12 @@ async def on_message(message):
         msg1 = message.content.split(' ')
         await client.send_message(message.channel, embed=get_video_link(msg1[1:]))
 
+    #사진 검색
     if message.content.startswith('!사진'):
         msg1 = message.content.split(' ')
         await client.send_message(message.channel, embed=search_image(msg1[1:]))
     
+    #자괴감 시뮬
     if message.content == '!시뮬':
         embed = discord.Embed(title = "랑이 연애 시뮬레이터", description = "<@"+message.author.id+">" + ' ' + "나와 놀아주러 왔구나!", colour = 0xf7cac9)
         embed.set_image(url='https://postfiles.pstatic.net/MjAxOTA0MDJfMjcg/MDAxNTU0MTc5NTgyNTYx.8IWLYICA0SyYKGzlMAodT1Bx9i-FCnMw3DSDvMhUiH4g.Pn14U9OyaKyaJLlkFXrgo1OwkzptEP0P8n0HOACaS6Ig.JPEG.gasd238/BandPhoto_5258877056.jpg?type=w580')
@@ -174,10 +179,84 @@ async def on_message(message):
 
         msg1 = message.content.split(' ')
         if len(msg1) > 1:
-            await client.send_message(message.channel, showLevel(message.author))  # 유저 지정 처리
+            id_ = re.findall(noma, msg1[1])
+            id__ = await client.get_user_info(id_[0])
+            await client.send_message(message.channel, showLevel(id__))  # 유저 지정 처리
         else:
             await client.send_message(message.channel, showLevel(message.author))
 
+    # 고소 관련
+    if message.content.startswith('!고소'):
+        if nowfighting != False:
+            server = message.server
+            msg1 = message.content.split(' ')
+            id_ = re.findall(noma, msg1[i])
+            if id_ == []: # ? 고소할 상대를 찾지 못했을때
+                await client.send_message(message.channel, '그런 사람은 찾을 수 없느니라...')
+            elif id_[0] == message.author.id: # ? 자기 자신을 고소하려고 할때
+                await client.send_message(message.channel, '자기 자신은 고소할 수 없느니라....')
+            elif server.get_member(id_[0]) == None:
+                await client.send_message(message.channel, '그런 사람은 고소할 수 없느니라....')
+            elif server.get_member(id_[0]).bot:
+                await client.send_message(message.channel, '봇은 고소할 수 없느니라....')
+            elif str(message.author.id) in list(suedUser.keys()): # Preventing Possible Error
+                if str(gosomember.id) in list(suedUser[str(message.author.id)].keys())
+                await client.send_message(message.channel, '이미 고소 했느니라...')
+            else:
+                id__ = await client.get_user_info(id_[0])
+                gosomember = server.get_member(id_[0])
+                if str(message.author.id) not in list(suedUser.keys()):
+                    suedUser[str(message.author.id)] = {}
+                suedUser[str(message.author.id)][str(gosomember.id)] = gosomember.roles # 이거요 이거 화긴
+                if str(message.author.id) not in list(sueingUser.keys()):
+                    suedUser[str(message.author.id)] = gosomember.roles
+                suedUser[str(message.author.id)][str(gosomember.id)] = #오늘은 여기까지
+                
+                role = discord.utils.get(server.roles, name="문제아")
+                em = discord.Embed(title='고-소-장', description = "<@"+message.author.id+">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!", color=0xf7cac9)
+                await client.send_message(id__, embed = em)
+                for i in gosomember.roles:
+                    await client.remove_roles(gosomember, i)
+                for i in message.author.roles:
+                    await client.remove_roles(message.author, i) # 근데 진짜 고소자 역할도 모두 지워? 공평한 조건에서 재판
+                    
+                await client.add_roles(message.author, role)
+                await client.add_roles(gosomember, role)
+                nowfighting = True
+        else:
+            await client.send_message(message.channel, '지금 재판이 진행중이니라....') 
 
-# 실행
+    #고소 취소
+    if message.content.startswith('!취하'): 
+        server = message.server
+        msg1 = message.content.split(' ')
+        id_ = re.findall(noma, msg1[1])
+        if id_ == []: # ? 고소할 상대를 찾지 못했을때
+            await client.send_message(message.channel, '그런 사람은 찾을 수 없느니라...')
+        elif id_[0] == message.author.id: # ? 자기 자신을 고소하려고 할때
+            await client.send_message(message.channel, '자기 자신은 고소할 수 없느니라....')
+        elif server.get_member(id_[0]) == None: # ? 역할로 고소하려고 할때
+            await client.send_message(message.channel, '그런 사람은 고소할 수 없느니라....')
+        elif server.get_member(id_[0]).bot: # ? 봇 고소 하려고 할때
+            await client.send_message(message.channel, '봇은 고소할 수 없느니라....')
+        else:
+            id__ = await client.get_user_info(id_[0])
+            gosomember = server.get_member(id_[0])
+            role = discord.utils.get(server.roles, name="문제아")
+            grade=[1,2,3]
+            grade[0] = discord.utils.get(server.roles, name="３年生 (3nd grade)")
+            grade[1] = discord.utils.get(server.roles, name="２年生 (2rd grade)")
+            grade[2] = discord.utils.get(server.roles, name="１年生 (1st grade)")
+            em = discord.Embed(title='고-소-장', description = "<@"+message.author.id+">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!", color=0xf7cac9)
+            await client.send_message(id__, embed = em)
+            await client.add_roles(message.author, role)
+            await client.add_roles(gosomember, role)
+            for i in range(0, len(grade)):
+                await client.remove_roles(message.author, grade[i])
+                await client.remove_roles(gosomember, grade[i])
+
+    if message.content.startswith('!재판 종료'): 
+        print('재판 끝')
+        nowfighting = False
+
 client.run('NTE3MTc2ODE0ODA0OTI2NDg0.Dt_YxA.V5rqQnIId1IVWr7oOZ-J18nmC5k')
