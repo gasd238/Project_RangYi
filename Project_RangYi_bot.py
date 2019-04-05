@@ -19,7 +19,13 @@ queues = {}
 musiclist = []
 suedUser = {}
 sueingUser = {}
-nowfighting = False
+
+
+def fighting_check(status):
+    if status == 1:
+        return True
+    elif status == 0:
+        return False
 
 # Music --
 def check_queue(id, channel):
@@ -42,6 +48,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    fight_status = 0
     noma = re.compile('[0-9]+')
     now = datetime.datetime.now()
     descriptions=''
@@ -187,10 +194,11 @@ async def on_message(message):
 
     # 고소 관련
     if message.content.startswith('!고소'):
-        if nowfighting != False:
+        if fighting_check(fight_status) == False:
+            fight_status = 1
             server = message.server
             msg1 = message.content.split(' ')
-            id_ = re.findall(noma, msg1[i])
+            id_ = re.findall(noma, msg1[1])
             if id_ == []: # ? 고소할 상대를 찾지 못했을때
                 await client.send_message(message.channel, '그런 사람은 찾을 수 없느니라...')
             elif id_[0] == message.author.id: # ? 자기 자신을 고소하려고 할때
@@ -200,8 +208,8 @@ async def on_message(message):
             elif server.get_member(id_[0]).bot:
                 await client.send_message(message.channel, '봇은 고소할 수 없느니라....')
             elif str(message.author.id) in list(suedUser.keys()): # Preventing Possible Error
-                if str(gosomember.id) in list(suedUser[str(message.author.id)].keys())
-                await client.send_message(message.channel, '이미 고소 했느니라...')
+                if str(gosomember.id) in list(suedUser[str(message.author.id)].keys()):
+                    await client.send_message(message.channel, '이미 고소 했느니라...')
             else:
                 id__ = await client.get_user_info(id_[0])
                 gosomember = server.get_member(id_[0])
@@ -209,8 +217,7 @@ async def on_message(message):
                     suedUser[str(message.author.id)] = {}
                 suedUser[str(message.author.id)][str(gosomember.id)] = gosomember.roles # 이거요 이거 화긴
                 if str(message.author.id) not in list(sueingUser.keys()):
-                    suedUser[str(message.author.id)] = gosomember.roles
-                suedUser[str(message.author.id)][str(gosomember.id)] = #오늘은 여기까지
+                    suedUser[str(message.author.id)] = message.author.roles
                 
                 role = discord.utils.get(server.roles, name="문제아")
                 em = discord.Embed(title='고-소-장', description = "<@"+message.author.id+">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!", color=0xf7cac9)
@@ -257,6 +264,6 @@ async def on_message(message):
 
     if message.content.startswith('!재판 종료'): 
         print('재판 끝')
-        nowfighting = False
+        fight_status = 0
 
 client.run('NTE3MTc2ODE0ODA0OTI2NDg0.Dt_YxA.V5rqQnIId1IVWr7oOZ-J18nmC5k')
