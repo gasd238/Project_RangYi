@@ -10,9 +10,7 @@ def get_video_link(titleli):
     chromedriver_dir = 'C:\chromedriver.exe'
     driver = webdriver.Chrome(chromedriver_dir)
     driver.get('https://www.youtube.com/results?search_query='+ title)
-    source = driver.page_source
-    bs = bs4.BeautifulSoup(source, 'lxml')
-    entire = bs.find_all('a', {'id': 'video-title'})
+    entire = bs4.BeautifulSoup(driver.page_source, 'lxml').find_all('a', {'id': 'video-title'})
     driver.quit()
     embed = discord.Embed(title="영상 목록 이니라~~", description="검색한 영상 결과이니라~~", colour=0xf7cac9)
     if entire == []:
