@@ -19,6 +19,7 @@ queues = {}
 musiclist = []
 suedUser = {}
 sueingUser = {}
+fcheck = [0]
 
 # Music --
 def check_queue(id, channel):
@@ -30,6 +31,7 @@ def check_queue(id, channel):
         asyncio.run_coroutine_threadsafe(say, client.loop)
         player.volume=0.5
         player.start()
+
 # Discord Client
 @client.event
 async def on_ready():
@@ -188,43 +190,48 @@ async def on_message(message):
     # 고소 관련
     if message.content.startswith('!고소'):
         server = message.server
-        msg1 = message.content.split(' ')
-        id_ = re.findall(noma, msg1[1])
-        if id_ == []: # ? 고소할 상대를 찾지 못했을때
-            await client.send_message(message.channel, '그런 사람은 찾을 수 없느니라...')
-        elif id_[0] == message.author.id: # ? 자기 자신을 고소하려고 할때
-            await client.send_message(message.channel, '자기 자신은 고소할 수 없느니라....')
-        elif server.get_member(id_[0]) == None:
-            await client.send_message(message.channel, '그런 사람은 고소할 수 없느니라....')
-        elif server.get_member(id_[0]).bot:
-           await client.send_message(message.channel, '봇은 고소할 수 없느니라....')
-        elif str(message.author.id) in list(suedUser.keys()): # Preventing Possible Error
-            gosomember = server.get_member(id_[0])
-            try:
-                suedUser[str(message.author.id)][str(gosomember.id)]
-                await client.send_message(message.channel, '이미 고소 했느니라...')
-            except KeyError:
-                await client.send_message(message.channel, '현재 재판이 이미 진행이니라....')
-        else:
-            id__ = await client.get_user_info(id_[0])
-            gosomember = server.get_member(id_[0])
-            if str(message.author.id) not in list(suedUser.keys()):
-                suedUser[str(message.author.id)] = {}
-            suedUser[str(message.author.id)][str(gosomember.id)] = gosomember.roles 
-            if str(message.author.id) not in list(sueingUser.keys()):
-                sueingUser[str(message.author.id)] = message.author.roles
-            # ? 고소장 보내기(개인 메세지)
-            role = discord.utils.get(server.roles, name="문제아")
-            em = discord.Embed(title='고-소-장', description = "<@"+message.author.id+">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!", color=0xf7cac9)
-            await client.send_message(id__, embed = em)
-            for i in gosomember.roles:
-                 await client.remove_roles(gosomember, i)
-            for i in message.author.roles:
-                await client.remove_roles(message.author, i)
-                    
-            await client.add_roles(message.author, role)
-            await client.add_roles(gosomember, role)
-            await client.send_message(message.channel, ':white_check_mark: 고소가 완료되었습니다')
+        if fcheck[0] == 0:
+            msg1 = message.content.split(' ')
+            id_ = re.findall(noma, msg1[1])
+            if id_ == []: # ? 고소할 상대를 찾지 못했을때
+                await client.send_message(message.channel, '그런 사람은 찾을 수 없느니라...')
+            elif id_[0] == message.author.id: # ? 자기 자신을 고소하려고 할때
+                await client.send_message(message.channel, '자기 자신은 고소할 수 없느니라....')
+            elif server.get_member(id_[0]) == None:
+                await client.send_message(message.channel, '그런 사람은 고소할 수 없느니라....')
+            elif server.get_member(id_[0]).bot:
+                await client.send_message(message.channel, '봇은 고소할 수 없느니라....')
+            else:
+                id__ = await client.get_user_info(id_[0])
+                gosomember = server.get_member(id_[0])
+                if str(message.author.id) not in list(suedUser.keys()):
+                    suedUser[str(message.author.id)] = {}
+                suedUser[str(message.author.id)][str(gosomember.id)] = gosomember.roles 
+                if str(message.author.id) not in list(sueingUser.keys()):
+                    sueingUser[str(message.author.id)] = message.author.roles
+                # ? 고소장 보내기(개인 메세지)
+                role = discord.utils.get(server.roles, name="문제아")
+                em = discord.Embed(title='고-소-장', description = "<@"+message.author.id+">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!", color=0xf7cac9)
+                await client.send_message(id__, embed = em)
+                for i in gosomember.roles:
+                    await client.remove_roles(gosomember, i)
+                for i in message.author.roles:
+                    await client.remove_roles(message.author, i)
+                        
+                await client.add_roles(message.author, role)
+                await client.add_roles(gosomember, role)
+                await client.send_message(message.channel, ':white_check_mark: 고소가 완료되었습니다')
+                fcheck[0] = 1
+
+        if str(message.author.id) in list(suedUser.keys()): # Preventing Possible Error
+                gosomember = server.get_member(id_[0])
+                try:
+                    suedUser[str(message.author.id)][str(gosomember.id)]
+                    await client.send_message(message.channel, '이미 고소 했느니라...')
+                except KeyError:
+                    await client.send_message(message.channel, '고소중에 고소할 수 없느니라...')
+        if fcheck[0] == 1:
+            await client.send_message(message.channel, ':negative_squared_cross_mark: 재판이 진행중이니라....')
 
     #고소 취하
     if message.content.startswith('!취하'): 
@@ -237,7 +244,7 @@ async def on_message(message):
         id__ = client.get_user_info(id_[0])
         gosomember = server.get_member(id_[0])
         if str(gosomember.id) not in suedUser[str(message.author.id)]: # ? 고소하지 않은 사람과 취하하려고 할때
-            await client.send_message(message.channel, '랑이: 이 사람들 고소도 안하고 취하하려는 니 인생이 레전드다')
+            await client.send_message(message.channel, '그 사람을 고소하지 않고 취하할 수 없느니라....')
         else:
             # id__ = await client.get_user_info(id_[0]) 시발쓰지 마세요 한국의 전통 문화 입니다 미래의 서울 오버-시어 C-8
             # em = discord.Embed(title='고-소-장', description = "<@"+message.author.id+">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!", color=0xf7cac9)
@@ -249,7 +256,8 @@ async def on_message(message):
                 await client.add_roles(gosomember, role)
             for role in sueingUser[str(message.author.id)]:
                 await client.add_roles(message.author, role)
-            await client.send_message(id__, ':white_check_mark: 취사가 완료되었습니다 이제 콩밥 드시면 민주화!')
+            await client.send_message(id__, ':white_check_mark: 취하가 완료되었느니라~')
+            fcheck[0] = 0
 
 
 client.run('NTE3MTc2ODE0ODA0OTI2NDg0.Dt_YxA.V5rqQnIId1IVWr7oOZ-J18nmC5k')
