@@ -222,14 +222,14 @@ async def on_message(message):
                 await client.add_roles(gosomember, role)
                 await client.send_message(message.channel, ':white_check_mark: 고소가 완료되었습니다')
                 fcheck[0] = 1
-
-        if str(message.author.id) in list(suedUser.keys()): # Preventing Possible Error
-                gosomember = server.get_member(id_[0])
-                try:
-                    suedUser[str(message.author.id)][str(gosomember.id)]
-                    await client.send_message(message.channel, '이미 고소 했느니라...')
-                except KeyError:
-                    await client.send_message(message.channel, '고소중에 고소할 수 없느니라...')
+        if fcheck[0] == 1:
+            if str(message.author.id) in list(suedUser.keys()): # Preventing Possible Error
+                    gosomember = server.get_member(id_[0])
+                    try:
+                        suedUser[str(message.author.id)][str(gosomember.id)]
+                        await client.send_message(message.channel, '이미 고소 했느니라...')
+                    except KeyError:
+                        await client.send_message(message.channel, '고소중에 고소할 수 없느니라...')
         if fcheck[0] == 1:
             await client.send_message(message.channel, ':negative_squared_cross_mark: 재판이 진행중이니라....')
 
