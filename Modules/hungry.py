@@ -4,11 +4,7 @@ import re
 from bs4 import BeautifulSoup
 
 def hungry():
-    url='http://www.gsm.hs.kr/xboard/board.php?tbnum=8'
-    source_code=requests.get(url)
-    plain_text=source_code.text
-    noma = re.compile('[0-9]+')
-    soup=BeautifulSoup(plain_text, 'html.parser')
+    soup=BeautifulSoup(requests.get('http://www.gsm.hs.kr/xboard/board.php?tbnum=8').text, 'html.parser')
     now=datetime.datetime.now()
     temp=soup.find_all('div', class_="food_list_box")
     if now.weekday() == 4 and now.hour>=13 or now.weekday() == 5 or now.weekday() == 6 and now.hour < 19:
@@ -26,7 +22,7 @@ def hungry():
             meal=today[2].getText()
     meal=meal.split('\n')
     for i in range(0, len(meal)):
-        if noma.match(meal[i]):
+        if re.compile('[0-9]+').match(meal[i]):
             del meal[i]
         if meal[i].startswith('*'):
             del meal[i:]
