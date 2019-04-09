@@ -40,6 +40,7 @@ async def on_ready():
     print(client.user.id)
     print('-----------------------')
     await client.change_presence(game=discord.Game(name="!설명으로 도움말", type=0))
+    #주작 코드 고소기능 고치다가 복구용
     # server = client.get_server('514391940427546624')
     # print(server)
     # me = server.get_member('457780845722468362')
@@ -95,7 +96,7 @@ async def on_message(message):
             await client.send_message(message.channel, embed=embed)
         else:
             if '비' in weather or '나쁨' in dust:
-                embed = discord.Embed(title="세희야! 내일 날씨 알려 주거라!",description='경비서는 날', color=0xf7cac9)
+                embed = discord.Embed(title="세희야! 내일 날씨 알려 주거라!",description='학교도는 날이니라...', color=0xf7cac9)
                 await client.send_message(message.channel, embed=embed)
             else:
                 embed = discord.Embed(title="세희야! 내일 날씨 알려 주거라!",description='아침운동 해야 할 것 같으니라...', color=0xf7cac9)
