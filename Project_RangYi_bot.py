@@ -40,14 +40,6 @@ async def on_ready():
     print(client.user.id)
     print('-----------------------')
     await client.change_presence(game=discord.Game(name="!설명으로 도움말", type=0))
-    #주작 코드 고소기능 고치다가 복구용
-    # server = client.get_server('514391940427546624')
-    # print(server)
-    # me = server.get_member('457780845722468362')
-    # print(me)
-    # _role = discord.utils.get(server.roles, name="幹部 (members above the gangway)")
-    # print(_role)
-    # await client.add_roles(me, _role)
 
 @client.event
 async def on_message(message):
@@ -62,10 +54,10 @@ async def on_message(message):
     if message.author.bot:
         return None
 
-    # 경험치 상승 처리
-    # if levelIncrease(message.author, message.content):
-    #     free_chat = client.get_channel('514392468402208768')
-    #     await client.send_message(free_chat, showLevel(message.author, True))
+    경험치 상승 처리
+    if levelIncrease(message.author, message.content):
+        free_chat = client.get_channel('514392468402208768')
+        await client.send_message(free_chat, showLevel(message.author, True))
 
     # 봇 설명
     if message.content == "!설명":
@@ -171,7 +163,7 @@ async def on_message(message):
 
     #링크 검색
     if message.content.startswith('!검색'):
-        embed = discord.Embed(title="수리중...", description="아직 기능을 사용할 준비가 되지 않았느니라..", color=oxf7cac9)
+        embed = discord.Embed(title="수리중...", description="아직 기능을 사용할 준비가 되지 않았느니라..", color=0xf7cac9)
         await client.send_message(message.channel, embed=embed)
         # msg1 = message.content.split(' ')
         # await client.send_message(message.channel, embed=get_video_link(msg1[1:]))
@@ -181,16 +173,16 @@ async def on_message(message):
         msg1 = message.content.split(' ')
         await client.send_message(message.channel, embed=search_image(msg1[1:]))
 
-    # 유저 관련
-    # if message.content.startswith('!레벨'):
+    유저 관련
+    if message.content.startswith('!레벨'):
 
-    #     msg1 = message.content.split(' ')
-    #     if len(msg1) > 1:
-    #         id_ = re.findall(noma, msg1[1])
-    #         id__ = await client.get_user_info(id_[0])
-    #         await client.send_message(message.channel, showLevel(id__))  # 유저 지정 처리
-    #     else:
-    #         await client.send_message(message.channel, showLevel(message.author))
+        msg1 = message.content.split(' ')
+        if len(msg1) > 1:
+            id_ = re.findall(noma, msg1[1])
+            id__ = await client.get_user_info(id_[0])
+            await client.send_message(message.channel, showLevel(id__))  # 유저 지정 처리
+        else:
+            await client.send_message(message.channel, showLevel(message.author))
 
     # 고소 관련
     if message.content.startswith('!고소'):
