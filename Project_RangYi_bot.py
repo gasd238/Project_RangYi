@@ -63,8 +63,9 @@ async def on_message(message):
         return None
 
     # 경험치 상승 처리
-    if levelIncrease(message.author, message.content):
-        await client.send_message(message.channel, showLevel(message.author, True))
+    # if levelIncrease(message.author, message.content):
+    #     free_chat = client.get_channel('514392468402208768')
+    #     await client.send_message(free_chat, showLevel(message.author, True))
 
     # 봇 설명
     if message.content == "!설명":
@@ -170,8 +171,10 @@ async def on_message(message):
 
     #링크 검색
     if message.content.startswith('!검색'):
-        msg1 = message.content.split(' ')
-        await client.send_message(message.channel, embed=get_video_link(msg1[1:]))
+        embed = discord.Embed(title="수리중...", description="아직 기능을 사용할 준비가 되지 않았느니라..", color=oxf7cac9)
+        await client.send_message(message.channel, embed=embed)
+        # msg1 = message.content.split(' ')
+        # await client.send_message(message.channel, embed=get_video_link(msg1[1:]))
 
     #사진 검색
     if message.content.startswith('!사진'):
@@ -179,15 +182,15 @@ async def on_message(message):
         await client.send_message(message.channel, embed=search_image(msg1[1:]))
 
     # 유저 관련
-    if message.content.startswith('!레벨'):
+    # if message.content.startswith('!레벨'):
 
-        msg1 = message.content.split(' ')
-        if len(msg1) > 1:
-            id_ = re.findall(noma, msg1[1])
-            id__ = await client.get_user_info(id_[0])
-            await client.send_message(message.channel, showLevel(id__))  # 유저 지정 처리
-        else:
-            await client.send_message(message.channel, showLevel(message.author))
+    #     msg1 = message.content.split(' ')
+    #     if len(msg1) > 1:
+    #         id_ = re.findall(noma, msg1[1])
+    #         id__ = await client.get_user_info(id_[0])
+    #         await client.send_message(message.channel, showLevel(id__))  # 유저 지정 처리
+    #     else:
+    #         await client.send_message(message.channel, showLevel(message.author))
 
     # 고소 관련
     if message.content.startswith('!고소'):
