@@ -198,7 +198,7 @@ async def on_message(message):
         msg1 = message.content.split(' ')
         id_ = re.findall(noma, msg1[1])
         if fcheck[0] == 0:
-            role = discord.utils.get(server.roles, name="문제아")
+            role = discord.utils.get(server.roles, name="COMPLAINTS")
             if id_ == []: # ? 고소할 상대를 찾지 못했을때
                 await client.send_message(message.channel, '그런 사람은 찾을 수 없느니라...')
             elif id_[0] == message.author.id: # ? 자기 자신을 고소하려고 할때
@@ -210,7 +210,6 @@ async def on_message(message):
             else:
                 id__ = await client.get_user_info(id_[0])
                 gosomember = server.get_member(id_[0])
-                role = discord.utils.get(server.roles, name="문제아")
                 if str(message.author.id) not in list(suedUser.keys()):
                     suedUser[str(message.author.id)] = {}
                 suedUser[str(message.author.id)][str(gosomember.id)] = gosomember.roles 
@@ -255,7 +254,7 @@ async def on_message(message):
                 # id__ = await client.get_user_info(id_[0]) 시발쓰지 마세요 한국의 전통 문화 입니다 미래의 서울 오버-시어 C-8
                 # em = discord.Embed(title='고-소-장', description = "<@"+message.author.id+">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!", color=0xf7cac9)
                 # await client.send_message(id__, embed = em)
-                _role = discord.utils.get(server.roles, name="문제아")
+                _role = discord.utils.get(server.roles, name="COMPLAINTS")
                 await client.remove_roles(gosomember, _role)
                 await client.remove_roles(message.author, _role)
                 for role in suedUser[str(message.author.id)][str(gosomember.id)]:
