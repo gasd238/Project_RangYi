@@ -43,18 +43,16 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    fight_status = 0
     noma = re.compile('[0-9]+')
     now = datetime.datetime.now()
     descriptions=''
     resings = ''
     title = ''
-
     # Bot이 하는 말은 반응하지 않음
     if message.author.bot:
         return None
 
-    경험치 상승 처리
+    #경험치 상승 처리
     if levelIncrease(message.author, message.content):
         free_chat = client.get_channel('514392468402208768')
         await client.send_message(free_chat, showLevel(message.author, True))
@@ -98,9 +96,11 @@ async def on_message(message):
     # 음악 종료
     if message.content == '!종료':
         server = message.server
-        del queues[server.id]
-        for i in range(0, len(musiclist)):
-            del musiclist[0]
+        if queues != None:
+            del queues[server.id]
+        if musiclist != None:
+            for i in range(0, len(musiclist)):
+                del musiclist[0]
         voice_client = client.voice_client_in(server)
         await voice_client.disconnect()
         await client.send_message(message.channel, '종료했느니라!!')
@@ -173,7 +173,7 @@ async def on_message(message):
         msg1 = message.content.split(' ')
         await client.send_message(message.channel, embed=search_image(msg1[1:]))
 
-    유저 관련
+    #유저 레벨 관련
     if message.content.startswith('!레벨'):
 
         msg1 = message.content.split(' ')
@@ -211,9 +211,15 @@ async def on_message(message):
                 em = discord.Embed(title='고-소-장', description = "<@"+message.author.id+">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!", color=0xf7cac9)
                 await client.send_message(id__, embed = em)
                 for i in gosomember.roles:
-                    await client.remove_roles(gosomember, i)
+                    if i.name == '@everyone':
+                        continue
+                    else:
+                        await client.remove_roles(gosomember, i)
                 for i in message.author.roles:
-                    await client.remove_roles(message.author, i)  
+                    if i.name == '@everyone':
+                        continue
+                    else:
+                        await client.remove_roles(message.author, i)  
                 await client.add_roles(message.author, role)
                 await client.add_roles(gosomember, role)
                 await client.send_message(message.author, ':white_check_mark: 고소장을 무사히 보냈느니라!~~')
@@ -250,11 +256,18 @@ async def on_message(message):
                 await client.remove_roles(gosomember, _role)
                 await client.remove_roles(message.author, _role)
                 for role in suedUser[str(message.author.id)][str(gosomember.id)]:
-                    await client.add_roles(gosomember, role)
+                    if role.name == '@everyone':
+                        continue
+                    else:
+                        await client.add_roles(gosomember, role)
                 for role in sueingUser[str(message.author.id)]:
-                    await client.add_roles(message.author, role)
+                    if role.name == '@everyone':
+                        continue
+                    else:
+                        await client.add_roles(message.author, role)
                 
                 await client.send_message(gosomember, ':white_check_mark: 취하가 완료되었느니라~')
+                await client.send_message(message.author, ':white_check_mark: 취하가 완료되었느니라~')
                 fcheck[0] = 0
         except KeyError:
             await client.send_message(message.channel, '고소하지 않고 취하할 수 없느니라...')
