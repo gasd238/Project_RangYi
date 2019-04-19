@@ -64,13 +64,7 @@ async def on_message(message):
 
     # 급식 파싱
     if message.content == '!급식':
-        cmeal = hungry()
-        if len(cmeal)==1:
-            descriptions=cmeal[0]
-        else:
-            for i in range(0, len(cmeal)):
-                descriptions=descriptions+'- '+cmeal[i]+'\n'
-        embed = discord.Embed(title="오늘의 급식이니라!~~",description=descriptions, colour=0xf7cac9)
+        embed = hungry() 
         await client.send_message(message.channel, embed=embed)
 
     # 봇 분양 관련
