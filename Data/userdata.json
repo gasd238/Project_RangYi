@@ -1,49 +1,5 @@
 {
 	"users": {
-		"406459971987832832": {
-			"level": 33,
-			"currentxp": 5941,
-			"targetxp": 6061
-		},
-		"298083567047802892": {
-			"level": 5,
-			"currentxp": 455,
-			"targetxp": 531
-		},
-		"457780845722468362": {
-			"level": 16,
-			"currentxp": 1876,
-			"targetxp": 2028
-		},
-		"518286982288506880": {
-			"level": 8,
-			"currentxp": 825,
-			"targetxp": 882
-		},
-		"259660693270298624": {
-			"level": 17,
-			"currentxp": 2140,
-			"targetxp": 2198
-		},
-		"281786239646957578": {
-			"level": 1,
-			"currentxp": 32,
-			"targetxp": 104
-		},
-		"456326320553590790": {
-			"level": 1,
-			"currentxp": 1,
-			"targetxp": 104
-		},
-		"323075662661419009": {
-			"level": 1,
-			"currentxp": 97,
-			"targetxp": 104
-		},
-		"160546977027850240": {
-			"level": 2,
-			"currentxp": 113,
-			"targetxp": 208
-		}
+		
 	}
 }
