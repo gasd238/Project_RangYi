@@ -40,10 +40,7 @@ def showLevel(user, isLevelUp=False):
     return strings
 
 
-
 def LevelExpGetter(currentLevel):
-    currentLevel **= 2
-    currentLevel //= math.log2(currentLevel) / 2
-    return int(currentLevel + 100)
-
-
+    nextLevel = currentLevel ** 2
+    nextLevel //= math.log2(nextLevel) / 2
+    return int((currentLevel + 100) * math.sqrt(currentLevel))
