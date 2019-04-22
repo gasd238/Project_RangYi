@@ -13,6 +13,7 @@ from Modules.search import *
 from Modules.image import *
 from Modules.user import *
 from Modules.yes import *
+from Modules.calendar import *
 
 # Variables
 client = discord.Client()
@@ -58,9 +59,9 @@ async def on_message(message):
         free_chat = client.get_channel('514392468402208768')
         await client.send_message(free_chat, showLevel(message.author, True))
 
-    if check():
-        free_chat = client.get_channel('514392468402208768')
-        await client.send_message(free_chat, '예약 또는 판매 시작')
+    # if check():
+    #     free_chat = client.get_channel('514392468402208768')
+    #     await client.send_message(free_chat, '예약 또는 판매 시작')
 
     # 봇 설명
     if message.content == "!설명":
@@ -268,6 +269,13 @@ async def on_message(message):
                 fcheck[0] = 0
         except KeyError:
             await client.send_message(message.channel, '고소하지 않고 취하할 수 없느니라...')
+
+    if message.content == '!일정':
+        today = datetime.datetime.now()
+        title = "%s년 %s월의 학사일정이니라!" % (today.year, today.month)
+        em = discord.Embed(title=title, description=get_calendar(), colour=0xf7cac9)
+        await client.send_message(message.channel, embed=em)
+
 
 
 client.run('NTE3MTc2ODE0ODA0OTI2NDg0.Dt_YxA.V5rqQnIId1IVWr7oOZ-J18nmC5k')
