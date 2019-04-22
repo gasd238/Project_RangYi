@@ -12,6 +12,7 @@ from selenium import webdriver
 from Modules.search import *
 from Modules.image import *
 from Modules.user import *
+from Modules.yes import *
 
 # Variables
 client = discord.Client()
@@ -56,6 +57,10 @@ async def on_message(message):
     if levelIncrease(message.author, message.content):
         free_chat = client.get_channel('514392468402208768')
         await client.send_message(free_chat, showLevel(message.author, True))
+
+    if check():
+        free_chat = client.get_channel('514392468402208768')
+        await client.send_message(free_chat, '예약 또는 판매 시작')
 
     # 봇 설명
     if message.content == "!설명":
@@ -157,10 +162,8 @@ async def on_message(message):
 
     #링크 검색
     if message.content.startswith('!검색'):
-        embed = discord.Embed(title="수리중...", description="아직 기능을 사용할 준비가 되지 않았느니라..", color=0xf7cac9)
-        await client.send_message(message.channel, embed=embed)
-        # msg1 = message.content.split(' ')
-        # await client.send_message(message.channel, embed=get_video_link(msg1[1:]))
+        msg1 = message.content.split(' ')
+        await client.send_message(message.channel, embed=get_video_link(msg1[1:]))
 
     #사진 검색
     if message.content.startswith('!사진'):
