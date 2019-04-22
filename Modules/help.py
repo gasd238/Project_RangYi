@@ -16,6 +16,7 @@ def create_help_embed():
     embed.add_field(name='!사진 [찾을 것]', value='찾는것에 대한 사진을 보내주는 기능이니라~', inline=False)
     embed.add_field(name='!고소 [할 사람 언급]', value='상대방과 합의방에서 1대1로 대화하게 해주는 기능이니라!', inline=False)
     embed.add_field(name='!취하 [할 사람 언급]', value='고소를 잘못했거나 끝났을 때 쓰는 기능이니라!', inline=False)
+    embed.add_field(name='!일정', value='그 달에 있는 학교 일정을 불러오는 기능이니라!', inline=False)
     embed.set_author(name="랑이", icon_url="https://postfiles.pstatic.net/MjAxOTA0MDFfMjIg/MDAxNTU0MDc1MzgxODEz.GprXtmnHfiMPpay2riQUAJQZTtLghpxjXyxFUV2hj0og.oair81q3mrLQqZcqegADwVMNOyYCoNTd429vxqgXlwkg.JPEG.gasd238/help.jpg?type=w580")
     embed.set_image(url="https://postfiles.pstatic.net/MjAxOTA0MDFfMjIg/MDAxNTU0MDc1MzgxODEz.GprXtmnHfiMPpay2riQUAJQZTtLghpxjXyxFUV2hj0og.oair81q3mrLQqZcqegADwVMNOyYCoNTd429vxqgXlwkg.JPEG.gasd238/help.jpg?type=w580")
     return embed
