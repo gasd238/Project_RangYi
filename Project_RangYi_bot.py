@@ -59,9 +59,9 @@ async def on_message(message):
         free_chat = client.get_channel('514392468402208768')
         await client.send_message(free_chat, showLevel(message.author, True))
 
-    # if check():
-    #     free_chat = client.get_channel('514392468402208768')
-    #     await client.send_message(free_chat, '예약 또는 판매 시작')
+    if book_check():
+        free_chat = client.get_channel('514392468402208768')
+        await client.send_message(free_chat, '예약 또는 판매 시작')
 
     # 봇 설명
     if message.content == "!설명":
