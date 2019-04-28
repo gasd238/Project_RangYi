@@ -182,6 +182,24 @@ async def on_message(message):
         else:
             await client.send_message(message.channel, showLevel(message.author))
 
+    # 서버 레벨 랭킹
+    if message.content.startswith('!랭킹'):
+        rank = showRanking(message.server)
+        if len(rank) > 10:
+            rankLength = 10
+        else:
+            rankLength = len(rank)
+        embed = discord.Embed(title='서버의 랭킹', description='10명을 가져옵니다.')
+        count = 0
+        for user in rank['data'].keys():
+            count += 1
+            embed.add_field(name='**'+message.channel.get_user_info(user).name+'**', descriptions="{} 레벨\n현재 경험치: **{} XP**, 다음 레벨까지 {} XP".format(rank[user]['level'], rank[user]['currentxp'], rank[user]['targetxp'] - rank[user]['currentxp']))
+            if count > rankLength - 1:
+                break;
+
+        await client.send_message(message.channel, embed=embed)
+
+
     # 고소 관련
     if message.content.startswith('!고소'):
         server = message.server
