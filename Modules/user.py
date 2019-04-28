@@ -40,6 +40,22 @@ def showLevel(user, isLevelUp=False):
     return strings
 
 
+def showRanking(server):
+    members = [str(x.id) for x in list(server.members)]
+    with open('../Data/userdata.json', 'r', encoding='utf-8') as userdata:
+        data = json.loads(userdata.read())
+    sortedLevels = sorted(data['users'], key=lambda user: (data['users'][str(user)]['currentxp']), reverse=True)
+
+    output = {
+        'data': {}
+    }
+    for id in sortedLevels:
+        if id not in members:
+            continue
+        output['data'][id] = data['users'][id]
+    return output
+
+
 def LevelExpGetter(currentLevel):
     nextLevel = currentLevel ** 2
     nextLevel //= math.log2(nextLevel) / 2
