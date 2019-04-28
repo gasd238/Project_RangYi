@@ -189,7 +189,7 @@ async def on_message(message):
             rankLength = 10
         else:
             rankLength = len(rank)
-        embed = discord.Embed(title='서버의 랭킹', description='10명을 가져옵니다.')
+        embed = discord.Embed(title='서버의 랭킹이니라!', description='10위까지 표시되느니라~')
         count = 0
         for user in rank['data'].keys():
             count += 1
