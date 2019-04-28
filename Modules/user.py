@@ -42,7 +42,7 @@ def showLevel(user, isLevelUp=False):
 
 def showRanking(server):
     members = [str(x.id) for x in list(server.members)]
-    with open('../Data/userdata.json', 'r', encoding='utf-8') as userdata:
+    with open('Data/userdata.json', 'r', encoding='utf-8') as userdata:
         data = json.loads(userdata.read())
     sortedLevels = sorted(data['users'], key=lambda user: (data['users'][str(user)]['currentxp']), reverse=True)
 
