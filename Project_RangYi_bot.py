@@ -13,7 +13,6 @@ from selenium import webdriver
 from Modules.search import *
 from Modules.image import *
 from Modules.user import *
-from Modules.yes import *
 from Modules.calendar import *
 
 # Variables
@@ -59,10 +58,6 @@ async def on_message(message):
     if levelIncrease(message.author, message.content):
         free_chat = client.get_channel('514392468402208768')
         await client.send_message(free_chat, showLevel(message.author, True))
-
-    if book_check():
-        free_chat = client.get_channel('514392468402208768')
-        await client.send_message(free_chat, '예약 또는 판매 시작')
 
     # 봇 설명
     if message.content == "!설명":
@@ -165,6 +160,7 @@ async def on_message(message):
     #링크 검색
     if message.content.startswith('!검색'):
         msg1 = message.content.split(' ')
+        await self.send_typing(message.channel)
         await client.send_message(message.channel, embed=get_video_link(msg1[1:]))
 
     #사진 검색
@@ -299,4 +295,3 @@ async def on_message(message):
 
 
 client.run('NTE3MTc2ODE0ODA0OTI2NDg0.Dt_YxA.V5rqQnIId1IVWr7oOZ-J18nmC5k')
-}d
