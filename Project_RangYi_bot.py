@@ -4,6 +4,7 @@ import discord
 import youtube_dl
 import datetime
 import re
+import json
 from Modules.hungry import *
 from Modules.morning import *
 from Modules.help import *
@@ -183,7 +184,7 @@ async def on_message(message):
             await client.send_message(message.channel, showLevel(message.author))
 
     # 서버 레벨 랭킹
-    if message.content.startswith('!랭킹'):
+    if message.content == '!랭킹':
         rank = showRanking(message.server)
         if len(rank) > 10:
             rankLength = 10
@@ -193,7 +194,7 @@ async def on_message(message):
         count = 0
         for user in rank['data'].keys():
             count += 1
-            embed.add_field(name='**'+message.channel.get_user_info(user).name+'**', descriptions="{} 레벨\n현재 경험치: **{} XP**, 다음 레벨까지 {} XP".format(rank[user]['level'], rank[user]['currentxp'], rank[user]['targetxp'] - rank[user]['currentxp']))
+            embed.add_field(name='**'+await client.get_user_info(user).name+'**', value="{} 레벨\n현재 경험치: **{} XP**, 다음 레벨까지 {} XP".format(rank['data'][user]['level'], rank['data'][user]['currentxp'], rank['data'][user]['targetxp'] - rank['data'][user]['currentxp']))
             if count > rankLength - 1:
                 break;
 
