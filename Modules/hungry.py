@@ -7,8 +7,22 @@ import discord
 weekend_string = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
 
 def hungry():
-    soup=BeautifulSoup(requests.get('http://www.gsm.hs.kr/xboard/board.php?tbnum=8').text, 'html.parser')
     now=datetime.datetime.now()
+    def get_nextMeal(now):
+        time = [480, 780, 1140]
+        
+        for i in range(len(time)):
+            if (now.hour * 60 + now.minute) < time[i]:
+                return i
+        return len(time)
+    try:
+            now = now.replace(day = now.day + int(get_nextMeal(now) / 3)) 
+    except ValueError: 
+        try:
+            now = now.replace(month = now.month + 1, day = 1, hour = 0) 
+        except ValueError: 
+            now = now.replace(year = now.year + 1, month = 1, day = 1, hour = 0) 
+    soup=BeautifulSoup(requests.get("http://www.gsm.hs.kr/xboard/board.php?tbnum=8&sYear=%s&sMonth=%s" % (now.year, now.month)).text, 'html.parser')
     temp=soup.find_all('div', class_="food_list_box")
     if now.weekday() == 4 and now.hour>=13 or now.weekday() == 5 or now.weekday() == 6 and now.hour < 19:
         meal = '급식이 없느니라...'
@@ -38,6 +52,7 @@ def hungry():
     for i in range(0,len(meal)):
         meal[i]=meal[i].split('\xa0')
         meal[i][0] = meal[i][0].strip('/')
+        meal[i][0] = meal[i][0].strip('*')
         cmeal.append(meal[i][0])
     if len(cmeal)==1:
             descriptions=cmeal[0]
