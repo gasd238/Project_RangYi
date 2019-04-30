@@ -53,6 +53,7 @@ def hungry():
         meal[i]=meal[i].split('\xa0')
         meal[i][0] = meal[i][0].strip('/')
         meal[i][0] = meal[i][0].strip('*')
+        meal[i][0] = meal[i][0].strip('..')
         cmeal.append(meal[i][0])
     if len(cmeal)==1:
             descriptions=cmeal[0]
