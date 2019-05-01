@@ -54,6 +54,8 @@ def hungry():
         meal[i][0] = meal[i][0].strip('/')
         meal[i][0] = meal[i][0].strip('*')
         meal[i][0] = meal[i][0].strip('..')
+        if meal[i][0] == '생일을':
+            continue
         cmeal.append(meal[i][0])
     if len(cmeal)==1:
             descriptions=cmeal[0]
