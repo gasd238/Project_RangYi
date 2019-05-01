@@ -61,7 +61,8 @@ async def on_message(message):
 
     # 봇 설명
     if message.content == "!설명":
-        createdEmbed = Help.create_help_embed()
+        help = Help()
+        createdEmbed = help.create_help_embed()
         await client.send_message(message.channel, embed=createdEmbed)
 
     # 급식 파싱
@@ -153,7 +154,8 @@ async def on_message(message):
     
     # 발표 순서 정하기
     if message.content == '!발표':
-        annsequence = Annseq.rand()
+        ann = Annseq()
+        annsequence = ann.rand()
         embed = discord.Embed(title='발표순서이니라!!', description = annsequence, color=0xf7cac9)
         await client.send_message(message.channel, embed=embed) 
 
