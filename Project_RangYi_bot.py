@@ -153,7 +153,8 @@ async def on_message(message):
     
     #발표 순서 정하기
     if message.content == '!발표':
-        annsequence = rand()
+        ann = Annseq()
+        annsequence = ann.rand()
         embed = discord.Embed(title='발표순서이니라!!', description = annsequence, color=0xf7cac9)
         await client.send_message(message.channel, embed=embed) 
 

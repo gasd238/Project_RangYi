@@ -1,6 +1,5 @@
 import json
 import math
-import discord
 
 
 def levelIncrease(user, message):
