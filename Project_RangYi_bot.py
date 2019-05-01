@@ -6,7 +6,7 @@ import datetime
 import re
 import json
 from Modules.hungry import *
-from Modules.morning import *
+from Modules.morning import Morning
 from Modules.help import Help
 from Modules.Annseq import Annseq
 from selenium import webdriver
@@ -77,7 +77,8 @@ async def on_message(message):
 
     # 아침운동 정보
     if message.content == '!아침운동':
-        weather, dust = morning()
+        morningC = Morning()
+        weather, dust = morningC.morning()
         now=datetime.datetime.now()
         if now.weekday()>3 and now.weekday()<6:
             embed = discord.Embed(title="세희야! 내일 날씨 알려 주거라!",description='주말이니 편하게 쉬도록 하자꾸나!!', color=0xf7cac9)
