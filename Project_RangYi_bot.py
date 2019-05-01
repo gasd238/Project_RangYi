@@ -7,8 +7,8 @@ import re
 import json
 from Modules.hungry import *
 from Modules.morning import *
-from Modules.help import *
-from Modules.Annseq import *
+from Modules.help import Help
+from Modules.Annseq import Annseq
 from selenium import webdriver
 from Modules.search import *
 from Modules.image import *
@@ -54,14 +54,14 @@ async def on_message(message):
     if message.author.bot:
         return None
 
-    #경험치 상승 처리
+    # 경험치 상승 처리
     if levelIncrease(message.author, message.content):
         free_chat = client.get_channel('514392468402208768')
         await client.send_message(free_chat, showLevel(message.author, True))
 
     # 봇 설명
     if message.content == "!설명":
-        createdEmbed = create_help_embed()
+        createdEmbed = Help.create_help_embed()
         await client.send_message(message.channel, embed=createdEmbed)
 
     # 급식 파싱
@@ -146,30 +146,29 @@ async def on_message(message):
             del queues[server.id][int(msg1[2])-1]
             await client.send_message(message.channel, msg1[2]+ '번 예약곡을 취소 했느니라!')
 
-    #서버 글 삭제
+    # 서버 글 삭제
     if message.content.startswith('!삭제'):
         msg = message.content.split(' ')
         await client.purge_from(message.channel, limit=int(msg[1]))
     
-    #발표 순서 정하기
+    # 발표 순서 정하기
     if message.content == '!발표':
-        ann = Annseq()
-        annsequence = ann.rand()
+        annsequence = Annseq.rand()
         embed = discord.Embed(title='발표순서이니라!!', description = annsequence, color=0xf7cac9)
         await client.send_message(message.channel, embed=embed) 
 
-    #링크 검색
+    # 링크 검색
     if message.content.startswith('!검색'):
         msg1 = message.content.split(' ')
         await self.send_typing(message.channel)
         await client.send_message(message.channel, embed=get_video_link(msg1[1:]))
 
-    #사진 검색
+    # 사진 검색
     if message.content.startswith('!사진'):
         msg1 = message.content.split(' ')
         await client.send_message(message.channel, embed=search_image(msg1[1:]))
 
-    #유저 레벨 관련
+    # 유저 레벨 관련
     if message.content.startswith('!레벨'):
 
         msg1 = message.content.split(' ')
@@ -250,7 +249,7 @@ async def on_message(message):
             else:                    
                 await client.send_message(message.channel, ':negative_squared_cross_mark: 재판이 진행중이니라....')
 
-    #고소 취하
+    # 고소 취하
     if message.content.startswith('!취하'): 
         server = message.server
         msg1 = message.content.split(' ')
@@ -292,7 +291,6 @@ async def on_message(message):
         title = "%s년 %s월의 학사일정이니라!" % (today.year, today.month)
         em = discord.Embed(title=title, description=get_calendar(), colour=0xf7cac9)
         await client.send_message(message.channel, embed=em)
-
 
 
 client.run('NTE3MTc2ODE0ODA0OTI2NDg0.Dt_YxA.V5rqQnIId1IVWr7oOZ-J18nmC5k')
