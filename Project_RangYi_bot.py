@@ -67,7 +67,8 @@ async def on_message(message):
 
     # 급식 파싱
     if message.content == '!급식':
-        embed = hungry() 
+        hungry = Hungry()
+        embed = hungry.hungry()
         await client.send_message(message.channel, embed=embed)
 
     # 봇 분양 관련
