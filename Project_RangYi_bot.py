@@ -13,7 +13,7 @@ from selenium import webdriver
 from Modules.search import *
 from Modules.image import *
 from Modules.user import *
-from Modules.calendar import *
+from Modules.calendar import Calender
 
 # Variables
 client = discord.Client()
@@ -290,9 +290,10 @@ async def on_message(message):
             await client.send_message(message.channel, '고소하지 않고 취하할 수 없느니라...')
 
     if message.content == '!일정':
+        cal = Calender()
         today = datetime.datetime.now()
         title = "%s년 %s월의 학사일정이니라!" % (today.year, today.month)
-        em = discord.Embed(title=title, description=get_calendar(), colour=0xf7cac9)
+        em = discord.Embed(title=title, description=cal.get_calendar(), colour=0xf7cac9)
         await client.send_message(message.channel, embed=em)
 
 
