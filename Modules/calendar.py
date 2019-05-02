@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 class Calender:
-    def get_calendar():
+    def get_calendar(self):
         today = datetime.datetime.now()
 
         req = requests.get("http://www.gsm.hs.kr/xboard/board.php?tbnum=4")
