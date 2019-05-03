@@ -6,7 +6,7 @@ import re
 
 class BookCheck:
 
-    def book_check():
+    def book_check(self):
         name = []
         book_name = []
         req = requests.get('http://www.yes24.com/searchcorner/Search?keywordAd=&keyword=&domain=ALL&qdomain=%C0%FC%C3%BC&query=%B3%AA%BF%CD+%C8%A3%B6%FB%C0%CC%B4%D4')

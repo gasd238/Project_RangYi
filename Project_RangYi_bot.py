@@ -55,7 +55,8 @@ async def on_message(message):
         return None
 
     # 경험치 상승 처리
-    if levelIncrease(message.author, message.content):
+    userlevel = UserLevel()
+    if userlevel.levelIncrease(message.author, message.content):
         free_chat = client.get_channel('514392468402208768')
         await client.send_message(free_chat, showLevel(message.author, True))
 
@@ -179,13 +180,13 @@ async def on_message(message):
         if len(msg1) > 1:
             id_ = re.findall(noma, msg1[1])
             id__ = await client.get_user_info(id_[0])
-            await client.send_message(message.channel, showLevel(id__))  # 유저 지정 처리
+            await client.send_message(message.channel, userlevel.showLevel(id__))  # 유저 지정 처리
         else:
-            await client.send_message(message.channel, showLevel(message.author))
+            await client.send_message(message.channel, userlevel.showLevel(message.author))
 
     # 서버 레벨 랭킹
     if message.content == '!랭킹':
-        rank = showRanking(message.server)
+        rank = userlevel.showRanking(message.server)
         if len(rank['data'].keys()) > 10:
             rankLength = 10
         else:
