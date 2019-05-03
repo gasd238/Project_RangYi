@@ -69,4 +69,4 @@ fabric.properties
 *.pyc
 *.py___jb_tmp___
 *.pyc
-Modules/__pycache__/image.cpython-36.pyc
+Modules/__pycache__/*
