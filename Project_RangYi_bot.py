@@ -10,9 +10,8 @@ from Modules.morning import Morning
 from Modules.help import Help
 from Modules.Annseq import Annseq
 from selenium import webdriver
-from Modules.search import *
-from Modules.image import *
-from Modules.user import *
+from Modules.search import Search
+from Modules.user import UserLevel
 from Modules.calendar import Calender
 
 # Variables
@@ -171,8 +170,9 @@ async def on_message(message):
 
     # 사진 검색
     if message.content.startswith('!사진'):
+        search = Search()
         msg1 = message.content.split(' ')
-        await client.send_message(message.channel, embed=search_image(msg1[1:]))
+        await client.send_message(message.channel, embed=search.search_image(msg1[1:]))
 
     # 유저 레벨 관련
     if message.content.startswith('!레벨'):
