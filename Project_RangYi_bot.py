@@ -5,7 +5,7 @@ import youtube_dl
 import datetime
 import re
 import json
-from Modules.hungry import *
+from Modules.hungry import Hungry
 from Modules.morning import Morning
 from Modules.help import Help
 from Modules.Annseq import Annseq
