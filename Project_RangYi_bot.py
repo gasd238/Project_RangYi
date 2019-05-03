@@ -164,9 +164,10 @@ async def on_message(message):
 
     # 링크 검색
     if message.content.startswith('!검색'):
+        search = Search()
         msg1 = message.content.split(' ')
         await self.send_typing(message.channel)
-        await client.send_message(message.channel, embed=get_video_link(msg1[1:]))
+        await client.send_message(message.channel, embed=search.get_video_link(msg1[1:]))
 
     # 사진 검색
     if message.content.startswith('!사진'):
