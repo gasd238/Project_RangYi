@@ -3,7 +3,7 @@ import discord
 
 
 class Help:
-    def create_help_embed():
+    def create_help_embed(self):
         embed = discord.Embed(title="이 봇은 매--우 공적인 목적으로 만들어졌느니라~",description="이 봇은 제작자가 나를 위해 만들어준 봇으로 GSM에 여러 편의 기능을 지원하고 있느니라~ 많이 많이 이용해 주거라~", color=0xf7cac9)
         embed.add_field(name = '!급식', value = '오전 8시, 오후 1시, 오후 7시를 기점으로 아침, 점심, 저녁이 바뀌어서 출력되느니라~(금요일 오후 1시부터 일요일 7시까지 급식이 없다고 표시되느니라~~)',inline = False)
         embed.add_field(name='!분양', value='너의 디코방에 나를 데려갈 수 있는 링크를 보내줄 것이니라~', inline=False)

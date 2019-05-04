@@ -8,7 +8,7 @@ weekend_string = ["월요일", "화요일", "수요일", "목요일", "금요일
 
 
 class Hungry:
-    def hungry():
+    def hungry(self):
         now=datetime.datetime.now()
         def get_nextMeal(now):
             time = [480, 780, 1140]
