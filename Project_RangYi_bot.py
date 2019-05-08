@@ -106,17 +106,22 @@ async def on_message(message):
 
     # 음악 재생
     if message.content.startswith("!재생"):
-        server = message.server
-        if client.voice_client_in(server) == None:
-            await client.join_voice_channel(message.author.voice.voice_channel)
-        voice_client = client.voice_client_in(server)
-        msg1 = message.content.split(' ')
-        url = msg1[1]
-        player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id, message.channel.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
-        player.volume = 0.5
-        player.start()
-        embed=discord.Embed(title="재생하겠느니라!!", description=player.title+"\n"+player.url)
-        await client.send_message(message.channel, embed=embed)
+        if len(players) == 0 or players[0].is_playing() == 0:
+            server = message.server
+            if client.voice_client_in(server) == None:
+                await client.join_voice_channel(message.author.voice.voice_channel)
+            voice_client = client.voice_client_in(server)
+            msg1 = message.content.split(' ')
+            url = msg1[1]
+            player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id, message.channel.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
+            player.volume = 0.5
+            player.start()
+            if len(players) == 0:
+                players.append(player)
+            else:
+                players[0] = player
+            embed=discord.Embed(title="재생하겠느니라!!", description=player.title+"\n"+player.url)
+            await client.send_message(message.channel, embed=embed)
     
     # 음악 예약
     if message.content.startswith('!예약'):
