@@ -45,6 +45,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    #숫자만 가려내기 위해
     noma = re.compile('[0-9]+')
     now = datetime.datetime.now()
     descriptions=''
@@ -178,7 +179,15 @@ async def on_message(message):
         ann = Annseq()
         annsequence = ann.rand()
         embed = discord.Embed(title='발표순서이니라!!', description = annsequence, color=0xf7cac9)
-        await client.send_message(message.channel, embed=embed) 
+        await client.send_message(message.channel, embed=embed)
+        #!내일 테스트
+        # msg1 = message.content.split(' ')
+        # if len(msg1) > 1:
+        #     annsequence = ann.rand_self(msg[1:])
+        # else:
+        #     annsequence = ann.rand()
+        # embed = discord.Embed(title='발표순서이니라!!', description = annsequence, color=0xf7cac9)
+        # await client.send_message(message.channel, embed=embed) 
 
     # 링크 검색
     if message.content.startswith('!검색'):
@@ -314,8 +323,7 @@ async def on_message(message):
 
     if message.content == '!일정':
         cal = Calender()
-        today = datetime.datetime.now()
-        title = "%s년 %s월의 학사일정이니라!" % (today.year, today.month)
+        title = "%s년 %s월의 학사일정이니라!" % (now.year, now.month)
         em = discord.Embed(title=title, description=cal.get_calendar(), colour=0xf7cac9)
         await client.send_message(message.channel, embed=em)
 
