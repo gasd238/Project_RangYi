@@ -179,9 +179,12 @@ async def on_message(message):
 
         msg1 = message.content.split(' ')
         if len(msg1) > 1:
-            id_ = re.findall(noma, msg1[1])
-            id__ = await client.get_user_info(id_[0])
-            await client.send_message(message.channel, userlevel.showLevel(id__))  # 유저 지정 처리
+            try:
+                id_ = re.findall(noma, msg1[1])
+                id__ = await client.get_user_info(id_[0])
+                await client.send_message(message.channel, userlevel.showLevel(id__))  # 유저 지정 처리
+            except:
+                await client.send_message(message.channel, '그 사람은 조회가 불가능하니라...')
         else:
             await client.send_message(message.channel, userlevel.showLevel(message.author))
 
