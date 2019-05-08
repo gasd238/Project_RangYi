@@ -52,7 +52,7 @@ class UserLevel:
         for id in sortedLevels:
             if id not in members:
                 continue
-        output['data'][id] = data['users'][id]
+            output['data'][id] = data['users'][id]
         return output
 
 
