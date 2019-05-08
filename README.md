@@ -16,13 +16,16 @@
 
 7.**lxml**
 
+8.**selenium**
+
 ## 랑이봇 사용법 ##
 
 1. 위 requirement 에 있는 것들을 다운 받기
- - 2, 3, 4, 7번 은 pip 를 통해 다운 가능
+ - 2, 3, 4, 7, 8번 은 pip 를 통해 다운 가능
  - 5번은 환경 변수 설정 해야 사용 가능 방법은 [여기](http://blog.naver.com/PostView.nhn?blogId=chandong83&logNo=221165275268&parentCategoryNo=&categoryNo=112&viewDate=&isShowPopularPosts=false&from=postView)
  - 6번은 함께 올려 놓았음으로 설치된 위치만 알아두시면 됩니다.(search.py 파일에 있는 크롬드라이버 위치를 당신 컴퓨터 기준에 맞게 바꾸시면 됩니다.)
  - 1번은 3.6 이하 버전을 사용을 권장 합니다.(3.7이상 버전 discord.py 사용 )
+ - 2번은 0.16.12 버전 기준 작성이므로 0.16.12 버전 설치를 매우 권장합니다. (1.0이상 버전은 사용 불가)
 
 2. 봇 토큰 설정
  - 먼저 디스코드 봇을 만들기 만드는 방법은 [여기](https://blog.naver.com/wpdus2694?Redirect=Log&logNo=221192640522) 
@@ -91,4 +94,4 @@ Project_RangYi_Bot.py 실행을 중지 했을시 봇도 함께 꺼짐 봇을 24�
 
 **11. 레벨,  관련 기능**
 
-우리가 디코로 대화 하면 그 양에 따라 레벨이 오르는 기능 레벨 관련 기능은 [startergate](https://github.com/startergate)님의 도움으로 제작되었습니다.
+우리가 디코로 대화 하면 그 양에 따라 레벨이 오르는 기능 레벨과  관련 기능은 [startergate](https://github.com/startergate)님의 도움으로 제작되었습니다.
