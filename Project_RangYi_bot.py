@@ -185,7 +185,7 @@ async def on_message(message):
         embed = discord.Embed(title='발표순서이니라!!', description = annsequence, color=0xf7cac9)
         await client.send_message(message.channel, embed=embed) 
 
-    # 링크 검색
+    # 유튜브 검색
     if message.content.startswith('!검색'):
         search = Search()
         msg1 = message.content.split(' ')
@@ -324,4 +324,4 @@ async def on_message(message):
         await client.send_message(message.channel, embed=em)
 
 
-client.run('NTE3MTc2ODE0ODA0OTI2NDg0.XNJ6GA.zzcNyqd7opSJbayO7mXD8TdtbBs')
+client.run('token')
