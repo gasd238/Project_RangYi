@@ -175,19 +175,15 @@ async def on_message(message):
         await client.purge_from(message.channel, limit=int(msg[1]))
     
     # 발표 순서 정하기
-    if message.content == '!발표':
+    if message.content.startswith('!발표'):
         ann = Annseq()
-        annsequence = ann.rand()
+        msg1 = message.content.split(' ')
+        if len(msg1) > 1:
+            annsequence = ann.rand_self(msg1[1:])
+        else:
+            annsequence = ann.rand()
         embed = discord.Embed(title='발표순서이니라!!', description = annsequence, color=0xf7cac9)
-        await client.send_message(message.channel, embed=embed)
-        #!내일 테스트
-        # msg1 = message.content.split(' ')
-        # if len(msg1) > 1:
-        #     annsequence = ann.rand_self(msg[1:])
-        # else:
-        #     annsequence = ann.rand()
-        # embed = discord.Embed(title='발표순서이니라!!', description = annsequence, color=0xf7cac9)
-        # await client.send_message(message.channel, embed=embed) 
+        await client.send_message(message.channel, embed=embed) 
 
     # 링크 검색
     if message.content.startswith('!검색'):
