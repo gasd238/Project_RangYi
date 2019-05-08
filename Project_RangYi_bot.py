@@ -21,6 +21,7 @@ musiclist = []
 suedUser = {}
 sueingUser = {}
 fcheck = [0]
+players = []
 
 # Music --
 def check_queue(id, channel):
@@ -95,11 +96,16 @@ async def on_message(message):
     # 음악 종료
     if message.content == '!종료':
         server = message.server
-        if queues != None:
-            del queues[server.id]
-        if musiclist != None:
-            for i in range(0, len(musiclist)):
-                del musiclist[0]
+        try:
+            for key in queues:
+                if key == server.id:
+                    del queues[server.id]
+        except RuntimeError:
+            for key in queues:
+                if key == server.id:
+                    del queues[server.id]
+        if musiclist:
+            musiclist.clear()
         voice_client = client.voice_client_in(server)
         await voice_client.disconnect()
         await client.send_message(message.channel, '종료했느니라!!')
@@ -113,29 +119,35 @@ async def on_message(message):
             voice_client = client.voice_client_in(server)
             msg1 = message.content.split(' ')
             url = msg1[1]
-            player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id, message.channel.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
-            player.volume = 0.5
-            player.start()
-            if len(players) == 0:
-                players.append(player)
-            else:
-                players[0] = player
-            embed=discord.Embed(title="재생하겠느니라!!", description=player.title+"\n"+player.url)
-            await client.send_message(message.channel, embed=embed)
+            try:
+                player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id, message.channel.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
+                player.volume = 0.5
+                player.start()
+                if len(players) == 0:
+                    players.append(player)
+                else:
+                    players[0] = player
+                embed=discord.Embed(title="재생하겠느니라!!", description=player.title+"\n"+player.url)
+                await client.send_message(message.channel, embed=embed)
+            except:
+                await client.send_message(message.channel, '유튜브 링크가 아니거나 재생할 수 없는 주소 이니라...')
     
     # 음악 예약
     if message.content.startswith('!예약'):
-        msg1 = message.content.split(' ')
-        url = msg1[1]
-        server = message.server
-        voice_client = client.voice_client_in(server)
-        player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id, message.channel.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
-        if server.id in queues:
-            queues[server.id].append(player)
-        else:
-            queues[server.id] = [player]
-        await client.send_message(message.channel,'예약 완료 했느니라!')
-        musiclist.append(player.title+"\n"+url)      
+        try:
+            msg1 = message.content.split(' ')
+            url = msg1[1]
+            server = message.server
+            voice_client = client.voice_client_in(server)
+            player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id, message.channel.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
+            if server.id in queues:
+                queues[server.id].append(player)
+            else:
+                queues[server.id] = [player]
+            await client.send_message(message.channel,'예약 완료 했느니라!')
+            musiclist.append(player.title+"\n"+url)
+        except:
+            await client.send_message(message.channel,'음성방에 들어가있지 않으면 예약이 불가능하니라...')
 
     # 음악 큐
     if message.content.startswith('!큐'):
@@ -145,13 +157,15 @@ async def on_message(message):
         # 큐 보기
         if check =='보기':
             for i in range(0, len(musiclist)):
-                resings = resings + i+1 + '번 예약곡' + '-' + ' ' + musiclist[i] + '\n\n'
+                resings = resings + str(i+1) + '번 예약곡' + '-' + ' ' + musiclist[i] + '\n\n'
             embed = discord.Embed(title='대기중인 곡들이니라~', description = resings, color=0xf7cac9)
             await client.send_message(message.channel, embed=embed)
         # 큐에 있는 음악 삭제
         if check=='삭제':
             del musiclist[int(msg1[2])-1]
             del queues[server.id][int(msg1[2])-1]
+            print(musiclist)
+            print(queues)
             await client.send_message(message.channel, msg1[2]+ '번 예약곡을 취소 했느니라!')
 
     # 서버 글 삭제
@@ -180,7 +194,6 @@ async def on_message(message):
 
     # 유저 레벨 관련
     if message.content.startswith('!레벨'):
-
         msg1 = message.content.split(' ')
         if len(msg1) > 1:
             try:
@@ -307,4 +320,4 @@ async def on_message(message):
         await client.send_message(message.channel, embed=em)
 
 
-client.run('Token')
+client.run('NTE3MTc2ODE0ODA0OTI2NDg0.XNJ6GA.zzcNyqd7opSJbayO7mXD8TdtbBs')
