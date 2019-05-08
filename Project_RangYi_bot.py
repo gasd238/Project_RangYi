@@ -57,7 +57,7 @@ async def on_message(message):
     userlevel = UserLevel()
     if userlevel.levelIncrease(message.author, message.content):
         free_chat = client.get_channel('514392468402208768')
-        await client.send_message(free_chat, showLevel(message.author, True))
+        await client.send_message(free_chat, userlevel.showLevel(message.author, True))
 
     # 봇 설명
     if message.content == "!설명":
