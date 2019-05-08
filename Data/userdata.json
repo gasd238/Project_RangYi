@@ -1,49 +1,49 @@
 {
 	"users": {
+		"259660693270298624": {
+			"currentxp": 2905,
+			"level": 21,
+			"targetxp": 2951
+		},
 		"406459971987832832": {
-			"level": 33,
-			"currentxp": 5941,
-			"targetxp": 6061
-		},
-		"298083567047802892": {
-			"level": 5,
-			"currentxp": 455,
-			"targetxp": 531
-		},
-		"457780845722468362": {
-			"level": 16,
-			"currentxp": 1876,
-			"targetxp": 2028
+			"currentxp": 6779,
+			"level": 36,
+			"targetxp": 7542
 		},
 		"518286982288506880": {
-			"level": 8,
-			"currentxp": 825,
-			"targetxp": 882
+			"currentxp": 2740,
+			"level": 20,
+			"targetxp": 2751
 		},
-		"259660693270298624": {
-			"level": 17,
-			"currentxp": 2140,
-			"targetxp": 2198
-		},
-		"281786239646957578": {
-			"level": 1,
-			"currentxp": 32,
-			"targetxp": 104
+		"298083567047802892": {
+			"currentxp": 2992,
+			"level": 22,
+			"targetxp": 3523
 		},
 		"456326320553590790": {
+			"currentxp": 16,
 			"level": 1,
-			"currentxp": 1,
 			"targetxp": 104
 		},
 		"323075662661419009": {
-			"level": 1,
-			"currentxp": 97,
-			"targetxp": 104
+			"currentxp": 238,
+			"level": 3,
+			"targetxp": 313
 		},
 		"160546977027850240": {
-			"level": 2,
-			"currentxp": 113,
-			"targetxp": 208
+			"currentxp": 1085,
+			"level": 10,
+			"targetxp": 1137
+		},
+		"281786239646957578": {
+			"currentxp": 6,
+			"level": 1,
+			"targetxp": 104
+		},
+		"457780845722468362": {
+			"currentxp": 7293,
+			"level": 37,
+			"targetxp": 7909
 		}
 	}
 }
