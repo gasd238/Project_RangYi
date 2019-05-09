@@ -18,7 +18,7 @@ class Hungry:
                     return i
             return len(time)
         try:
-            now = now.replace(day = now.day + int(get_nextMeal(now) / 3)) 
+            now = now.replace(day = now.day + int(get_nextMeal(now) / 3), hour = 0) 
         except ValueError:
             try:
                 now = now.replace(month = now.month + 1, day = 1, hour = 0)
@@ -26,8 +26,9 @@ class Hungry:
                 now = now.replace(year = now.year + 1, month = 1, day = 1, hour = 0)
         soup = BeautifulSoup(requests.get("http://www.gsm.hs.kr/xboard/board.php?tbnum=8&sYear=%s&sMonth=%s" % (now.year, now.month)).text, 'html.parser')
         temp = soup.find_all('div', class_="food_list_box")
-        if now.weekday() == 4 and now.hour>=13 or now.weekday() == 5 or now.weekday() == 6 and now.hour < 19:
-            meal = '급식이 없느니라...'
+        if now.weekday() == 4 and now.hour >= 13 or now.weekday() == 5 or now.weekday() == 6 and now.hour < 19:
+            descriptions = '급식이 없느니라...'
+            embed = discord.Embed(title="급식이 없음...", description=descriptions, colour=0xf7cac9)
         elif now.weekday() >= 0  and now.weekday() < 5 or now.weekday() == 6 and now.hour >= 19:
             if now.hour>=19:
                 today = temp[now.day].find_all('div', class_="content_info")
@@ -49,20 +50,20 @@ class Hungry:
                 if meal[i].startswith('*'):
                     del meal[i:]
                     break
-        cmeal=[]
-        descriptions = ''
-        for i in range(0,len(meal)):
-            meal[i]=meal[i].split('\xa0')
-            meal[i][0] = meal[i][0].strip('/')
-            meal[i][0] = meal[i][0].strip('*')
-            meal[i][0] = meal[i][0].strip('..')
-            if meal[i][0] == '생일을':
-                continue
-            cmeal.append(meal[i][0])
-        if len(cmeal)==1:
-                descriptions=cmeal[0]
-        else:
-            for i in range(0, len(cmeal)):
-                descriptions=descriptions+'- '+cmeal[i]+'\n'
-        embed = discord.Embed(title="%s년 %s월 %s일 %s의 %s 식단표이니라~~" % (now.year, now.month, now.day, weekend_string[int(now.weekday())], tm),description=descriptions, colour=0xf7cac9)
+            cmeal=[]
+            descriptions = ''
+            for i in range(0,len(meal)):
+                meal[i]=meal[i].split('\xa0')
+                meal[i][0] = meal[i][0].strip('/')
+                meal[i][0] = meal[i][0].strip('*')
+                meal[i][0] = meal[i][0].strip('..')
+                if meal[i][0] == '생일을':
+                    continue
+                cmeal.append(meal[i][0])
+            if len(cmeal)==1:
+                    descriptions=cmeal[0]
+            else:
+                for i in range(0, len(cmeal)):
+                    descriptions=descriptions+'- '+cmeal[i]+'\n'
+            embed = discord.Embed(title="%s년 %s월 %s일 %s의 %s 식단표이니라~~" % (now.year, now.month, now.day, weekend_string[int(now.weekday())], tm), description=descriptions, colour=0xf7cac9)
         return embed
