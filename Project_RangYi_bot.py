@@ -173,7 +173,8 @@ async def on_message(message):
     if message.content.startswith('!삭제'):
         msg = message.content.split(' ')
         try:
-            await client.purge_from(message.channel, limit=int(msg[1]))
+            if int(msg[1]) < 100:
+                await client.purge_from(message.channel, limit=int(msg[1]))
         except:
             return
     
