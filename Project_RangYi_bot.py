@@ -297,6 +297,7 @@ async def on_message(message):
             if str(gosomember.id) not in suedUser[str(message.author.id)]: # ? 고소하지 않은 사람과 취하하려고 할때
                 await client.send_message(message.channel, '고소하지 않은 사람의 고소는 취하할 수 없느니라..')
             else:
+                #? 미래에 머나먼 미래에 혹시 여러명을 고소하지는 않을까 하는 걱정으로 남겨둠
                 # id__ = await client.get_user_info(id_[0]) 시발쓰지 마세요 한국의 전통 문화 입니다 미래의 서울 오버-시어 C-8
                 # em = discord.Embed(title='고-소-장', description = "<@"+message.author.id+">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!", color=0xf7cac9)
                 # await client.send_message(id__, embed = em)
