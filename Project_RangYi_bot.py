@@ -172,7 +172,10 @@ async def on_message(message):
     # 서버 글 삭제
     if message.content.startswith('!삭제'):
         msg = message.content.split(' ')
-        await client.purge_from(message.channel, limit=int(msg[1]))
+        try:
+            await client.purge_from(message.channel, limit=int(msg[1]))
+        except:
+            return
     
     # 발표 순서 정하기
     if message.content.startswith('!발표'):
