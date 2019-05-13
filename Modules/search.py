@@ -44,7 +44,7 @@ class Search:
         url = 'https://www.google.co.kr/search?hl=en&tbm=isch&q=' + enc_location
         req = Request(url, headers=hdr)
         html = urllib.request.urlopen(req)
-        bsObj = bs4.BeautifulSoup(html, "html.parser")
+        bsObj = bs4.BeautifulSoup(html, "lxml")
         embed = discord.Embed(colour=0xF7CAC9)
         imgfind1 = bsObj.find_all("img")
         try:
