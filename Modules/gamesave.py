@@ -9,10 +9,7 @@ def save(ulev, ufav, uid):
         data['played_users'][str(uid)]['level'] = ulev
         data['played_users'][str(uid)]['Favorability'] = ufav
     except:
-        data['played_users'][str(uid)]={
-            "level" : 1,
-            "Favorability" : 50
-        }
+        pass
     with open('Data/game_save.json', 'w', encoding='utf-8') as game_save:
             json.dump(data, game_save, ensure_ascii=False, indent="\t")
 
@@ -21,5 +18,15 @@ def load(uid):
     with open('Data/game_save.json', 'r', encoding='utf-8') as game_save:
         data = game_save.read()
     data = json.loads(data)
-    lev = data['played_users'][str(uid)]['level']
-    fav = data['played_users'][str(uid)]['Favorability']
+    try:
+        lev = data['played_users'][str(uid)]['level']
+        fav = data['played_users'][str(uid)]['Favorability']
+        return lev, fav
+    except:
+        data['played_users'][str(uid)]={
+            "level" : 1,
+            "Favorability" : 50
+        }
+        with open('Data/game_save.json', 'w', encoding='utf-8') as game_save:
+            json.dump(data, game_save, ensure_ascii=False, indent="\t")
+        return 1, 50
