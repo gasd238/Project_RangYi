@@ -8,10 +8,12 @@ class Save:
         try:
             data["played_users"][str(uid)]["level"] = int(ulev)
             data["played_users"][str(uid)]["Favorability"] = int(ufav)
-        except:
-            pass
-        with open('Data/game_save.json', 'w', encoding='utf-8') as game_save:
+            with open('Data/game_save.json', 'w', encoding='utf-8') as game_save:
                 json.dump(data, game_save, ensure_ascii=False, indent="\t")
+            return "저장 완료"
+        except:
+            return "저장 실패"
+        
 
 
     def load(self, uid):
@@ -23,7 +25,6 @@ class Save:
             fav = data["played_users"][str(uid)]["Favorability"]
             return lev, fav
         except:
-            print('asdfasdf')
             data["played_users"][str(uid)]={
                 "level" : 1,
                 "Favorability" : 50
