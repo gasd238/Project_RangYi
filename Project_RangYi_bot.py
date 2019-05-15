@@ -107,9 +107,12 @@ async def on_message(message):
                     del queues[server.id]
         if musiclist:
             musiclist.clear()
-        voice_client = client.voice_client_in(server)
-        await voice_client.disconnect()
-        await client.send_message(message.channel, '종료했느니라!!')
+        try:
+            voice_client = client.voice_client_in(server)
+            await voice_client.disconnect()
+            await client.send_message(message.channel, '종료했느니라!!')
+        except:
+            return
 
     # 음악 재생
     if message.content.startswith("!재생"):
