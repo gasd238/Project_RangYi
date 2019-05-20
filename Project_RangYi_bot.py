@@ -347,7 +347,7 @@ async def on_message(message):
                 await client.send_message(message.channel, '이미 시작됨')
 
         elif msg[1] == '종료':
-            if str(message.author.id) not in list(game_stat.keys()) or game_stat[message.author.id] == s0:
+            if str(message.author.id) not in list(game_stat.keys()) or game_stat[message.author.id] == 0:
                 await client.send_message(message.channel, '게임 시작X')
             else:
                 game_stat[message.author.id] = 0
