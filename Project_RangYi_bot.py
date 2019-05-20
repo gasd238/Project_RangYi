@@ -352,7 +352,19 @@ async def on_message(message):
             else:
                 game_stat[message.author.id] = 0
                 await client.send_message(message.channel, '종료 성공')
-
-
+    if message.content.startswith('!test'):
+        msg1 = message.content.split(' ')
+        if len(msg1) > 1:
+            try:
+                id_ = re.findall(noma, msg1[1])
+                id__ = await client.get_user_info(id_[0])
+                profileurl = id__.avatar_url
+            except:
+                await client.send_message(message.channel, '그 사람은 조회가 불가능하니라...')
+        else:
+            profileurl = message.author.avatar_url
+        embed = discord.Embed(title='asdf', description='casasdf')
+        embed.set_image(url=profileurl)
+        await client.send_message(message.channel, embed=embed)
 
 client.run('token')
