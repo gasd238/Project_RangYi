@@ -23,7 +23,7 @@ suedUser = {}
 sueingUser = {}
 fcheck = [0]
 players = []
-game_stat = [0]
+game_stat = {}
 
 # Music --
 def check_queue(id, channel):
@@ -338,14 +338,21 @@ async def on_message(message):
         await client.send_message(message.channel, embed=em)
 
     if message.content.startswith('!게임'):
-        msg = message.split(' ')
-        if msg[0] == '시작':
-            game_stat[0] = 1
-            await client.send_message(message.server, '시작')
-        elif msg[0] == '종료' and game_stat[0] == 1:
-            await client.send_message(message.server, '종료')
-        elif msg[0] == '종료' and game_stat[0] == 0:
-            await client.send_message(message.server, '종료 실패')
+        msg = message.content.split(' ')
+        if msg[1] == '시작':
+            if str(message.author.id) not in game_stat.keys():
+                game_stat[message.author.id] = 1
+                await client.send_message(message.channel, '시작')
+            else:
+                await client.send_message(message.channel, '이미 시작됨')
+
+        elif msg[1] == '종료':
+            if str(message.author.id) not in list(game_stat.keys()) or game_stat[message.author.id] == s0:
+                await client.send_message(message.channel, '게임 시작X')
+            else:
+                game_stat[message.author.id] = 0
+                await client.send_message(message.channel, '종료 성공')
+
 
 
 client.run('token')
