@@ -23,6 +23,7 @@ suedUser = {}
 sueingUser = {}
 fcheck = [0]
 players = []
+game_stat = [0]
 
 # Music --
 def check_queue(id, channel):
@@ -335,6 +336,16 @@ async def on_message(message):
         title = "%s년 %s월의 학사일정이니라!" % (now.year, now.month)
         em = discord.Embed(title=title, description=cal.get_calendar(), colour=0xf7cac9)
         await client.send_message(message.channel, embed=em)
+
+    if message.content.startswith('!게임'):
+        msg = message.split(' ')
+        if msg[0] == '시작':
+            game_stat[0] = 1
+            await client.send_message(message.server, '시작')
+        elif msg[0] == '종료' and game_stat[0] == 1:
+            await client.send_message(message.server, '종료')
+        elif msg[0] == '종료' and game_stat[0] == 0:
+            await client.send_message(message.server, '종료 실패')
 
 
 client.run('token')
