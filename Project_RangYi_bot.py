@@ -352,6 +352,7 @@ async def on_message(message):
             else:
                 game_stat[message.author.id] = 0
                 await client.send_message(message.channel, '종료 성공')
+
     if message.content.startswith('!test'):
         msg1 = message.content.split(' ')
         if len(msg1) > 1:
