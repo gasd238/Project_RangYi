@@ -24,6 +24,7 @@ sueingUser = {}
 fcheck = [0]
 players = []
 game_stat = {}
+game_channels = []
 
 # Music --
 def check_queue(id, channel):
@@ -170,8 +171,6 @@ async def on_message(message):
         if check=='삭제':
             del musiclist[int(msg1[2])-1]
             del queues[server.id][int(msg1[2])-1]
-            print(musiclist)
-            print(queues)
             await client.send_message(message.channel, msg1[2]+ '번 예약곡을 취소 했느니라!')
 
     # 서버 글 삭제
@@ -338,20 +337,36 @@ async def on_message(message):
         await client.send_message(message.channel, embed=em)
 
     if message.content.startswith('!게임'):
+        help = Help()
         msg = message.content.split(' ')
-        if msg[1] == '시작':
-            if str(message.author.id) not in game_stat.keys():
-                game_stat[message.author.id] = 1
-                await client.send_message(message.channel, '시작')
-            else:
-                await client.send_message(message.channel, '이미 시작됨')
+        if len(msg) > 1:
+            if msg[1] == '시작':
+                if str(message.author.id) not in game_stat.keys() or game_stat[message.author.id] == 0:
+                    game_stat[message.author.id] = 1
+                    everyone = discord.PermissionOverwrite(read_messages=False)
+                    mine = discord.PermissionOverwrite(read_messages=True)
+                    
+                    game_channels.append(await client.create_channel(server, message.author.name+'의 게임방', (server.default_role, everyone), (message.author, mine)))
+                    await client.send_message(message.channel, '시작')
+                else:
+                    await client.send_message(message.channel, '이미 시작됨')
 
-        elif msg[1] == '종료':
-            if str(message.author.id) not in list(game_stat.keys()) or game_stat[message.author.id] == 0:
-                await client.send_message(message.channel, '게임 시작X')
-            else:
-                game_stat[message.author.id] = 0
-                await client.send_message(message.channel, '종료 성공')
+            elif msg[1] == '종료':
+                if str(message.author.id) not in list(game_stat.keys()) or game_stat[message.author.id] == 0:
+                    await client.send_message(message.channel, '게임 시작X')
+                else:
+                    game_stat[message.author.id] = 0
+                    for i in game_channels:
+                        if i.name == message.author.name + '의 게임방':
+                            del game_channels[i]
+                    await client.send_message(message.channel, '종료 성공')
+            elif msg[1] == '설명':
+                    await client.send_message(message.channel, embed = help.game_intro())
+        else:
+            embed = discord.Embed(title='설명', description='!게임 명령어 관련', color=0xf7cac9)
+            embed.add_field(name='시작', value='게임을 시작합니다.')
+            embed.add_field(name='종료', value='게임을 종료합니다.')
+            await client.send_message(message.channel, embed = embed)
 
     if message.content.startswith('!test'):
         msg1 = message.content.split(' ')

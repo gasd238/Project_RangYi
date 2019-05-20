@@ -23,3 +23,7 @@ class Help:
         embed.set_author(name="랑이", icon_url="https://postfiles.pstatic.net/MjAxOTA0MDFfMjIg/MDAxNTU0MDc1MzgxODEz.GprXtmnHfiMPpay2riQUAJQZTtLghpxjXyxFUV2hj0og.oair81q3mrLQqZcqegADwVMNOyYCoNTd429vxqgXlwkg.JPEG.gasd238/help.jpg?type=w580")
         embed.set_image(url="https://postfiles.pstatic.net/MjAxOTA0MDFfMjIg/MDAxNTU0MDc1MzgxODEz.GprXtmnHfiMPpay2riQUAJQZTtLghpxjXyxFUV2hj0og.oair81q3mrLQqZcqegADwVMNOyYCoNTd429vxqgXlwkg.JPEG.gasd238/help.jpg?type=w580")
         return embed
+    
+    def game_intro(self):
+        embed = discord.Embed(title="박재홍 == 추함", description="팩-트", color=0xf7cac9)
+        return embed
