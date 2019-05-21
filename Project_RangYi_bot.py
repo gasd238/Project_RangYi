@@ -14,6 +14,7 @@ from Modules.search import Search
 from Modules.user import UserLevel
 from Modules.calendar import Calender
 from Modules.gamesave import Save
+from Modules.game_play import Game
 
 # Variables
 client = discord.Client()
@@ -24,8 +25,9 @@ sueingUser = {}
 fcheck = [0]
 players = []
 game_stat = {}
-game_channels = []
-
+game_channels = {}
+level = 0
+name = None
 # Music --
 def check_queue(id, channel):
     if queues[id]!=[]:
@@ -54,6 +56,9 @@ async def on_message(message):
     descriptions=''
     resings = ''
     title = ''
+    server = message.server
+    free_chat = client.get_channel('514392468402208768')
+    global level, name
     # Bot이 하는 말은 반응하지 않음
     if message.author.bot:
         return None
@@ -61,7 +66,6 @@ async def on_message(message):
     # 경험치 상승 처리
     userlevel = UserLevel()
     if userlevel.levelIncrease(message.author, message.content):
-        free_chat = client.get_channel('514392468402208768')
         await client.send_message(free_chat, userlevel.showLevel(message.author, True))
 
     # 봇 설명
@@ -99,7 +103,6 @@ async def on_message(message):
 
     # 음악 종료
     if message.content == '!종료':
-        server = message.server
         try:
             for key in queues:
                 if key == server.id:
@@ -120,7 +123,6 @@ async def on_message(message):
     # 음악 재생
     if message.content.startswith("!재생"):
         if len(players) == 0 or players[0].is_playing() == 0:
-            server = message.server
             if client.voice_client_in(server) == None:
                 await client.join_voice_channel(message.author.voice.voice_channel)
             voice_client = client.voice_client_in(server)
@@ -144,7 +146,6 @@ async def on_message(message):
         try:
             msg1 = message.content.split(' ')
             url = msg1[1]
-            server = message.server
             voice_client = client.voice_client_in(server)
             player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id, message.channel.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
             if server.id in queues:
@@ -158,7 +159,6 @@ async def on_message(message):
 
     # 음악 큐
     if message.content.startswith('!큐'):
-        server = message.server
         msg1 = message.content.split(" ")
         check = msg1[1]
         # 큐 보기
@@ -224,7 +224,7 @@ async def on_message(message):
 
     # 서버 레벨 랭킹
     if message.content == '!랭킹':
-        rank = userlevel.showRanking(message.server)
+        rank = userlevel.showRanking(server)
         if len(rank['data'].keys()) > 10:
             rankLength = 10
         else:
@@ -243,7 +243,6 @@ async def on_message(message):
 
     # 고소 관련
     if message.content.startswith('!고소'):
-        server = message.server
         msg1 = message.content.split(' ')
         id_ = re.findall(noma, msg1[1])
         if fcheck[0] == 0:
@@ -294,7 +293,6 @@ async def on_message(message):
 
     # 고소 취하
     if message.content.startswith('!취하'): 
-        server = message.server
         msg1 = message.content.split(' ')
         id_ = re.findall(noma, msg1[1])
         if id_ == []: # ? 고소할 상대를 찾지 못했을때
@@ -338,49 +336,91 @@ async def on_message(message):
 
     if message.content.startswith('!게임'):
         help = Help()
+        save = Save()
         msg = message.content.split(' ')
         if len(msg) > 1:
-            if msg[1] == '시작':
+            if msg[1] == '생성':
                 if str(message.author.id) not in game_stat.keys() or game_stat[message.author.id] == 0:
                     game_stat[message.author.id] = 1
-                    everyone = discord.PermissionOverwrite(read_messages=False)
-                    mine = discord.PermissionOverwrite(read_messages=True)
-                    
-                    game_channels.append(await client.create_channel(server, message.author.name+'의 게임방', (server.default_role, everyone), (message.author, mine)))
-                    await client.send_message(message.channel, '시작')
+                    everyone_perms = discord.PermissionOverwrite(read_messages=False)
+                    my_perms = discord.PermissionOverwrite(read_messages=True)
+
+                    everyone = discord.ChannelPermissions(target=server.default_role, overwrite=everyone_perms)
+                    mine = discord.ChannelPermissions(target=message.author, overwrite=my_perms)
+                    game_channels[message.author.id] = await client.create_channel(server, message.author.name + '의 게임방', everyone, mine)
+                    await client.send_message(message.channel, '방이 생성되었습니다.')
                 else:
-                    await client.send_message(message.channel, '이미 시작됨')
+                    await client.send_message(message.channel, '이미 생성됨')
+
+            elif msg[1] == '설명':
+                    await client.send_message(message.channel, embed = help.game_intro())
+
+            elif msg[1] == '시작' and game_stat[message.author.id] == 1 and message.channel == game_channels[message.author.id]:
+                save = Save()
+                name, level = save.load(message.author.id)
+                game = Game()
+                story = game.game_progress()
+                while game_stat[message.author.id] == 1:
+                    if name == 'Null':
+                        name_set = await client.send_message(message.channel, '주인공의 이름을 결정해 주세요')
+                        response = await client.wait_for_message(timeout=float(15), author=message.author, channel=message.channel)
+                        if response == None:
+                            await client.delete_message(name_set)
+                            await client.send_message(message.channel, '다시 시도해 주거라...')
+                            return
+                        
+                        else:
+                            await client.delete_message(name_set)
+                            name = response.content
+                    try:
+                        await asyncio.sleep(10)
+                        query = await client.send_message(message.channel, story[int(level)-1])
+                    except:
+                        await client.send_message(message.channel, '스토리가 종료되었느니라... 업데이트를 기대해 주거라!(따로 게임을 종료해 주셔야 합니다.)')
+                        break
+
+                    response = await client.wait_for_reaction(["▶"], user=message.author, message=query)
+
+                    if response.reaction.emoji == "▶":
+                        level += 1
+                        continue
 
             elif msg[1] == '종료':
                 if str(message.author.id) not in list(game_stat.keys()) or game_stat[message.author.id] == 0:
                     await client.send_message(message.channel, '게임 시작X')
                 else:
                     game_stat[message.author.id] = 0
-                    for i in game_channels:
-                        if i.name == message.author.name + '의 게임방':
-                            del game_channels[i]
-                    await client.send_message(message.channel, '종료 성공')
-            elif msg[1] == '설명':
-                    await client.send_message(message.channel, embed = help.game_intro())
+                    try:
+                        for i in game_channels:
+                            if i == message.author.id:
+                                await client.delete_channel(game_channels[i])
+                                del game_channels[i]
+                    except:
+                        pass
+                    save = Save()
+                    save.save(level, message.author.id, name)
+                    await client.send_message(free_chat, '종료 성공')
         else:
             embed = discord.Embed(title='설명', description='!게임 명령어 관련', color=0xf7cac9)
             embed.add_field(name='시작', value='게임을 시작합니다.')
             embed.add_field(name='종료', value='게임을 종료합니다.')
             await client.send_message(message.channel, embed = embed)
 
-    if message.content.startswith('!test'):
-        msg1 = message.content.split(' ')
-        if len(msg1) > 1:
-            try:
-                id_ = re.findall(noma, msg1[1])
-                id__ = await client.get_user_info(id_[0])
-                profileurl = id__.avatar_url
-            except:
-                await client.send_message(message.channel, '그 사람은 조회가 불가능하니라...')
-        else:
-            profileurl = message.author.avatar_url
-        embed = discord.Embed(title='asdf', description='casasdf')
-        embed.set_image(url=profileurl)
-        await client.send_message(message.channel, embed=embed)
+    # if message.content.startswith('!test'):
+    #     msg1 = message.content.split(' ')
+    #     if len(msg1) > 1:
+    #         try:
+    #             id_ = re.findall(noma, msg1[1])
+    #             id__ = await client.get_user_info(id_[0])
+    #             profileurl = id__.avatar_url
+    #         except:
+    #             await client.send_message(message.channel, '그 사람은 조회가 불가능하니라...')
+    #     else:
+    #         profileurl = message.author.avatar_url
+    #     embed = discord.Embed(title='asdf', description='casasdf')
+    #     embed.set_image(url=profileurl)
+    #     await client.send_message(message.channel, embed=embed)
+
+    
 
 client.run('token')
