@@ -367,8 +367,8 @@ async def on_message(message):
                     except:
                         pass
                     
-                    
                     await client.send_message(free_chat, save.save(level, message.author.id, name) + ' 및 ' + '종료 성공')
+
             elif msg[1] == '저장':
                 await client.send_message(free_chat, save.save(level, message.author.id, name))
 
@@ -376,7 +376,6 @@ async def on_message(message):
                 name, level = save.load(message.author.id)
                 story = game.game_progress()
                 while game_stat[message.author.id] == 1:
-                    
                     if name == 'Null':
                         name_set = await client.send_message(message.channel, '주인공의 이름을 결정해 주거라!')
                         response = await client.wait_for_message(timeout=float(15), author=message.author, channel=message.channel)
@@ -390,16 +389,17 @@ async def on_message(message):
                             name = response.content
                     try:
                         query = await client.send_message(message.channel, story[int(level)-1].strip('\n'))
+
                     except:
                         await client.send_message(message.channel, '스토리가 종료되었느니라... 업데이트를 기대해 주거라!(따로 게임을 종료해 주셔야 합니다.)')
                         break
+
                     await client.add_reaction(query, "▶")
                     response = await client.wait_for_reaction(["▶"], user=message.author, message=query)
 
                     if response.reaction.emoji == "▶":
                         level += 1
                         continue
-
             
         else:
             embed = discord.Embed(title='설명', description='!게임 명령어 관련', color=0xf7cac9)
