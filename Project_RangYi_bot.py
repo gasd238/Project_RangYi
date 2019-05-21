@@ -67,6 +67,7 @@ async def on_message(message):
     ann = Annseq()
     search = Search()
     cal = Calender()
+    save = Save()
     # Bot이 하는 말은 반응하지 않음
     if message.author.bot:
         return None
@@ -352,15 +353,32 @@ async def on_message(message):
 
             elif msg[1] == '설명':
                     await client.send_message(message.channel, embed = help.game_intro())
+            elif msg[1] == '종료':
+                if str(message.author.id) not in list(game_stat.keys()) or game_stat[message.author.id] == 0:
+                    await client.send_message(message.channel, '게임 시작X')
+                else:
+                    game_stat[message.author.id] = 0
+                    try:
+                        for i in game_channels:
+                            if i == message.author.id:
+                                await client.delete_channel(game_channels[i])
+                                del game_channels[i]
+                    except:
+                        pass
+                    
+                    
+                    await client.send_message(free_chat, save.save(level, message.author.id, name) + ' 및 ' + '종료 성공')
+            elif msg[1] == '저장':
+                await client.send_message(free_chat, save.save(level, message.author.id, name))
 
-            elif msg[1] == '시작' and game_stat[message.author.id] == 1 and message.channel == game_channels[message.author.id]:
+            if msg[1] == '시작' and game_stat[message.author.id] == 1 and message.channel == game_channels[message.author.id]:
                 save = Save()
                 name, level = save.load(message.author.id)
                 game = Game()
                 story = game.game_progress()
                 while game_stat[message.author.id] == 1:
                     if name == 'Null':
-                        name_set = await client.send_message(message.channel, '주인공의 이름을 결정해 주세요')
+                        name_set = await client.send_message(message.channel, '주인공의 이름을 결정해 주거라!')
                         response = await client.wait_for_message(timeout=float(15), author=message.author, channel=message.channel)
                         if response == None:
                             await client.delete_message(name_set)
@@ -383,21 +401,7 @@ async def on_message(message):
                         level += 1
                         continue
 
-            elif msg[1] == '종료':
-                if str(message.author.id) not in list(game_stat.keys()) or game_stat[message.author.id] == 0:
-                    await client.send_message(message.channel, '게임 시작X')
-                else:
-                    game_stat[message.author.id] = 0
-                    try:
-                        for i in game_channels:
-                            if i == message.author.id:
-                                await client.delete_channel(game_channels[i])
-                                del game_channels[i]
-                    except:
-                        pass
-                    save = Save()
-                    save.save(level, message.author.id, name)
-                    await client.send_message(free_chat, '종료 성공')
+            
         else:
             embed = discord.Embed(title='설명', description='!게임 명령어 관련', color=0xf7cac9)
             embed.add_field(name='시작', value='게임을 시작합니다.')
