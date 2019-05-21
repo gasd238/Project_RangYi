@@ -386,6 +386,7 @@ async def on_message(message):
                         
                         else:
                             await client.delete_message(name_set)
+                            await client.delete_message(response)
                             name = response.content
                     try:
                         query = await client.send_message(message.channel, story[int(level)-1].strip('\n'))
