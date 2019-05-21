@@ -68,6 +68,7 @@ async def on_message(message):
     search = Search()
     cal = Calender()
     save = Save()
+    game = Game()
     # Bot이 하는 말은 반응하지 않음
     if message.author.bot:
         return None
@@ -372,11 +373,10 @@ async def on_message(message):
                 await client.send_message(free_chat, save.save(level, message.author.id, name))
 
             if msg[1] == '시작' and game_stat[message.author.id] == 1 and message.channel == game_channels[message.author.id]:
-                save = Save()
                 name, level = save.load(message.author.id)
-                game = Game()
                 story = game.game_progress()
                 while game_stat[message.author.id] == 1:
+                    
                     if name == 'Null':
                         name_set = await client.send_message(message.channel, '주인공의 이름을 결정해 주거라!')
                         response = await client.wait_for_message(timeout=float(15), author=message.author, channel=message.channel)
@@ -389,12 +389,11 @@ async def on_message(message):
                             await client.delete_message(name_set)
                             name = response.content
                     try:
-                        await asyncio.sleep(10)
-                        query = await client.send_message(message.channel, story[int(level)-1])
+                        query = await client.send_message(message.channel, story[int(level)-1].strip('\n'))
                     except:
                         await client.send_message(message.channel, '스토리가 종료되었느니라... 업데이트를 기대해 주거라!(따로 게임을 종료해 주셔야 합니다.)')
                         break
-
+                    await client.add_reaction(query, "▶")
                     response = await client.wait_for_reaction(["▶"], user=message.author, message=query)
 
                     if response.reaction.emoji == "▶":
