@@ -59,24 +59,29 @@ async def on_message(message):
     server = message.server
     free_chat = client.get_channel('514392468402208768')
     global level, name
+    help = Help()
+    save = Save()
+    userlevel = UserLevel()
+    hungry = Hungry()
+    morningC = Morning()
+    ann = Annseq()
+    search = Search()
+    cal = Calender()
     # Bot이 하는 말은 반응하지 않음
     if message.author.bot:
         return None
 
     # 경험치 상승 처리
-    userlevel = UserLevel()
     if userlevel.levelIncrease(message.author, message.content):
         await client.send_message(free_chat, userlevel.showLevel(message.author, True))
 
     # 봇 설명
     if message.content == "!설명":
-        help = Help()
         createdEmbed = help.create_help_embed()
         await client.send_message(message.channel, embed=createdEmbed)
 
     # 급식 파싱
     if message.content == '!급식':
-        hungry = Hungry()
         embed = hungry.hungry()
         await client.send_message(message.channel, embed=embed)
 
@@ -87,7 +92,6 @@ async def on_message(message):
 
     # 아침운동 정보
     if message.content == '!아침운동':
-        morningC = Morning()
         weather, dust = morningC.morning()
         now=datetime.datetime.now()
         if now.weekday()>3 and now.weekday()<6:
@@ -188,7 +192,6 @@ async def on_message(message):
     
     # 발표 순서 정하기
     if message.content.startswith('!발표'):
-        ann = Annseq()
         msg1 = message.content.split(' ')
         if len(msg1) > 1:
             annsequence = ann.rand_self(msg1[1:])
@@ -199,13 +202,11 @@ async def on_message(message):
 
     # 유튜브 검색
     if message.content.startswith('!검색'):
-        search = Search()
         msg1 = message.content.split(' ')
         await client.send_message(message.channel, embed=search.get_video_link(msg1[1:]))
 
     # 사진 검색
     if message.content.startswith('!사진'):
-        search = Search()
         msg1 = message.content.split(' ')
         await client.send_message(message.channel, embed=search.search_image(msg1[1:]))
 
@@ -329,14 +330,11 @@ async def on_message(message):
             await client.send_message(message.channel, '고소하지 않고 취하할 수 없느니라...')
 
     if message.content == '!일정':
-        cal = Calender()
         title = "%s년 %s월의 학사일정이니라!" % (now.year, now.month)
         em = discord.Embed(title=title, description=cal.get_calendar(), colour=0xf7cac9)
         await client.send_message(message.channel, embed=em)
 
-    if message.content.startswith('!게임'):
-        help = Help()
-        save = Save()
+    if message.content.startswith('!게임'): 
         msg = message.content.split(' ')
         if len(msg) > 1:
             if msg[1] == '생성':
