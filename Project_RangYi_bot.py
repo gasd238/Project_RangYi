@@ -28,6 +28,7 @@ game_stat = {}
 game_channels = {}
 level = 0
 favper = 0
+choice = 0
 # Music --
 def check_queue(id, channel):
     if queues[id]!=[]:
@@ -58,7 +59,7 @@ async def on_message(message):
     title = ''
     server = message.server
     free_chat = client.get_channel('514392468402208768')
-    global level, favper
+    global level, favper, choice
     help = Help()
     save = Save()
     userlevel = UserLevel()
@@ -239,7 +240,7 @@ async def on_message(message):
             userobj = await client.get_user_info(user)
             embed.add_field(name='**'+userobj.name+'**', value="{} 레벨\n현재 경험치: **{} XP**, 다음 레벨까지 {} XP".format(rank['data'][user]['level'], rank['data'][user]['currentxp'], rank['data'][user]['targetxp'] - rank['data'][user]['currentxp']), inline = False)
             if count > rankLength - 1:
-                break;
+                break
 
         await client.send_message(message.channel, embed=embed)
 
@@ -338,74 +339,143 @@ async def on_message(message):
 
     if message.content.startswith('!게임'): 
         msg = message.content.split(' ')
+        string = ""
         if len(msg) > 1:
             if msg[1] == '생성':
-                if str(message.author.id) not in game_stat.keys() or game_stat[message.author.id] == 0:
-                    game_stat[message.author.id] = 1
+                if str(message.author.id) not in game_channels.keys():
                     everyone_perms = discord.PermissionOverwrite(read_messages=False)
                     my_perms = discord.PermissionOverwrite(read_messages=True)
-
+                    game_stat[message.author.id] = 0 
                     everyone = discord.ChannelPermissions(target=server.default_role, overwrite=everyone_perms)
                     mine = discord.ChannelPermissions(target=message.author, overwrite=my_perms)
                     game_channels[message.author.id] = await client.create_channel(server, message.author.name + '의 게임방', everyone, mine)
-                    await client.send_message(message.channel, '방이 생성되었습니다.')
+                    await client.send_message(message.channel, '방이 생성되었느니라!')
                 else:
-                    await client.send_message(message.channel, '이미 생성됨')
+                    await client.send_message(message.channel, '이미 생성되었느니라...')
 
             elif msg[1] == '설명':
                     await client.send_message(message.channel, embed = help.game_intro())
+
             elif msg[1] == '종료':
-                if str(message.author.id) not in list(game_stat.keys()) or game_stat[message.author.id] == 0:
-                    await client.send_message(message.channel, '게임 시작X')
-                else:
-                    game_stat[message.author.id] = 0
-                    try:
-                        for i in game_channels:
-                            if i == message.author.id:
-                                await client.delete_channel(game_channels[i])
-                                del game_channels[i]
-                    except:
-                        pass
-                    
-                    await client.send_message(free_chat, save.save(level, message.author.id, favper) + ' 및 ' + '종료 성공')
+                    if str(message.author.id) not in list(game_stat.keys()) or game_stat[message.author.id] == 0:
+                        await client.send_message(message.channel, '게임 시작X')
+                    else:
+                        game_stat[message.author.id] = 0
+                        try:
+                            for i in game_channels:
+                                if i == message.author.id:
+                                    await client.delete_channel(game_channels[i])
+                                    del game_channels[i]
+                        except:
+                            pass
+                        await client.send_message(free_chat, save.save(level, message.author.id, favper, choice, save_at_choice) + ' 및 ' + '종료에 성공 했느니라!')
 
             elif msg[1] == '저장':
-                await client.send_message(free_chat, save.save(level, message.author.id, favper))
-
-            if msg[1] == '시작' and game_stat[message.author.id] == 1 and message.channel == game_channels[message.author.id]:
-                favper, level = save.load(message.author.id)
-                story = game.game_progress()
-                while game_stat[message.author.id] == 1:
-                    try:
-                        mchk = story[int(level)].strip('\n').split(' ')
-                        if mchk[0] == '선택지':
-                            for i in range(level+1, level+4):
-                                string += story[i] + '\n'
-                            query = await client.send_message(message.channel, string)
-                            await client.add_reaction(query, ["1","2","3"])
-                            level += 2
-                        else:
-                            query = await client.send_message(message.channel, story[level])
-
-                            await client.add_reaction(query, "▶")
-                            response = await client.wait_for_reaction(["▶"], user=message.author, message=query)
-
-                            if response.reaction.emoji == "▶":
-                                level += 1
-                                continue
-
-                    except:
-                        await client.send_message(message.channel, '스토리가 종료되었느니라... 업데이트를 기대해 주거라!(따로 게임을 종료해 주셔야 합니다.)')
-                        break
-
-                    
+                await client.send_message(free_chat, save.save(level, message.author.id, favper, choice, save_at_choice))
             
+            try:
+                if msg[1] == '시작' and message.channel == game_channels[message.author.id] and game_stat[message.author.id] == 0:
+                    favper, level, choice, save_at_choice = save.load(message.author.id)
+                    story = game.game_progress()
+                    game_stat[message.author.id] = 1
+                    while game_stat[message.author.id] == 1:
+                        try:
+                            mchk = story[int(level)].strip('\n').split(' ')
+                            if mchk[0] == '선택지':
+                                save_at_choice = 1
+                                for i in range(level+1, level+4):
+                                    string += story[i] + '\n'
+                                query = await client.send_message(message.channel, string)
+                                await client.add_reaction(query, "1⃣")
+                                await client.add_reaction(query, "2⃣")
+                                await client.add_reaction(query, "3⃣")
+
+                                level+=4
+                                response = await client.wait_for_reaction(user=message.author, message=query)
+
+                                if response.reaction.emoji == "1⃣":
+                                    favper += int(story[level])
+                                    level += 3
+                                    choice += 1
+
+                                elif response.reaction.emoji == "2⃣":
+                                    favper += int([level+1])
+                                    level += 4
+                                    choice += 2
+
+                                elif response.reaction.emoji == "3⃣":
+                                    favper += int([level+2])
+                                    level += 5
+                                    choice += 3
+                                
+                                query = await client.send_message(message.channel, story[level])
+                                await client.add_reaction(query, "▶")
+                                response = await client.wait_for_reaction(["▶"], user=message.author, message=query)
+
+                                if response.reaction.emoji == "▶":
+                                    level += 1
+                                    continue
+
+                            else:
+                                if save_at_choice == 0:
+                                    if choice == 1:
+                                        level += 3
+                                        choice = 0
+
+                                    elif choice ==2:
+                                        level += 2
+                                        choice = 0
+
+                                    elif choice ==3:
+                                        level += 1
+                                        choice = 0
+                                
+                                query = await client.send_message(message.channel, story[level])
+
+                                if save_at_choice == 1:
+                                    if choice == 1:
+                                        level += 3
+                                        choice = 0
+
+                                    elif choice ==2:
+                                        level += 2
+                                        choice = 0
+
+                                    elif choice ==3:
+                                        level += 1
+                                        choice = 0
+
+                                    save_at_choice = 0
+
+                                await client.add_reaction(query, "▶")
+
+                                response = await client.wait_for_reaction(["▶"], user=message.author, message=query)
+
+                                if response.reaction.emoji == "▶":
+                                    level += 1
+                                    continue
+
+                        except:
+                            await client.send_message(message.channel, '스토리가 종료되었느니라... 업데이트를 기대해 주거라!(따로 게임을 종료해 주셔야 합니다.)')
+                            break
+
+            except:
+               await client.send_message(message.channel, "이미 시작됬거나 생성된 채널에서 하지 않은것 같으니라...")
+                    
+
         else:
             embed = discord.Embed(title='설명', description='!게임 명령어 관련', color=0xf7cac9)
             embed.add_field(name='시작', value='게임을 시작합니다.')
             embed.add_field(name='종료', value='게임을 종료합니다.')
             await client.send_message(message.channel, embed = embed)
 
+    if message.content == "방 삭제":
+        channels = message.server.channels
+        for i in channels:
+            if i.name == "bluerain의-게임방":
+                await client.delete_channel(i)
+                channels = message.server.channels
+                
     # if message.content.startswith('!test'):
     #     msg1 = message.content.split(' ')
     #     if len(msg1) > 1:
