@@ -35,19 +35,24 @@ class Hungry:
             descriptions = '급식이 없느니라...'
             embed = discord.Embed(title="급식이 없음...", description=descriptions, colour=0xf7cac9)
         elif now.weekday() >= 0  and now.weekday() < 5 or now.weekday() == 6 and now.hour >= 19:
-            if now.hour>=19:
-                today = temp[now.day].find_all('div', class_="content_info")
-            else:
-                today = temp[now.day - 1].find_all('div', class_="content_info")
-            if now.hour>=19 or now.hour<8:
-                meal=today[0].getText()
-                tm = '아침'
-            elif now.hour>=8 and now.hour<13:
-                meal=today[1].getText()
-                tm ='점심'
-            elif now.hour>=13 and now.hour<19:
-                meal=today[2].getText()
-                tm = '저녁'
+            try:
+                if now.hour>=19:
+                    today = temp[now.day].find_all('div', class_="content_info")
+                else:
+                    today = temp[now.day - 1].find_all('div', class_="content_info")
+                if now.hour>=19 or now.hour<8:
+                    meal=today[0].getText()
+                    tm = '아침'
+                elif now.hour>=8 and now.hour<13:
+                    meal=today[1].getText()
+                    tm ='점심'
+                elif now.hour>=13 and now.hour<19:
+                    meal=today[2].getText()
+                    tm = '저녁'
+            except:
+                descriptions = '급식을 불러올 수 없음'
+                embed = discord.Embed(title="급식을 불러올 수 없느니라...", description=descriptions, colour=0xf7cac9)
+                return embed
             meal=meal.split('\n')
             for i in range(0, len(meal)):
                 if re.compile('[0-9]+').match(meal[i]):
