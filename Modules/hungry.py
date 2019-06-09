@@ -12,7 +12,6 @@ class Hungry:
         now=datetime.datetime.now()
         def get_nextMeal(now):
             time = [480, 780, 1140]
-
             for i in range(len(time)):
                 if (now.hour * 60 + now.minute) < time[i]:
                     return i

@@ -469,12 +469,6 @@ async def on_message(message):
             embed.add_field(name='종료', value='게임을 종료합니다.')
             await client.send_message(message.channel, embed = embed)
 
-    if message.content == "방 삭제":
-        channels = message.server.channels
-        for i in channels:
-            if i.name == "bluerain의-게임방":
-                await client.delete_channel(i)
-                channels = message.server.channels
                 
     # if message.content.startswith('!test'):
     #     msg1 = message.content.split(' ')
