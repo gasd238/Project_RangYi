@@ -204,9 +204,9 @@ async def on_message(message):
         await client.send_message(message.channel, embed=embed) 
 
     # 유튜브 검색
-    if message.content.startswith('!검색'):
-        msg1 = message.content.split(' ')
-        await client.send_message(message.channel, embed=search.get_video_link(msg1[1:]))
+    # if message.content.startswith('!검색'):
+    #     msg1 = message.content.split(' ')
+    #     await client.send_message(message.channel, embed=search.get_video_link(msg1[1:]))
 
     # 사진 검색
     if message.content.startswith('!사진'):

@@ -49,10 +49,10 @@ class UserLevel:
         output = {
             'data': {}
         }
-        for id in sortedLevels:
-            if id not in members:
+        for i in sortedLevels:
+            if i not in members:
                 continue
-            output['data'][id] = data['users'][id]
+            output['data'][i] = data['users'][i]
         return output
 
 
