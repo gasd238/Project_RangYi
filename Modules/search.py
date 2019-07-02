@@ -1,6 +1,6 @@
 import bs4
 import lxml
-from selenium import webdriver
+#from selenium import webdriver
 import discord
 from urllib.request import urlopen, Request
 import urllib
