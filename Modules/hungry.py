@@ -53,12 +53,11 @@ class Hungry:
                 embed = discord.Embed(title="급식을 불러올 수 없느니라...", description=descriptions, colour=0xf7cac9)
                 return embed
             meal=meal.split('\n')
-            for i in range(0, len(meal)):
+            for i in range(0, len(meal)-1):
                 if re.compile('[0-9]+').match(meal[i]):
                     del meal[i]
                 if meal[i].startswith('*'):
                     del meal[i:]
-                    break
             cmeal=[]
             descriptions = ''
             for i in range(0,len(meal)):

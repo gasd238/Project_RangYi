@@ -14,4 +14,3 @@ class Game:
             f = open("./Modules/ending2.txt", 'r')
             ending_2 = f.readlines()
             return ending_2
-
