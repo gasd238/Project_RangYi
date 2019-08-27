@@ -8,16 +8,6 @@
 
 3. **chromedriver**
 
-2.  실행
-
-3. **beautifulsoup4.py** 
-
-4. **youtube_dl.py**
-
-5. **ffmpeg** 
-
-6. **chromedriver**
-
 ## 랑이봇 사용법 ##
 
 1. 위 requirement 에 있는 것들을 다운 받기
