@@ -2,30 +2,29 @@
 이 봇은 개인적으로 만들어질 목적이었으나 외국~~노동~~문화 동아리 디스코드 서버에서 만들게 되면서 대규모 프로젝트로 바뀌어 버린 봇입니다.
 ## Requirements ##
 
-1.**Python 3.6**
+1. **Python 3.6**
 
-2.**discord.py**
+2. **ffmpeg** 
 
-3.**beautifulsoup4.py** 
+3. **chromedriver**
 
-4.**youtube_dl.py**
+2.  실행
 
-5.**ffmpeg** 
+3. **beautifulsoup4.py** 
 
-6.**chromedriver**
+4. **youtube_dl.py**
 
-7.**lxml**
+5. **ffmpeg** 
 
-8.**selenium**
+6. **chromedriver**
 
 ## 랑이봇 사용법 ##
 
 1. 위 requirement 에 있는 것들을 다운 받기
- - 2, 3, 4, 7, 8번 은 pip 를 통해 다운 가능
- - 5번은 환경 변수 설정 해야 사용 가능 방법은 [여기](http://blog.naver.com/PostView.nhn?blogId=chandong83&logNo=221165275268&parentCategoryNo=&categoryNo=112&viewDate=&isShowPopularPosts=false&from=postView)
- - 6번은 함께 올려 놓았음으로 설치된 위치만 알아두시면 됩니다.(search.py 파일에 있는 크롬드라이버 위치를 당신 컴퓨터 기준에 맞게 바꾸시면 됩니다.)
+ - 파이썬 라이브러리들은 `pip install -r requirements.txt` 명령을 통해 설치 가능
+ - 2번은 환경 변수 설정 해야 사용 가능 방법은 [여기](http://blog.naver.com/PostView.nhn?blogId=chandong83&logNo=221165275268&parentCategoryNo=&categoryNo=112&viewDate=&isShowPopularPosts=false&from=postView)
+ - 3번은 함께 올려 놓았음으로 설치된 위치만 알아두시면 됩니다.(search.py 파일에 있는 크롬드라이버 위치를 당신 컴퓨터 기준에 맞게 바꾸시면 됩니다.)
  - 1번은 3.6 이하 버전을 사용을 권장 합니다.(3.7이상 버전에서 사용이 안되는것으로 확인됨)
- - 2번은 0.16.12 버전 기준 작성이므로 0.16.12 버전 설치를 매우 권장합니다. (1.0이상 버전으로 시간이 난다면 업데이트 할 예정)
 
 2. 봇 토큰 설정
  - 먼저 디스코드 봇을 만들기 만드는 방법은 [여기](https://blog.naver.com/wpdus2694?Redirect=Log&logNo=221192640522) 
@@ -38,9 +37,9 @@
  
  (봇 id)
  
-  이렇게 출력됬을시 성공
+  이렇게 출력됐을시 성공
 
- - 디스코드 봇을 만드는 방법에 나온 서버에 봇 추가하는 방법대로 원하는 서버에 봇을 추가하면 됨(단 당신이 관리자 권한을 가지고 있는 서버만 )
+ - 디스코드 봇을 만드는 방법에 나온 서버에 봇 추가하는 방법대로 원하는 서버에 봇을 추가하면 됨 (단 당신이 관리자 권한을 가지고 있는 서버만 )
 
 ## 참고 ##
 Project_RangYi_Bot.py 실행을 중지 했을시 봇도 함께 꺼짐 봇을 24시간 운영하고 싶으시다면 라즈베리 파이 같은 호스팅 방법을 찾으시면 됩니다.
@@ -58,11 +57,11 @@ Project_RangYi_Bot.py 실행을 중지 했을시 봇도 함께 꺼짐 봇을 24�
 
 **3. 노래 틀기**
 
-디스코드 음성방에 노래를 틀어준다(예약기능이 있어 편안)
+디스코드 음성방에 노래를 틀어준다 (예약기능이 있어 편안)
 
 **4. 유튜브 검색**
 
-유튜브에서 영상을 검색해 띄움(최대 5개)
+유튜브에서 영상을 검색해 띄움 (최대 5개)
 
 **5. 사진 검색**
 
@@ -70,7 +69,7 @@ Project_RangYi_Bot.py 실행을 중지 했을시 봇도 함께 꺼짐 봇을 24�
 
 **6. 랑이 연애 시뮬레이터**
 
-랑이 연애 시뮬레이터 제작 중(스토리 및 약간의 기능 제외 완성)
+랑이 연애 시뮬레이터 제작 중 (스토리 및 약간의 기능 제외 완성)
 
 **7. 발표 순서 정하기**
 
