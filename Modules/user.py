@@ -1,8 +1,8 @@
 import json
 import math
 
-class UserLevel:
 
+class UserLevel:
     def levelIncrease(self, user, message):
         userid = user.id
         isLevelup = False
@@ -24,7 +24,6 @@ class UserLevel:
             json.dump(data, userdata, ensure_ascii=False, indent="\t")
         return isLevelup
 
-
     def showLevel(self, user, isLevelUp=False):
         userid = user.id
         with open('Data/userdata.json', 'r', encoding='utf-8') as userdata:
@@ -39,7 +38,6 @@ class UserLevel:
                                                                     data['users'][str(userid)]['targetxp'] -
                                                                     data['users'][str(userid)]['currentxp'])
         return strings
-
 
     def showRanking(self, server):
         members = [str(x.id) for x in list(server.members)]
