@@ -29,6 +29,8 @@ game_channels = {}
 level = 0
 favper = 0
 choice = 0
+
+
 # Music --
 def check_queue(id, channel):
     if queues[id]!=[]:
