@@ -93,7 +93,10 @@ async def on_message(message):
 
     # 봇 분양 관련
     if message.content == '!분양':
-        embed = discord.Embed(title="링크를 보내주겠느니라!!", description='여기', url='https://discordapp.com/api/oauth2/authorize?client_id=517176814804926484&permissions=8&scope=bot', colour=0xf7cac9)
+        embed = discord.Embed(title="링크를 보내주겠느니라!!", description='여기',
+                              url='https://discordapp.com/api/oauth2/authorize'
+                                  '?client_id=517176814804926484&permissions=8&scope=bot',
+                              colour=0xf7cac9)
         await client.send_message(message.channel, embed=embed)
 
     # 아침운동 정보
@@ -126,7 +129,7 @@ async def on_message(message):
             voice_client = client.voice_client_in(server)
             await voice_client.disconnect()
             await client.send_message(message.channel, '종료했느니라!!')
-        except discord.ClientException:
+        except discord.DiscordException:
             return
 
     # 음악 재생
@@ -138,7 +141,10 @@ async def on_message(message):
             msg1 = message.content.split(' ')
             url = msg1[1]
             try:
-                player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id, message.channel.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
+                player = await voice_client.create_ytdl_player(url,
+                                                               after=lambda: check_queue(server.id, message.channel.id),
+                                                               before_options="-reconnect 1 -reconnect_streamed 1 "
+                                                                              "-reconnect_delay_max 5")
                 player.volume = 0.5
                 player.start()
                 if len(players) == 0:
@@ -156,14 +162,18 @@ async def on_message(message):
             msg1 = message.content.split(' ')
             url = msg1[1]
             voice_client = client.voice_client_in(server)
-            player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id, message.channel.id), before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
+            player = await voice_client.create_ytdl_player(url,
+                                                           after=lambda: check_queue(server.id, message.channel.id),
+                                                           before_options="-reconnect 1 "
+                                                                          "-reconnect_streamed 1 "
+                                                                          "-reconnect_delay_max 5")
             if server.id in queues:
                 queues[server.id].append(player)
             else:
                 queues[server.id] = [player]
             await client.send_message(message.channel, '예약 완료 했느니라!')
             musiclist.append(player.title+"\n"+url)
-        except discord.ClientException:
+        except discord.DiscordException:
             await client.send_message(message.channel, '음성방에 들어가있지 않으면 예약이 불가능하니라...')
 
     # 음악 큐
@@ -192,7 +202,7 @@ async def on_message(message):
             else:
                 await client.delete_message(message)
                 await client.send_message(message.channel, '100개 이상 또는 14일이 지난 메세지는 삭제할 수 없느니라....')
-        except discord.ClientException:
+        except discord.DiscordException:
             return
 
     # 발표 순서 정하기
@@ -223,7 +233,7 @@ async def on_message(message):
                 id_ = re.findall(noma, msg1[1])
                 id__ = await client.get_user_info(id_[0])
                 await client.send_message(message.channel, userlevel.showLevel(id__))  # 유저 지정 처리
-            except discord.ClientException:
+            except discord.DiscordException:
                 await client.send_message(message.channel, '그 사람은 조회가 불가능하니라...')
         else:
             await client.send_message(message.channel, userlevel.showLevel(message.author))
@@ -240,7 +250,12 @@ async def on_message(message):
         for user in rank['data'].keys():
             count += 1
             userobj = await client.get_user_info(user)
-            embed.add_field(name='**'+userobj.name+'**', value="{} 레벨\n현재 경험치: **{} XP**, 다음 레벨까지 {} XP".format(rank['data'][user]['level'], rank['data'][user]['currentxp'], rank['data'][user]['targetxp'] - rank['data'][user]['currentxp']), inline = False)
+            embed.add_field(name='**' + userobj.name + '**',
+                            value="{} 레벨\n현재 경험치: **{} XP**,"
+                                  "다음 레벨까지 {} XP".format(rank['data'][user]['level'],
+                                                         rank['data'][user]['currentxp'],
+                                                         rank['data'][user]['targetxp'] - rank['data'][user]['currentxp']),
+                            inline=False)
             if count > rankLength - 1:
                 break
 
@@ -269,7 +284,9 @@ async def on_message(message):
                 if str(message.author.id) not in list(sueingUser.keys()):
                     sueingUser[str(message.author.id)] = message.author.roles
                 # ? 고소장 보내기(개인 메세지)
-                em = discord.Embed(title='고-소-장', description="<@"+message.author.id+">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!", color=0xf7cac9)
+                em = discord.Embed(title='고-소-장',
+                                   description="<@"+message.author.id+">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!",
+                                   color=0xf7cac9)
                 await client.send_message(id__, embed=em)
                 for i in gosomember.roles:
                     if i.name == '@everyone':
@@ -311,7 +328,9 @@ async def on_message(message):
             else:
                 # ? 미래에 머나먼 미래에 혹시 여러명을 고소하지는 않을까 하는 걱정으로 남겨둠
                 # id__ = await client.get_user_info(id_[0]) 시발쓰지 마세요 한국의 전통 문화 입니다 미래의 서울 오버-시어 C-8
-                # em = discord.Embed(title='고-소-장', description = "<@"+message.author.id+">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!", color=0xf7cac9)
+                # em = discord.Embed(title='고-소-장',
+                #                    description="<@"+message.author.id+">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!",
+                #                    color=0xf7cac9)
                 # await client.send_message(id__, embed = em)
                 _role = discord.utils.get(server.roles, name="COMPLAINTS")
                 await client.remove_roles(gosomember, _role)
@@ -349,7 +368,9 @@ async def on_message(message):
                     game_stat[message.author.id] = 0
                     everyone = discord.ChannelPermissions(target=server.default_role, overwrite=everyone_perms)
                     mine = discord.ChannelPermissions(target=message.author, overwrite=my_perms)
-                    game_channels[message.author.id] = await client.create_channel(server, message.author.name + '의 게임방', everyone, mine)
+                    game_channels[message.author.id] = await client.create_channel(server,
+                                                                                   message.author.name + '의 게임방',
+                                                                                   everyone, mine)
                     await client.send_message(message.channel, '방이 생성되었느니라!')
                 else:
                     await client.send_message(message.channel, '이미 생성되었느니라...')
@@ -372,7 +393,8 @@ async def on_message(message):
                     await client.send_message(free_chat, save.save(level, message.author.id, favper, choice, save_at_choice) + ' 및 ' + '종료에 성공 했느니라!')
 
             elif msg[1] == '저장':
-                await client.send_message(free_chat, save.save(level, message.author.id, favper, choice, save_at_choice))
+                await client.send_message(free_chat, save.save(level, message.author.id,
+                                                               favper, choice, save_at_choice))
 
             try:
                 if msg[1] == '시작' and message.channel == game_channels[message.author.id] and game_stat[message.author.id] == 0:
@@ -456,11 +478,12 @@ async def on_message(message):
                                     level += 1
                                     continue
 
-                        except discord.ClientException:
-                            await client.send_message(message.channel, '스토리가 종료되었느니라... 업데이트를 기대해 주거라!(따로 게임을 종료해 주셔야 합니다.)')
+                        except discord.DiscordException:
+                            await client.send_message(message.channel, '스토리가 종료되었느니라... ' +
+                                                      '업데이트를 기대해 주거라!(따로 게임을 종료해 주셔야 합니다.)')
                             break
 
-            except discord.ClientException:
+            except discord.DiscordException:
                 await client.send_message(message.channel, "이미 시작됬거나 생성된 채널에서 하지 않은것 같으니라...")
 
         else:
