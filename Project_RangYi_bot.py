@@ -15,6 +15,7 @@ from Modules.user import UserLevel
 from Modules.calendar import Calender
 from Modules.gamesave import Save
 from Modules.game_play import Game
+from Modules.setting import *
 
 # Variables
 client = discord.Client()
@@ -508,4 +509,4 @@ async def on_message(message):
     #     await client.send_message(message.channel, embed=embed)
 
 
-client.run('token')
+client.run(token)

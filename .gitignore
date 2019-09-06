@@ -73,3 +73,5 @@ Modules/__pycache__/*
 
 
 venv/
+
+Modules/setting.py
