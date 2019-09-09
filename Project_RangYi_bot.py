@@ -522,12 +522,21 @@ async def on_message(message):
 async def realtime():
     selectedTime = [27000, 45600, 67200]
     await asyncio.sleep(0.01)
-    dt = datetime.datetime.fromtimestamp(datetime.datetime.now().timestamp() % 86400,
-                                         datetime.timezone(datetime.timedelta(hours=9)))
-    print(dt)
+    recentTimeStamp = (datetime.datetime.now().timestamp() + 32400) % 86400
+    if recentTimeStamp < 27000 or recentTimeStamp > 67200:
+        nextTimeStamp = 27000
+    elif recentTimeStamp < 45600:
+        nextTimeStamp = 45600
+    else:
+        nextTimeStamp = 67200
+    timeToWait = nextTimeStamp - recentTimeStamp + 86400 if recentTimeStamp > nextTimeStamp else nextTimeStamp - recentTimeStamp
     while True:
-        break
-        # nextTimeStamp - currentTimeStamp + 86400
+        await asyncio.sleep(timeToWait)
+        embed = Hungry().hungry()
+        await client.send_message(client.get_channel('615768384554139699'), embed=embed)
+        recentTimeStamp = nextTimeStamp
+        nextTimeStamp = selectedTime[(selectedTime.index(nextTimeStamp) + 1) % 3]
+        timeToWait = nextTimeStamp - recentTimeStamp + 86400 if recentTimeStamp > nextTimeStamp else nextTimeStamp - recentTimeStamp
 
 
 client.run(token)
