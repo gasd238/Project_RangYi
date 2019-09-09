@@ -39,11 +39,12 @@ def check_queue(qid, channel):
     if queues[qid]:
         player = queues[qid].pop(0)
         del musiclist[0]
-        embed = discord.Embed(title="재생하겠느니라!!", description=player.title+"\n"+player.url)
+        embed = discord.Embed(title="재생하겠느니라!!", description=player.title + "\n" + player.url)
         say = client.send_message(client.get_channel(channel), embed=embed)
         asyncio.run_coroutine_threadsafe(say, client.loop)
         player.volume = 0.5
         player.start()
+
 
 # Discord Client
 @client.event
@@ -158,7 +159,7 @@ async def on_message(message):
                     players.append(player)
                 else:
                     players[0] = player
-                embed = discord.Embed(title="재생하겠느니라!!", description=player.title+"\n"+player.url)
+                embed = discord.Embed(title="재생하겠느니라!!", description=player.title + "\n" + player.url)
                 await client.send_message(message.channel, embed=embed)
             except Exception:
                 await client.send_message(message.channel, '유튜브 링크가 아니거나 재생할 수 없는 주소 이니라...')
@@ -179,7 +180,7 @@ async def on_message(message):
             else:
                 queues[server.id] = [player]
             await client.send_message(message.channel, '예약 완료 했느니라!')
-            musiclist.append(player.title+"\n"+url)
+            musiclist.append(player.title + "\n" + url)
         except discord.DiscordException:
             await client.send_message(message.channel, '음성방에 들어가있지 않으면 예약이 불가능하니라...')
 
@@ -190,13 +191,13 @@ async def on_message(message):
         # 큐 보기
         if check == '보기':
             for i in range(0, len(musiclist)):
-                resings = resings + str(i+1) + '번 예약곡' + '-' + ' ' + musiclist[i] + '\n\n'
+                resings = resings + str(i + 1) + '번 예약곡' + '-' + ' ' + musiclist[i] + '\n\n'
             embed = discord.Embed(title='대기중인 곡들이니라~', description=resings, color=0xf7cac9)
             await client.send_message(message.channel, embed=embed)
         # 큐에 있는 음악 삭제
         if check == '삭제':
-            del musiclist[int(msg1[2])-1]
-            del queues[server.id][int(msg1[2])-1]
+            del musiclist[int(msg1[2]) - 1]
+            del queues[server.id][int(msg1[2]) - 1]
             await client.send_message(message.channel, msg1[2] + '번 예약곡을 취소 했느니라!')
 
     # 서버 글 삭제
@@ -261,7 +262,8 @@ async def on_message(message):
                             value="{} 레벨\n현재 경험치: **{} XP**,"
                                   "다음 레벨까지 {} XP".format(rank['data'][user]['level'],
                                                          rank['data'][user]['currentxp'],
-                                                         rank['data'][user]['targetxp'] - rank['data'][user]['currentxp']),
+                                                         rank['data'][user]['targetxp'] - rank['data'][user][
+                                                             'currentxp']),
                             inline=False)
             if count > rankLength - 1:
                 break
@@ -292,7 +294,7 @@ async def on_message(message):
                     sueingUser[str(message.author.id)] = message.author.roles
                 # ? 고소장 보내기(개인 메세지)
                 em = discord.Embed(title='고-소-장',
-                                   description="<@"+message.author.id+">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!",
+                                   description="<@" + message.author.id + ">" + "님이 당신을 고소하였느니라!! 법정에서 해결하자꾸나!",
                                    color=0xf7cac9)
                 await client.send_message(id__, embed=em)
                 for i in gosomember.roles:
@@ -397,14 +399,16 @@ async def on_message(message):
                                 del game_channels[i]
                     except Exception:
                         pass
-                    await client.send_message(free_chat, save.save(level, message.author.id, favper, choice, save_at_choice) + ' 및 ' + '종료에 성공 했느니라!')
+                    await client.send_message(free_chat, save.save(level, message.author.id, favper, choice,
+                                                                   save_at_choice) + ' 및 ' + '종료에 성공 했느니라!')
 
             elif msg[1] == '저장':
                 await client.send_message(free_chat, save.save(level, message.author.id,
                                                                favper, choice, save_at_choice))
 
             try:
-                if msg[1] == '시작' and message.channel == game_channels[message.author.id] and game_stat[message.author.id] == 0:
+                if msg[1] == '시작' and message.channel == game_channels[message.author.id] and game_stat[
+                    message.author.id] == 0:
                     favper, level, choice, save_at_choice = save.load(message.author.id)
                     story = game.game_progress()
                     game_stat[message.author.id] = 1
@@ -413,7 +417,7 @@ async def on_message(message):
                             mchk = story[int(level)].strip('\n').split(' ')
                             if mchk[0] == '선택지':
                                 save_at_choice = 1
-                                for i in range(level+1, level+4):
+                                for i in range(level + 1, level + 4):
                                     string += story[i] + '\n'
                                 query = await client.send_message(message.channel, string)
                                 await client.add_reaction(query, "1⃣")
@@ -429,12 +433,12 @@ async def on_message(message):
                                     choice += 1
 
                                 elif response.reaction.emoji == "2⃣":
-                                    favper += int([level+1])
+                                    favper += int([level + 1])
                                     level += 4
                                     choice += 2
 
                                 elif response.reaction.emoji == "3⃣":
-                                    favper += int([level+2])
+                                    favper += int([level + 2])
                                     level += 5
                                     choice += 3
 
