@@ -31,6 +31,8 @@ level = 0
 favper = 0
 choice = 0
 
+loop = asyncio.get_event_loop()
+
 
 # Music --
 def check_queue(qid, channel):
@@ -51,6 +53,8 @@ async def on_ready():
     print(client.user.id)
     print('-----------------------')
     await client.change_presence(game=discord.Game(name="!설명으로 도움말", type=0))
+
+    loop.create_task(realtime())
 
 
 @client.event
@@ -516,6 +520,7 @@ async def realtime():
     await asyncio.sleep(0.01)
     dt = datetime.datetime.fromtimestamp(datetime.datetime.now().timestamp() % 86400,
                                          datetime.timezone(datetime.timedelta(hours=9)))
+    print(dt)
     while True:
         break
         # nextTimeStamp - currentTimeStamp + 86400
