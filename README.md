@@ -1,12 +1,7 @@
 # 디스코드 랑이 봇 #
 이 봇은 개인적으로 만들어질 목적이었으나 외국~~노동~~문화 동아리 디스코드 서버에서 만들게 되면서 대규모 프로젝트로 바뀌어 버린 봇입니다.
 ## Requirements ##
-
-1. **Python 3.6**
-
-2. **ffmpeg** 
-
-3. **chromedriver**
+이번에 따로 requirements.txt 로 정리 해두었습니다. pip install requirements로 실행해 다운받아주세요.
 
 ## 랑이봇 사용법 ##
 
