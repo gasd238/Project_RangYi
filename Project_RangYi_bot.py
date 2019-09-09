@@ -60,6 +60,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    global level, favper, choice
     # 숫자만 가려내기 위해
     noma = re.compile('[0-9]+')
     now = datetime.datetime.now()
@@ -68,7 +69,6 @@ async def on_message(message):
     title = ''
     server = message.server
     free_chat = client.get_channel('514392468402208768')
-    global level, favper, choice
     help = Help()
     save = Save()
     userlevel = UserLevel()
@@ -93,7 +93,7 @@ async def on_message(message):
         await client.send_message(message.channel, embed=createdEmbed)
 
     # 급식 파싱
-    if datetime.datetime.now().hour == 20 or datetime.datetime.now().hour == 8 or datetime.datetime.now().hour == 13:
+    if message.content == "!급식":
         embed = hungry.hungry()
         await client.send_message(client.get_channel('615768384554139699'), embed=embed)
 
