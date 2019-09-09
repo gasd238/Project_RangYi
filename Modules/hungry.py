@@ -18,7 +18,7 @@ class Hungry:
                     return i
             return len(time)
 
-        def get_nextDay(now):=]
+        def get_nextDay(now):
             nextMeal = get_nextMeal(now)
 
             try:
@@ -49,7 +49,7 @@ class Hungry:
                     tm = '아침'
                 elif 8 <= now.hour < 13:
                     meal=today[1].getText()
-                    tm ='점심'
+                    tm = '점심'
                 elif 13 <= now.hour < 19:
                     meal=today[2].getText()
                     tm = '저녁'
@@ -63,7 +63,7 @@ class Hungry:
                     del meal[i]
                 if meal[i].startswith('*'):
                     del meal[i:]
-            cmeal=[]
+            cmeal = []
             descriptions = ''
             for i in range(0, len(meal)-1):
                 meal[i]=meal[i].split('\xa0')
