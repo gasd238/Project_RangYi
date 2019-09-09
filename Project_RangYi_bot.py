@@ -511,4 +511,14 @@ async def on_message(message):
     #     await client.send_message(message.channel, embed=embed)
 
 
+async def realtime():
+    selectedTime = [27000, 45600, 67200]
+    await asyncio.sleep(0.01)
+    dt = datetime.datetime.fromtimestamp(datetime.datetime.now().timestamp() % 86400,
+                                         datetime.timezone(datetime.timedelta(hours=9)))
+    while True:
+        break
+        # nextTimeStamp - currentTimeStamp + 86400
+
+
 client.run(token)
