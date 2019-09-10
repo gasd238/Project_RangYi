@@ -45,32 +45,29 @@ class Hungry:
                 else:
                     today = temp[now.day - 1].find_all('div', class_="content_info")
                 if now.hour >= 19 or now.hour < 8:
-                    meal=today[0].getText()
-                    tm = '아침'
-                elif 8 <= now.hour < 13:
                     meal=today[1].getText()
                     tm = '점심'
-                elif 13 <= now.hour < 19:
+                elif 8 <= now.hour < 17:
                     meal=today[2].getText()
                     tm = '저녁'
+                elif 17 <= now.hour < 19:
+                    meal=today[4].getText()
+                    tm = '아침'
             except:
                 descriptions = '급식을 불러올 수 없음'
                 embed = discord.Embed(title="급식을 불러올 수 없느니라...", description=descriptions, colour=0xf7cac9)
                 return embed
             meal = meal.split('\n')
-            for i in range(0, len(meal)-1):
-                if re.compile('[0-9]+').match(meal[i]):
-                    del meal[i]
-                if meal[i].startswith('*'):
-                    del meal[i:]
             cmeal = []
             descriptions = ''
-            for i in range(0, len(meal)-1):
+            for i in range(0, len(meal)):
                 meal[i]=meal[i].split('\xa0')
                 meal[i][0] = meal[i][0].strip('/')
                 meal[i][0] = meal[i][0].strip('*')
                 meal[i][0] = meal[i][0].strip('..')
                 if meal[i][0] == '생일을' or meal[i][0] == '선생님':
+                    continue
+                if re.compile('[0-9]+').match(meal[i][0]):
                     continue
                 cmeal.append(meal[i][0])
             if len(cmeal) == 1:

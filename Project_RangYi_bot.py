@@ -140,7 +140,6 @@ async def on_message(message):
 
     # 음악 재생
     if message.content.startswith("!재생"):
-
         return
         if len(players) == 0 or players[0].is_playing() == 0:
             if client.voice_client_in(server) is None:
