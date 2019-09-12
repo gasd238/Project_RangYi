@@ -75,3 +75,6 @@ Modules/__pycache__/*
 venv/
 
 Modules/setting.py
+
+Data/userdata.json
+Data/game_save.json

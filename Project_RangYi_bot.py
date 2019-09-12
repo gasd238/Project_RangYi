@@ -93,9 +93,9 @@ async def on_message(message):
         await client.send_message(message.channel, embed=createdEmbed)
 
     # 급식 파싱
-    if message.content == "!급식":
-        embed = hungry.hungry()
-        await client.send_message(client.get_channel('615768384554139699'), embed=embed)
+    # if message.content == "!급식":
+    #     embed = hungry.hungry()
+    #     await client.send_message(client.get_channel('615768384554139699'), embed=embed)
 
     # 봇 분양 관련
     if message.content == '!분양':
