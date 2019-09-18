@@ -241,6 +241,8 @@ async def on_message(message):
                 await client.send_message(message.channel, userlevel.showLevel(id__))  # 유저 지정 처리
             except discord.DiscordException:
                 await client.send_message(message.channel, '그 사람은 조회가 불가능하니라...')
+            except TypeError:
+                await client.send_message(message.channel, '그 사람은 조회가 불가능하니라...')
         else:
             await client.send_message(message.channel, userlevel.showLevel(message.author))
 
