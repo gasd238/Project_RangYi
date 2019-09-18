@@ -31,18 +31,17 @@ class UserLevel:
         return isLevelup
 
     def showLevel(self, user, isLevelUp=False):
-        userid = user.id
-        with open('Data/userdata.json', 'r', encoding='utf-8') as userdata:
-            data = userdata.read()
-        data = json.loads(data)
+        result = collection.find_one({"userid": user.id})
         if isLevelUp:
-            strings = ":fireworks: **{}**가 **{} 레벨**이 되었느니라!!.\n다음 레벨까지 **{} XP** 남았느니라~~".format(user.name, data['users'][str(userid)]['level'],
-                                                                    data['users'][str(userid)]['targetxp'] -
-                                                                    data['users'][str(userid)]['currentxp'])
+            strings = ":fireworks: **{}**가 **{} 레벨**이 되었느니라!!.\n다음 레벨까지 **{} XP** 남았느니라~~".format(user.name,
+                                                                                                  result['level'],
+                                                                                                  self.LevelExpGetter(
+                                                                                                      result['level']) -
+                                                                                                  result['currentxp'])
         else:
-            strings = "**{}**는 **{} 레벨**이니라~\n다음 레벨까지 **{} XP** 남았느니라~~".format(user.name, data['users'][str(userid)]['level'],
-                                                                    data['users'][str(userid)]['targetxp'] -
-                                                                    data['users'][str(userid)]['currentxp'])
+            strings = "**{}**는 **{} 레벨**이니라~\n다음 레벨까지 **{} XP** 남았느니라~~".format(user.name, result['level'],
+                                                                                self.LevelExpGetter(result['level']) -
+                                                                                result['currentxp'])
         return strings
 
     def showRanking(self, server):
