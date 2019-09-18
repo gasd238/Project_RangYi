@@ -247,20 +247,20 @@ async def on_message(message):
     # 서버 레벨 랭킹
     if message.content == '!랭킹':
         rank = userlevel.showRanking(server)
-        if len(rank['data'].keys()) > 10:
+        if rank.count() > 10:
             rankLength = 10
         else:
-            rankLength = len(rank['data'].keys())
+            rankLength = rank.count()
         embed = discord.Embed(title='서버의 랭킹이니라!', description='10위까지 표시되느니라~')
         count = 0
-        for user in rank['data'].keys():
+        for doc in rank:
             count += 1
-            userobj = await client.get_user_info(user)
+            userobj = await client.get_user_info(doc['userid'])
             embed.add_field(name='**' + userobj.name + '**',
                             value="{} 레벨\n현재 경험치: **{} XP**,"
-                                  "다음 레벨까지 {} XP".format(rank['data'][user]['level'],
-                                                         rank['data'][user]['currentxp'],
-                                                         rank['data'][user]['targetxp'] - rank['data'][user][
+                                  "다음 레벨까지 {} XP".format(doc['level'],
+                                                         doc['currentxp'],
+                                                         userlevel.LevelExpGetter(doc['level']) - doc[
                                                              'currentxp']),
                             inline=False)
             if count > rankLength - 1:
