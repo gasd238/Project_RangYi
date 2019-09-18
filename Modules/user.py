@@ -1,5 +1,11 @@
+from pymongo import MongoClient
 import json
 import math
+
+from Modules.setting import *  # Import Settings
+
+client = MongoClient(database)
+db = client.rangyibot
 
 
 class UserLevel:

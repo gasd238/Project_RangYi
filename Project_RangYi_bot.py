@@ -15,7 +15,7 @@ from Modules.user import UserLevel
 from Modules.calendar import Calender
 from Modules.gamesave import Save
 from Modules.game_play import Game
-from Modules.setting import *
+from Modules.setting import token
 
 # Variables
 client = discord.Client()
