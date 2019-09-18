@@ -1,11 +1,12 @@
-from pymongo import MongoClient
+import pymongo
 import json
 import math
 
 from Modules.setting import *  # Import Settings
 
-client = MongoClient(database)
+client = pymongo.MongoClient(database)
 db = client.rangyibot
+collection = db.user
 
 
 class UserLevel:
