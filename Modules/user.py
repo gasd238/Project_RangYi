@@ -49,8 +49,9 @@ class UserLevel:
         output = collection.find({"userid": {"$in": members}}).sort('currentxp', pymongo.DESCENDING)
         return output
 
+    def LevelExpGetter(self, currentLevel):
+        currentLevel += 1
+        nextLevel = currentLevel ** 2
+        nextLevel //= math.log2(nextLevel) / 2
 
-def LevelExpGetter(currentLevel):
-    nextLevel = currentLevel ** 2
-    nextLevel //= math.log2(nextLevel) / 2
-    return int((currentLevel + 100) * math.sqrt(currentLevel))
+        return int((currentLevel + 100) * math.sqrt(currentLevel))
