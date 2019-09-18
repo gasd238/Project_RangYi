@@ -46,16 +46,7 @@ class UserLevel:
 
     def showRanking(self, server):
         members = [str(x.id) for x in list(server.members)]
-        with open('Data/userdata.json', 'r', encoding='utf-8') as userdata:
-            data = json.loads(userdata.read())
-        sortedLevels = sorted(data['users'], key=lambda user: (data['users'][str(user)]['currentxp']), reverse=True)
-        output = {
-            'data': {}
-        }
-        for i in sortedLevels:
-            if i not in members:
-                continue
-            output['data'][i] = data['users'][i]
+        output = collection.find({"userid": {"$in": members}}).sort('currentxp', pymongo.DESCENDING)
         return output
 
 
