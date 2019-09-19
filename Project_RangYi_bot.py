@@ -256,7 +256,7 @@ async def on_message(message):
         if rankLength == 0:
             embed = discord.Embed(title='서버의 랭킹이니라!', description='표시할 사람이 없습니다.')
         else:
-            embed = discord.Embed(title='서버의 랭킹이니라!', description='{}}위까지 표시되느니라~'.format(rankLength))
+            embed = discord.Embed(title='서버의 랭킹이니라!', description='{}위까지 표시되느니라~'.format(rankLength))
         count = 0
         for doc in rank:
             count += 1
