@@ -64,7 +64,6 @@ async def on_message(message):
     # 숫자만 가려내기 위해
     noma = re.compile('[0-9]+')
     now = datetime.datetime.now()
-    descriptions = ''
     resings = ''
     title = ''
     server = message.server
@@ -402,8 +401,7 @@ async def on_message(message):
                                 del game_channels[i]
                     except Exception:
                         pass
-                    await client.send_message(free_chat, save.save(level, message.author.id, favper, choice,
-                                                                   save_at_choice) + ' 및 ' + '종료에 성공 했느니라!')
+                    await client.send_message(free_chat, save.save(level, message.author.id, favper, choice, save_at_choice) + ' 및 ' + '종료에 성공 했느니라!')
 
             elif msg[1] == '저장':
                 await client.send_message(free_chat, save.save(level, message.author.id,
@@ -535,7 +533,7 @@ async def realtime():
     timeToWait = nextTimeStamp - recentTimeStamp + 86400 if recentTimeStamp > nextTimeStamp else nextTimeStamp - recentTimeStamp
     while True:
         await asyncio.sleep(timeToWait)
-        embed = Hungry().hungry()
+        embed = hungry.hungry()
         await client.send_message(client.get_channel('615768384554139699'), embed=embed)
         recentTimeStamp = nextTimeStamp
         nextTimeStamp = selectedTime[(selectedTime.index(nextTimeStamp) + 1) % 3]

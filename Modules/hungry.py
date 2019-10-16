@@ -31,8 +31,7 @@ class Hungry:
 
             return now
         soup = BeautifulSoup(
-            requests.get("http://www.gsm.hs.kr/xboard/board.php?tbnum=8&sYear=%s&sMonth=%s"
-                         % (now.year, now.month)).text, 'lxml')
+        requests.get("http://www.gsm.hs.kr/xboard/board.php?tbnum=8&sYear=%s&sMonth=%s"% (now.year, now.month)).text, 'lxml')
         temp = soup.find_all('div', class_="food_list_box")
         if now.weekday() == 4 and now.hour >= 13 or now.weekday() == 5 or now.weekday() == 6 and now.hour < 19:
             descriptions = '급식이 없느니라...'
