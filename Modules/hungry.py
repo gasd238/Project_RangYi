@@ -43,13 +43,13 @@ class Hungry:
                     now = now.replace(day=today.day + 1)
                 else:
                     today = temp[now.day - 1].find_all('div', class_="content_info")
-                if now.hour >= 19 or now.hour < 8:
+                if now.hour >= 8 and now.hour < 13:
                     meal=today[1].getText()
                     tm = '점심'
-                elif 8 <= now.hour < 17:
+                elif now.hour >13 and now.hour < 19:
                     meal=today[2].getText()
                     tm = '저녁'
-                elif 17 <= now.hour < 19:
+                elif 19 <= now.hour and now.hour < 8:
                     meal=today[4].getText()
                     tm = '아침'
             except:
