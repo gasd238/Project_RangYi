@@ -26,6 +26,7 @@ class UserLevel:
 
         while result['currentxp'] > targetExp:
             result['level'] += 1
+            targetExp = self.LevelExpGetter(result['level'])
             isLevelup = True
         collection.update_one({"userid": userid}, {"$set": result})
         return isLevelup
