@@ -21,7 +21,7 @@ class UserLevel:
                 "currentxp": 0
             }
             collection.insert_one(result)
-        result['currentxp'] += len(message) // 4 + 1
+        result['currentxp'] += len(message) // 4 + 1    
         targetExp = self.LevelExpGetter(result['level'])
 
         while result['currentxp'] > targetExp:

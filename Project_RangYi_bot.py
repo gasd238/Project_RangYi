@@ -9,7 +9,6 @@ from Modules.hungry import Hungry
 from Modules.morning import Morning
 from Modules.help import Help
 from Modules.Annseq import Annseq
-# from selenium import webdriver
 from Modules.search import Search
 from Modules.user import UserLevel
 from Modules.calendar import Calender
@@ -78,7 +77,9 @@ async def on_message(message):
     cal = Calender()
     save = Save()
     game = Game()
-    # Bot이 하는 말은 반응하지 않음
+    # Bot이 하는 말은 반응하지 않음  
+    
+
     if message.author.bot:
         return None
 
@@ -221,9 +222,10 @@ async def on_message(message):
         await client.send_message(message.channel, embed=embed)
 
     # 유튜브 검색
-    # if message.content.startswith('!검색'):
-    #     msg1 = message.content.split(' ')
-    #     await client.send_message(message.channel, embed=search.get_video_link(msg1[1:]))
+    if message.content.startswith('!검색'):
+        await client.send_message(message.channel, "업데이트 중 이니라.....")
+        # msg1 = message.content.split(' ')
+        # await client.send_message(message.channel, embed=search.get_video_link(msg1[1:]))
 
     # 사진 검색
     if message.content.startswith('!사진'):
