@@ -55,6 +55,7 @@ class Hungry:
                     if cmeal[i] == '':
                         continue
                     descriptions = descriptions+'- '+cmeal[i]+'\n'
+
                 embed = discord.Embed(title="%s년 %s월 %s일 %s의 %s 식단표이니라~~" % (now.year, now.month, now.day, weekend_string[int(now.weekday())], tm), description=descriptions, colour=0xf7cac9)
                 return embed
         

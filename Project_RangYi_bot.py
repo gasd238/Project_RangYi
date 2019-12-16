@@ -84,8 +84,8 @@ async def on_message(message):
         return None
 
     # 경험치 상승 처리
-    if userlevel.levelIncrease(message.author, message.content):
-        await client.send_message(free_chat, userlevel.showLevel(message.author, True))
+            # if userlevel.levelIncrease(message.author, message.content):
+            #     await client.send_message(free_chat, userlevel.showLevel(message.author, True))
 
     # 봇 설명
     if message.content == "!설명":
