@@ -6,7 +6,7 @@
 ## 랑이봇 사용법 ##
 
 1. 위 requirement 에 있는 것들을 다운 받기
- - 파이썬 라이브러리들은 `pip install -r requirements.txt` 명령을 통해 설치 가능
+ - 파이썬 라이브러리들은 `pip install -r requirements.txt` 명령을 통해 설치 가능합니다.
  - 2번은 환경 변수 설정 해야 사용 가능 방법은 [여기](http://blog.naver.com/PostView.nhn?blogId=chandong83&logNo=221165275268&parentCategoryNo=&categoryNo=112&viewDate=&isShowPopularPosts=false&from=postView)
  - 3번은 함께 올려 놓았음으로 설치된 위치만 알아두시면 됩니다.(search.py 파일에 있는 크롬드라이버 위치를 당신 컴퓨터 기준에 맞게 바꾸시면 됩니다.)
  - 1번은 3.6 이하 버전을 사용을 권장 합니다.(3.7이상 버전에서 사용이 안되는것으로 확인됨)
