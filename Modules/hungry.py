@@ -13,7 +13,7 @@ class Hungry:
         cmeal = []
         descriptions = ''
         now = datetime.datetime.now()
-        soup = BeautifulSoup(requests.get("http://www.gsm.gen.hs.kr/xboard/board.php?tbnum=8&sYear=%s&sMonth=%s" % (now.year, now.month)).text, 'lxml')
+        soup = BeautifulSoup(requests.get("http://gsm.gen.hs.kr/xboard/board.php?tbnum=8&sYear=%s&sMonth=%s" % (now.year, now.month)).text, 'lxml')
         temp = soup.find_all('div', class_="food_list_box")
         if now.weekday() == 4 and now.hour > 13 or now.weekday() == 5 or now.weekday() == 6 and now.hour < 19:
             embed = discord.Embed(title="급식이 없음...", description='급식이 없느니라...', colour=0xf7cac9)

@@ -7,7 +7,7 @@ class Calender:
     def get_calendar(self):
         today = datetime.datetime.now()
 
-        req = requests.get("http://www.gsm.gen.hs.kr/xboard/board.php?tbnum=4")
+        req = requests.get("http://gsm.gen.hs.kr/xboard/board.php?tbnum=4")
         soup = BeautifulSoup(req.text, 'lxml')
 
         try:
