@@ -225,11 +225,11 @@ async def on_message(message):
         msg = message.content.split(' ')
         try:
             if int(msg[1]) < 100:
-                await client.delete_message(message)
-                await client.purge_from(limit=int(msg[1]))
+                await message.delete()
+                await message.channel.purge(limit=int(msg[1]))
             else:
-                await client.delete_message(message)
-                await channel.send('100개 이상 또는 14일이 지난 메세지는 삭제할 수 없느니라....')
+                await message.delete()
+                await channel.send('100개 이상 메세지는 삭제할 수 없느니라....')
         except discord.DiscordException:
             return
 
