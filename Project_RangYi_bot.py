@@ -245,9 +245,8 @@ async def on_message(message):
 
     # 유튜브 검색
     if message.content.startswith('!검색'):
-        await channel.send("업데이트 중 이니라.....")
-        # msg1 = message.content.split(' ')
-        # await channel.send(embed=search.get_video_link(msg1[1:]))
+        msg1 = message.content.split(' ')
+        await channel.send(embed=search.search_youtube(msg1[1:]))
 
     # 사진 검색
     if message.content.startswith('!사진'):

@@ -43,6 +43,7 @@ class Hungry:
                 meal[i][0] = meal[i][0].strip('/')
                 meal[i][0] = meal[i][0].strip('*')
                 meal[i][0] = meal[i][0].strip('..')
+                meal[i][0] = meal[i][0].replace('*', '')
                 if meal[i][0] == '생일을' or meal[i][0] == '선생님':
                     continue
                 if re.compile('[0-9]+').match(meal[i][0]):

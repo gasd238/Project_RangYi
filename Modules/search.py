@@ -1,15 +1,22 @@
 import bs4
 import lxml
-#from selenium import webdriver
 import discord
 from urllib.request import urlopen, Request
 import urllib
 import random
-
+from youtube_search import YoutubeSearch
 
 class Search:
-    def get_video_link(self, titleli):
-        return
+    def search_youtube(self, titleli):
+        title=''
+        for i in titleli:
+            title = title+i
+        results = YoutubeSearch(title, max_results=10).to_dict()
+        embed = discord.Embed(title = "검색 결과", description = "목록", colour=0xF7CAC9)
+        for i in range(len(results)):
+            embed.add_field(name=str(i+1)+". " + results[i-1]['title'], inline=False)
+            # value='https://www.youtube.com'+results[i-1]['link']
+        return embed
 
     def search_image(self, titleli):
         title = ''
