@@ -125,100 +125,99 @@ async def on_message(message):
                 embed = discord.Embed(title="세희야! 내일 날씨 알려 주거라!", description='아침운동 해야 할 것 같으니라...', color=0xf7cac9)
                 await channel.send(embed=embed)
 
-    # 음악 종료
-    if message.content == '!종료':
-        try:
-            for key in queues:
-                if key == guild.id:
-                    del queues[guild.id]
-        except RuntimeError:
-            for key in queues:
-                if key == guild.id:
-                    del queues[guild.id]
-        if musiclist:
-            musiclist.clear()
-        try:
-            voice_client = client.voice_client_in(guild)
-            await voice_client.disconnect()
-            await channel.send('종료했느니라!!')
-        except discord.DiscordException:
-            return
+    # # 음악 종료
+    # if message.content == '!종료':
+    #     try:
+    #         for key in queues:
+    #             if key == guild.id:
+    #                 del queues[guild.id]
+    #     except RuntimeError:
+    #         for key in queues:
+    #             if key == guild.id:
+    #                 del queues[guild.id]
+    #     if musiclist:
+    #         musiclist.clear()
+    #     try:
+    #         voice_client = client.voice_client_in(guild)
+    #         await voice_client.disconnect()
+    #         await channel.send('종료했느니라!!')
+    #     except discord.DiscordException:
+    #         return
 
-    # 음악 재생
-    if message.content.startswith("!재생"):
-        voicemember = message.author.voice.channel.members
-        for i in range(len(voicemember)):
-            voicemember[i] = voicemember[i].name
-        if message.author.name not in voicemember:
-            await channel.send('음성방에 들어와야 사용이 가능하니라')
-        try:
-            voice = await message.author.voice.channel.connect()
-        except:
-            for i in client.voice_clients:
-                if i.channel == message.author.voice.channel:
-                    voice = i
-        msg1 = message.content.split(' ')
-        url = msg1[1]
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }],
-        }
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url)
-            ydl.download([url])
-        voice.play(discord.FFmpegPCMAudio('./' + info["title"] + '.mp3'), after=lambda: check_queue(guild.id, message.channel, info))
-        voice.volume = 100
-        embed = discord.Embed(title="재생하겠느니라!!", description=info['title'] + "\n" + url)
-        await channel.send(embed=embed)
+    # # 음악 재생
+    # if message.content.startswith("!재생"):
+    #     voicemember = message.author.voice.channel.members
+    #     for i in range(len(voicemember)):
+    #         voicemember[i] = voicemember[i].name
+    #     if message.author.name not in voicemember:
+    #         await channel.send('음성방에 들어와야 사용이 가능하니라')
+    #     try:
+    #         voice = await message.author.voice.channel.connect()
+    #     except:
+    #         for i in client.voice_clients:
+    #             if i.channel == message.author.voice.channel:
+    #                 voice = i
+    #     msg1 = message.content.split(' ')
+    #     url = msg1[1]
+    #     ydl_opts = {
+    #         'format': 'bestaudio/best',
+    #         'postprocessors': [{
+    #             'key': 'FFmpegExtractAudio',
+    #             'preferredcodec': 'mp3',
+    #             'preferredquality': '192',
+    #         }],
+    #     }
+    #     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    #         info = ydl.extract_info(url)
+    #         ydl.download([url])
+    #     voice.play(discord.FFmpegPCMAudio('./' + info["title"] + '.mp3'), after=lambda: check_queue(guild.id, message.channel, info))
+    #     voice.volume = 100
+    #     embed = discord.Embed(title="재생하겠느니라!!", description=info['title'] + "\n" + url)
+    #     await channel.send(embed=embed)
 
-    # 음악 예약
-    if message.content.startswith('!예약'):
-        msg1 = message.content.split(' ')
-        url = msg1[1]
-        song_there = os.path.isfile("reservsong.mp3")
-        if song_there:
-            os.remove("reservsong.mp3")
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }],
-        }
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url)
-            ydl.download([url])
-        for file in os.listdir("./"):
-            if file.endswith(".mp3"):
-                os.rename(file, info['title'] + '.mp3')
-                player = discord.FFmpegPCMAudio(info['title'] + '.mp3')
-            if guild.id in queues:
-                queues[guild.id].append(player)
-            else:
-                queues[guild.id] = [player]
-            await channel.send('예약 완료 했느니라!')
-            musiclist.append(info['title'] + "\n" + url)
+    # # 음악 예약
+    # if message.content.startswith('!예약'):
+    #     msg1 = message.content.split(' ')
+    #     url = msg1[1]
+    #     song_there = os.path.isfile("reservsong.mp3")
+    #     if song_there:
+    #         os.remove("reservsong.mp3")
+    #     ydl_opts = {
+    #         'format': 'bestaudio/best',
+    #         'postprocessors': [{
+    #             'key': 'FFmpegExtractAudio',
+    #             'preferredcodec': 'mp3',
+    #             'preferredquality': '192',
+    #         }],
+    #     }
+    #     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    #         ydl.download([url])
+    #     for file in os.listdir("./"):
+    #         if file.endswith(".mp3"):
+    #             os.rename(file, info['title'] + '.mp3')
+    #             player = discord.FFmpegPCMAudio(info['title'] + '.mp3')
+    #         if guild.id in queues:
+    #             queues[guild.id].append(player)
+    #         else:
+    #             queues[guild.id] = [player]
+    #         await channel.send('예약 완료 했느니라!')
+    #         musiclist.append(info['title'] + "\n" + url)
 
-    # 음악 큐
-    if message.content.startswith('!큐'):
-        msg1 = message.content.split(" ")
-        check = msg1[1]
-        # 큐 보기
-        if check == '보기':
-            for i in range(0, len(musiclist)):
-                resings = resings + str(i + 1) + '번 예약곡' + '-' + ' ' + musiclist[i] + '\n\n'
-            embed = discord.Embed(title='대기중인 곡들이니라~', description=resings, color=0xf7cac9)
-            await channel.send(embed=embed)
-        # 큐에 있는 음악 삭제
-        if check == '삭제':
-            del musiclist[int(msg1[2]) - 1]
-            del queues[guild.id][int(msg1[2]) - 1]
-            await channel.send(msg1[2] + '번 예약곡을 취소 했느니라!')
+    # # 음악 큐
+    # if message.content.startswith('!큐'):
+    #     msg1 = message.content.split(" ")
+    #     check = msg1[1]
+    #     # 큐 보기
+    #     if check == '보기':
+    #         for i in range(0, len(musiclist)):
+    #             resings = resings + str(i + 1) + '번 예약곡' + '-' + ' ' + musiclist[i] + '\n\n'
+    #         embed = discord.Embed(title='대기중인 곡들이니라~', description=resings, color=0xf7cac9)
+    #         await channel.send(embed=embed)
+    #     # 큐에 있는 음악 삭제
+    #     if check == '삭제':
+    #         del musiclist[int(msg1[2]) - 1]
+    #         del queues[guild.id][int(msg1[2]) - 1]
+    #         await channel.send(msg1[2] + '번 예약곡을 취소 했느니라!')
 
     # 서버 글 삭제
     if message.content.startswith('!삭제'):
