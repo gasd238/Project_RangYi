@@ -36,4 +36,6 @@ class Search:
             embed.set_image(url=imgsrc)
         except ValueError:
             embed.add_field(name="검색된 사진이 없음...", value="사진이 없느니라...")
+        except:
+            embed.add_field(name="오류", value="검색할 수 없음")
         return embed
