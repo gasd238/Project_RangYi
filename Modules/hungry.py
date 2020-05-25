@@ -20,25 +20,25 @@ class Hungry:
             return embed
         else:
             try:
-                if now.hour >= 19:
+                if now.hour >= 19 and now.hour <= 24:
                     today = temp[now.day].find_all('div', class_="content_info")
-                    now = now.replace(day=today.day + 1)
                 else:
                     today = temp[now.day - 1].find_all('div', class_="content_info")
-                if now.hour >= 7 and now.hour < 13:
+                if now.hour >= 8 and now.hour < 13:
                     meal=today[1].getText()
                     tm = '점심'
                 elif now.hour >= 13 and now.hour < 18:
                     meal=today[2].getText()
                     tm = '저녁'
-                elif 18 <= now.hour and now.hour < 7:
-                    meal=today[4].getText()
+                else:
+                    meal=today[0].getText()
                     tm = '아침'
             except:
                 embed = discord.Embed(title="급식을 불러올 수 없느니라...", description='급식을 불러올 수 없음', colour=0xf7cac9)
                 return embed
             meal = meal.split('\n')
             for i in range(0, len(meal)):
+                meal[i] = re.sub(r'\([^)]*\)', '', meal[i])
                 meal[i]=meal[i].split('\xa0')
                 meal[i][0] = meal[i][0].strip('/')
                 meal[i][0] = meal[i][0].strip('*')
