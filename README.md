@@ -1,14 +1,18 @@
 # 디스코드 랑이 봇 #
 이 봇은 개인적으로 만들어질 목적이었으나 외국~~노동~~문화 동아리 디스코드 서버에서 만들게 되면서 대규모 프로젝트로 바뀌어 버린 봇입니다.
+
+## Contact
+문제 생기거나 궁금한점이 있을시 discord bluerain#5446 또는 gasd238@naver.com 으로 메일 주시면 빠르게 답해드리겠습니다.
+
 ## Requirements ##
+
 이번에 따로 requirements.txt 로 정리 해두었습니다. pip install -r requirements.txt로 실행해 다운받아주세요.
 
 ## 랑이봇 사용법 ##
 
 1. 위 requirement 에 있는 것들을 다운 받기
  - 파이썬 라이브러리들은 `pip install -r requirements.txt` 명령을 통해 설치 가능합니다.
- - 2번은 환경 변수 설정 해야 사용 가능 방법은 [여기](http://blog.naver.com/PostView.nhn?blogId=chandong83&logNo=221165275268&parentCategoryNo=&categoryNo=112&viewDate=&isShowPopularPosts=false&from=postView)
- - 3번은 함께 올려 놓았음으로 설치된 위치만 알아두시면 됩니다.(search.py 파일에 있는 크롬드라이버 위치를 당신 컴퓨터 기준에 맞게 바꾸시면 됩니다.)
+ ~~- 2번은 환경 변수 설정 해야 사용 가능 방법은 [여기](http://blog.naver.com/PostView.nhn?blogId=chandong83&logNo=221165275268&parentCategoryNo=&categoryNo=112&viewDate=&isShowPopularPosts=false&from=postView)~~ 음악 기능은 수정 혹은 다른 봇으로 따로 제작  
  - 1번은 3.6 이하 버전을 사용을 권장 합니다.(3.7이상 버전에서 사용이 안되는것으로 확인됨)
 
 2. 봇 토큰 설정
@@ -39,11 +43,11 @@
 
 **2. 아침운동 기능**
 
-명문 고등학교 GSM에서 실시하는 기숙사 아침운동이 다음날 할지 안할지를 알려줍니다.
+명문 고등학교 GSM에서 실시하는 기숙사 아침운동이 다음날 할지 안할지를 알려줍니다. (다음날 날씨 및 미세먼지 정보를 크롤링으로 불러와 확인)
 
-**3. 노래 틀기**
+~~**3. 노래 틀기**~~
 
-디스코드 음성방에 노래를 틀어준다 (예약기능이 있어 편안)
+~~디스코드 음성방에 노래를 틀어준다 (예약기능이 있어 편안)~~
 
 **4. 유튜브 검색**
 
@@ -77,4 +81,4 @@
 
 **11. 레벨 관련 기능**
 
-우리가 디코로 대화 하면 그 양에 따라 레벨이 오르는 기능 레벨과 관련 기능은 [startergate](https://github.com/startergate)님의 도움으로 제작되었습니다.
+우리가 디코로 대화 하면 그 양에 따라 레벨이 오르는 기능 레벨과 관련 기능은 [startergate](https://github.com/startergate)님의 도움으로 제작되었습니다. (setting.py 에 mongodb 주소를 넣어야합니다.)
