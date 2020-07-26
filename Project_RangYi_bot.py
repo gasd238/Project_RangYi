@@ -278,7 +278,7 @@ async def on_message(message):
                 await channel.send(embed = embed1)
                 await channel.send(embed = embed2)
             except:
-                await channel.send('팀명이 잘못 된듯 합니다.')
+                await channel.send('팀명이 잘못됬거나 경기중이 아닙니다.')
 
     # 서버 레벨 랭킹
     if message.content == '!랭킹':
