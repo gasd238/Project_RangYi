@@ -59,7 +59,7 @@ async def on_ready():
     game = discord.Game("!설명으로 도움말")
     await client.change_presence(status=discord.Status.online, activity=game)
 
-    loop.create_task(realtime())
+    #loop.create_task(realtime())
 
 
 @client.event
@@ -437,6 +437,5 @@ async def realtime():
         recentTimeStamp = nextTimeStamp
         nextTimeStamp = selectedTime[(selectedTime.index(nextTimeStamp) + 1) % 3]
         timeToWait = nextTimeStamp - recentTimeStamp + 86400 if recentTimeStamp > nextTimeStamp else nextTimeStamp - recentTimeStamp
-
 
 client.run(token)
