@@ -20,6 +20,7 @@ class Help:
         embed.add_field(name='!취하 [할 사람 언급]', value='고소를 잘못했거나 끝났을 때 쓰는 기능이니라!', inline=False)
         embed.add_field(name='!일정', value='그 달에 있는 학교 일정을 불러오는 기능이니라!', inline=False)
         embed.add_field(name='!랭킹', value='레벨 1위부터 10위까지 출력하는 기능이니라~', inline=False)
+        embed.add_field(name='!야구 [팀명]', value='야구 경기중에만 사용 가능한 기능으로 야구 경기 점수를 보여줍니다.', inline=False)
         embed.set_author(name="랑이", icon_url="https://postfiles.pstatic.net/MjAxOTA0MDFfMjIg/MDAxNTU0MDc1MzgxODEz.GprXtmnHfiMPpay2riQUAJQZTtLghpxjXyxFUV2hj0og.oair81q3mrLQqZcqegADwVMNOyYCoNTd429vxqgXlwkg.JPEG.gasd238/help.jpg?type=w580")
         embed.set_image(url="https://postfiles.pstatic.net/MjAxOTA0MDFfMjIg/MDAxNTU0MDc1MzgxODEz.GprXtmnHfiMPpay2riQUAJQZTtLghpxjXyxFUV2hj0og.oair81q3mrLQqZcqegADwVMNOyYCoNTd429vxqgXlwkg.JPEG.gasd238/help.jpg?type=w580")
         return embed

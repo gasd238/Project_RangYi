@@ -12,10 +12,11 @@ from Modules.help import Help
 from Modules.Annseq import Annseq
 from Modules.search import Search
 from Modules.user import UserLevel
-from Modules.calendar import Calender
+from Modules.schoolcalendar import Calender
 from Modules.gamesave import Save
 from Modules.game_play import Game
 from Modules.setting import token
+from Modules.baseball import Baseball
 
 # Variables
 client = discord.Client()
@@ -82,6 +83,7 @@ async def on_message(message):
     cal = Calender()
     save = Save()
     game = Game()
+    baseball = Baseball()
     player=0
     # Bot이 하는 말은 반응하지 않음  
     
@@ -266,6 +268,17 @@ async def on_message(message):
                 await channel.send('그 사람은 조회가 불가능하니라...')
         else:
             await channel.send(userlevel.showLevel(message.author))
+
+    if message.content.startswith("!야구"):
+        msg1 = message.content.split(' ')
+        if len(msg1) > 1:
+            try:
+                inning, embed1, embed2 = baseball.showBaseballScore(msg1[1])
+                await channel.send(str(inning))
+                await channel.send(embed = embed1)
+                await channel.send(embed = embed2)
+            except:
+                await channel.send('팀명이 잘못 된듯 합니다.')
 
     # 서버 레벨 랭킹
     if message.content == '!랭킹':
