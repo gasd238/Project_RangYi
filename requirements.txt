@@ -1,7 +1,0 @@
-beautifulsoup4
-discord
-requests
-lxml
-pynacl
-youtube-dl==2020.3.24
-youtube-search==0.1.3
