@@ -9,7 +9,7 @@ class Baseball:
         elif teamName == "케이티" or teamName=="크트":
             teamName = "KT"
         elif teamName == "에스케이" or teamName == "슼":
-            teamName == "SK"
+            teamName = "SK"
         elif teamName == "엔시" or teamName == "엔씨":
             teamName = "NC"
         elif teamName == "엘쥐" or teamName == "엘지" or teamName == "쥐":
