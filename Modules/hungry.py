@@ -46,6 +46,7 @@ class Hungry:
                 meal[i] = meal[i].strip('..')
                 meal[i] = meal[i].split('(')[0]
                 meal[i] = meal[i].replace('*', '')
+                meal[i] = meal[i].replace("\xa0", "")
                 if meal[i].startswith('에너지'):
                     continue
                 if meal[i] == '' or meal[i]=='\r':
