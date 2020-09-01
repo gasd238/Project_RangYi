@@ -4,6 +4,17 @@ import discord
 
 class Baseball:
     def showBaseballScore(self, teamName):
+        if teamName == "기아" or teamName == "갸":
+            teamName = "KIA"
+        elif teamName == "케이티" or teamName=="크트":
+            teamName = "KT"
+        elif teamName == "에스케이" or teamName == "슼":
+            teamName == "SK"
+        elif teamName == "엔시" or teamName == "엔씨":
+            teamName = "NC"
+        elif teamName == "엘쥐" or teamName == "엘지" or teamName == "쥐":
+            teamName = "LG"
+
         soup = BeautifulSoup(requests.get("https://sports.news.naver.com/kbaseball/index.nhn").text, 'lxml')
         home = soup.find_all('li', class_="hmb_list_items")
         try:
