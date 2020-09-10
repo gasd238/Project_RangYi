@@ -17,6 +17,8 @@ from Modules.gamesave import Save
 from Modules.game_play import Game
 from Modules.setting import token
 from Modules.baseball import Baseball
+from Modules.yacht import *
+import threading
 
 # Variables
 client = discord.Client()
@@ -86,14 +88,13 @@ async def on_message(message):
     baseball = Baseball()
     player=0
     # Bot이 하는 말은 반응하지 않음  
-    
 
     if message.author.bot:
         return None
 
     # 경험치 상승 처리
             # if userlevel.levelIncrease(message.author, message.content):
-            #     await channel.send(free_chat, userlevel.showLevel(message.author, True))
+            # await channel.send(free_chat, userlevel.showLevel(message.author, True))
 
     # 봇 설명
     if message.content == "!설명":
@@ -126,7 +127,25 @@ async def on_message(message):
             else:
                 embed = discord.Embed(title="세희야! 내일 날씨 알려 주거라!", description='아침운동 해야 할 것 같으니라...', color=0xf7cac9)
                 await channel.send(embed=embed)
-
+    
+    if message.content.startswith("!야추"):
+        a = []
+        a.append(message.author.name)
+        msg = message.content.split(' ')
+        if len(msg) > 1:
+            if msg[1] == "도움말":
+                embed = discord.Embed(title="야추 도움말", color=0xf7cac9)
+                embed.add_field(name="!야추 [플레이어 언급]", value='언급을 통해 친구와 2명이서 또는 !야추 입력으로 혼자하기 모드 가능', inline=False)
+                embed.add_field(name="규칙", value="51 Worldwide Games에 수록된 Yacht dice 의 규칙을 따릅니다.", inline=False)
+                embed.add_field(name=i, value=plus_all(dicelist), inline=False)
+            try:
+                id_ = re.findall(noma, msg[1])
+                id_ = await client.fetch_user(id_[0])
+                a.append(id_.name)
+            except:
+                await channel.send('없는 유저 이거나 고를 수 없는 유저입니다. 다시 해주세요.')
+                return
+        await yacht(message.guild, message.channel, a)
     # # 음악 종료
     # if message.content == '!종료':
     #     try:
@@ -437,5 +456,135 @@ async def realtime():
         recentTimeStamp = nextTimeStamp
         nextTimeStamp = selectedTime[(selectedTime.index(nextTimeStamp) + 1) % 3]
         timeToWait = nextTimeStamp - recentTimeStamp + 86400 if recentTimeStamp > nextTimeStamp else nextTimeStamp - recentTimeStamp
+
+def rename(old_dict,old_name,new_name):
+    new_dict = {}
+    for key,value in zip(old_dict.keys(),old_dict.values()):
+        new_key = key if key != old_name else new_name
+        new_dict[new_key] = old_dict[key]
+    return new_dict
+
+async def yacht(guild, channel, user):
+    emoji = {'ace':"1️⃣", 'Deuces':'2️⃣', 'Threes':'3️⃣', 'Fours':'4️⃣', 'Fives':'5️⃣', 'Sixes':'6️⃣', 'Choice':'✅', '4 of a Kind':'💳', 'Full House':'🏠', 'Small Straight':'▶', 'Large Straight':'⏩', 'Yacht':'🎰'}
+    users = {}
+    users, user_dice, index = game_start(users, user)
+    while True:
+        for u in range(len(user)):
+            def check(m):
+                return m.channel == channel and m.author.name == user[u]
+            user_dice[index] = {1: 1, 2:1, 3: 1, 4: 1, 5: 1}
+            for turn in range(3):
+                await channel.send(user[u]+"차례")
+                dice = ''
+                dicelist = roll_dice(user_dice[index])
+                board = dice_check(dicelist)
+                for j in dicelist.keys():
+                    if type(j) == str:
+                        dice += '['+str(dicelist[j])+']' + ' '
+                    else:
+                        dice += str(dicelist[j])+' '
+                await channel.send(dice)
+                await channel.send('고정시킬 칸의 번호를 , 로 나눠서 입력해 주세요. 고정시킬게 없으면 0을 보내주시고 점수를 고르실려면 결정을 보내세요 예)1,3,4 or 1,2 or 3')
+                while True:
+                    team = await client.wait_for('message', check=check)
+                    if team.content == "결정" or turn == 3:
+                        score_list = []
+                        embed = discord.Embed(title="점수 목록", color=0xf7cac9)
+                        for i in board.keys():
+                            if board[i] == True and users[index][u][0][i] != True:
+                                if i == 'Choice' or i == '4 of a Kind' or i == 'Full House':
+                                    score_list.append(i)
+                                    embed.add_field(name=i, value=plus_all(dicelist), inline=False)
+                                elif i == 'Small Straight':
+                                    score_list.append(i)
+                                    embed.add_field(name=i, value='15', inline=False)
+                                elif i == 'Large Straight':
+                                    score_list.append(i)
+                                    embed.add_field(name=i, value='30', inline=False)
+                                elif i=='Yacht':
+                                    score_list.append(i)
+                                    embed.add_field(name=i, value='50', inline=False)
+                                else:
+                                    score_list.append(i)
+                                    num = get_num(dicelist)
+                                    for h in enum.keys():
+                                        if enum[h] == i:
+                                            embed.add_field(name=i, value=str(int(h)*num[h]), inline=False)
+                        def reaction_check(reaction, user):
+                            return user == team.author and str(reaction.emoji) == '1️⃣' or str(reaction.emoji) == '2️⃣' or str(reaction.emoji) == '3️⃣' or str(reaction.emoji) == '4️⃣' or str(reaction.emoji) == '5️⃣' or str(reaction.emoji) == '6️⃣' or str(reaction.emoji) == '✅' or str(reaction.emoji) == '💳' or str(reaction.emoji) == '🏠' or str(reaction.emoji) == '▶' or str(reaction.emoji) == '⏩' or str(reaction.emoji) == '🎰'
+                        a = await channel.send(embed=embed)
+                        if score_list == []:
+                            scorelist = emoji.keys()
+                        for i in score_list:
+                            await a.add_reaction(emoji[i])
+                        await asyncio.sleep(1)
+                        reaction, reactuser = await client.wait_for('reaction_add', check=reaction_check)
+                        def change_sheet(reaction):
+                            for i in emoji.keys():
+                                if emoji[i] == reaction.emoji:
+                                    for j in enum.keys():
+                                        if enum[j] == i:
+                                            users[index][u][0][i] = int(j)*num[j]
+                                            users[index][u][1]['score'] += int(j)*num[j]
+                                            users[index][u][1][int(j)] += int(j)*num[j]
+                                            break
+                                    if emoji[i] == '✅' or emoji[i] == '💳' or emoji[i] == '🏠':
+                                        users[index][u][0][i] = plus_all(dicelist)
+                                        users[index][u][1]['score'] += plus_all(dicelist)
+                                        break
+
+                                    if emoji[i] == '▶':
+                                        users[index][u][0][i] = 15
+                                        users[index][u][1]['score'] += 15
+                                        break
+                                    
+                                    if emoji[i] == '⏩':
+                                        users[index][u][0][i] = 30
+                                        users[index][u][1]['score'] += 30
+                                        break
+                                                
+                                    if emoji[i] == '🎰':
+                                        users[index][u][0][i] = 50
+                                        users[index][u][1]['score'] += 50
+                                        break
+                                            
+                        await a.delete()
+                        change_sheet(reaction)
+                        if homework(users[index][u][0]):
+                            users[index][u][0][i]
+                            users[index][u][1]['score'] += 35
+                            await channel.send('숙제 완료')
+
+                        for asdf in range(len(user)):
+                            embed = discord.Embed(title=user[asdf]+"님의 점수판", color=0xf7cac9)
+                            for i in users[index][u][0].keys():
+                                if users[index][u][0][i] == False:
+                                    embed.add_field(name=i, value=0)
+                                else:
+                                    embed.add_field(name=i, value=users[index][u][0][i])
+                            await channel.send(embed = embed)
+                        break
+
+                    else:
+                        msg = list(reversed(team.content.split(',')))
+                        for i in msg:
+                            if i == '' or int(i) > 5 or i == '0':
+                                continue
+                            else:
+                                try:
+                                    user_dice[index][i] = user_dice[index][i]
+                                    user_dice[index] = rename(user_dice[index], i, int(i))
+                                except:
+                                    user_dice[index] = rename(user_dice[index], int(i), i)
+                        break
+                        
+
+                
+
+                
+        
+        
+
+    
 
 client.run(token)
