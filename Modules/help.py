@@ -21,6 +21,7 @@ class Help:
         embed.add_field(name='!일정', value='그 달에 있는 학교 일정을 불러오는 기능이니라!', inline=False)
         embed.add_field(name='!랭킹', value='레벨 1위부터 10위까지 출력하는 기능이니라~', inline=False)
         embed.add_field(name='!야구 [팀명]', value='야구 경기중에만 사용 가능한 기능으로 야구 경기 점수를 보여줍니다. ※(KIA 타이거즈라면 KIA만 입력해 주세요, 팀명이 영어면(kia, sk 등)영어로 입력해주세요)', inline=False)
+        embed.add_field(name='!야추', value='[!야추 도움] 으로 설명을 볼 수 있습니다.', inline=False)
         embed.set_author(name="랑이", icon_url="https://postfiles.pstatic.net/MjAxOTA0MDFfMjIg/MDAxNTU0MDc1MzgxODEz.GprXtmnHfiMPpay2riQUAJQZTtLghpxjXyxFUV2hj0og.oair81q3mrLQqZcqegADwVMNOyYCoNTd429vxqgXlwkg.JPEG.gasd238/help.jpg?type=w580")
         embed.set_image(url="https://postfiles.pstatic.net/MjAxOTA0MDFfMjIg/MDAxNTU0MDc1MzgxODEz.GprXtmnHfiMPpay2riQUAJQZTtLghpxjXyxFUV2hj0og.oair81q3mrLQqZcqegADwVMNOyYCoNTd429vxqgXlwkg.JPEG.gasd238/help.jpg?type=w580")
         return embed

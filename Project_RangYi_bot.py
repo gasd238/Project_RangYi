@@ -133,11 +133,12 @@ async def on_message(message):
         a.append(message.author.name)
         msg = message.content.split(' ')
         if len(msg) > 1:
-            if msg[1] == "도움말":
-                embed = discord.Embed(title="야추 도움말", color=0xf7cac9)
-                embed.add_field(name="!야추 [플레이어 언급]", value='언급을 통해 친구와 2명이서 또는 !야추 입력으로 혼자하기 모드 가능', inline=False)
-                embed.add_field(name="규칙", value="51 Worldwide Games에 수록된 Yacht dice 의 규칙을 따릅니다.", inline=False)
-                embed.add_field(name=i, value=plus_all(dicelist), inline=False)
+            if msg[1] == "도움":
+                embed = discord.Embed(title="야추 도움말", description='점수 계산법 보기', url='https://namu.wiki/w/%EC%9A%94%ED%8A%B8(%EA%B2%8C%EC%9E%84)?from=%EC%95%BC%EC%B6%94#s-2.2', color=0xf7cac9)
+                embed.add_field(name="!야추 [플레이어 언급]", value='언급을 통해 친구와 2명이서 또는 !야추 입력으로 혼자하기가 가능하니라.', inline=False)
+                embed.add_field(name="규칙", value="51 Worldwide Games에 수록된 Yacht dice 의 규칙을 따르느니라\n 위에 점수 계산법 보기를 눌러서 점수 계산법을 익히고 오는게 좋으니라", inline=False)
+                await channel.send(embed=embed)
+                return
             try:
                 id_ = re.findall(noma, msg[1])
                 id_ = await client.fetch_user(id_[0])
@@ -146,99 +147,6 @@ async def on_message(message):
                 await channel.send('없는 유저 이거나 고를 수 없는 유저입니다. 다시 해주세요.')
                 return
         await yacht(message.guild, message.channel, a)
-    # # 음악 종료
-    # if message.content == '!종료':
-    #     try:
-    #         for key in queues:
-    #             if key == guild.id:
-    #                 del queues[guild.id]
-    #     except RuntimeError:
-    #         for key in queues:
-    #             if key == guild.id:
-    #                 del queues[guild.id]
-    #     if musiclist:
-    #         musiclist.clear()
-    #     try:
-    #         voice_client = client.voice_client_in(guild)
-    #         await voice_client.disconnect()
-    #         await channel.send('종료했느니라!!')
-    #     except discord.DiscordException:
-    #         return
-
-    # # 음악 재생
-    # if message.content.startswith("!재생"):
-    #     voicemember = message.author.voice.channel.members
-    #     for i in range(len(voicemember)):
-    #         voicemember[i] = voicemember[i].name
-    #     if message.author.name not in voicemember:
-    #         await channel.send('음성방에 들어와야 사용이 가능하니라')
-    #     try:
-    #         voice = await message.author.voice.channel.connect()
-    #     except:
-    #         for i in client.voice_clients:
-    #             if i.channel == message.author.voice.channel:
-    #                 voice = i
-    #     msg1 = message.content.split(' ')
-    #     url = msg1[1]
-    #     ydl_opts = {
-    #         'format': 'bestaudio/best',
-    #         'postprocessors': [{
-    #             'key': 'FFmpegExtractAudio',
-    #             'preferredcodec': 'mp3',
-    #             'preferredquality': '192',
-    #         }],
-    #     }
-    #     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-    #         info = ydl.extract_info(url)
-    #         ydl.download([url])
-    #     voice.play(discord.FFmpegPCMAudio('./' + info["title"] + '.mp3'), after=lambda: check_queue(guild.id, message.channel, info))
-    #     voice.volume = 100
-    #     embed = discord.Embed(title="재생하겠느니라!!", description=info['title'] + "\n" + url)
-    #     await channel.send(embed=embed)
-
-    # # 음악 예약
-    # if message.content.startswith('!예약'):
-    #     msg1 = message.content.split(' ')
-    #     url = msg1[1]
-    #     song_there = os.path.isfile("reservsong.mp3")
-    #     if song_there:
-    #         os.remove("reservsong.mp3")
-    #     ydl_opts = {
-    #         'format': 'bestaudio/best',
-    #         'postprocessors': [{
-    #             'key': 'FFmpegExtractAudio',
-    #             'preferredcodec': 'mp3',
-    #             'preferredquality': '192',
-    #         }],
-    #     }
-    #     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-    #         ydl.download([url])
-    #     for file in os.listdir("./"):
-    #         if file.endswith(".mp3"):
-    #             os.rename(file, info['title'] + '.mp3')
-    #             player = discord.FFmpegPCMAudio(info['title'] + '.mp3')
-    #         if guild.id in queues:
-    #             queues[guild.id].append(player)
-    #         else:
-    #             queues[guild.id] = [player]
-    #         await channel.send('예약 완료 했느니라!')
-    #         musiclist.append(info['title'] + "\n" + url)
-
-    # # 음악 큐
-    # if message.content.startswith('!큐'):
-    #     msg1 = message.content.split(" ")
-    #     check = msg1[1]
-    #     # 큐 보기
-    #     if check == '보기':
-    #         for i in range(0, len(musiclist)):
-    #             resings = resings + str(i + 1) + '번 예약곡' + '-' + ' ' + musiclist[i] + '\n\n'
-    #         embed = discord.Embed(title='대기중인 곡들이니라~', description=resings, color=0xf7cac9)
-    #         await channel.send(embed=embed)
-    #     # 큐에 있는 음악 삭제
-    #     if check == '삭제':
-    #         del musiclist[int(msg1[2]) - 1]
-    #         del queues[guild.id][int(msg1[2]) - 1]
-    #         await channel.send(msg1[2] + '번 예약곡을 취소 했느니라!')
 
     # 서버 글 삭제
     if message.content.startswith('!삭제'):
@@ -470,11 +378,14 @@ async def yacht(guild, channel, user):
     users, user_dice, index = game_start(users, user)
     while True:
         for u in range(len(user)):
+            await channel.send(user[u]+"차례")
             def check(m):
                 return m.channel == channel and m.author.name == user[u]
             user_dice[index] = {1: 1, 2:1, 3: 1, 4: 1, 5: 1}
+            endFlag = False
             for turn in range(3):
-                await channel.send(user[u]+"차례")
+                if endFlag == True:
+                    break
                 dice = ''
                 dicelist = roll_dice(user_dice[index])
                 board = dice_check(dicelist)
@@ -487,71 +398,116 @@ async def yacht(guild, channel, user):
                 await channel.send('고정시킬 칸의 번호를 , 로 나눠서 입력해 주세요. 고정시킬게 없으면 0을 보내주시고 점수를 고르실려면 결정을 보내세요 예)1,3,4 or 1,2 or 3')
                 while True:
                     team = await client.wait_for('message', check=check)
-                    if team.content == "결정" or turn == 3:
-                        score_list = []
+                    if team.content == "결정" or turn == 2:
+                        scorelist = []
                         embed = discord.Embed(title="점수 목록", color=0xf7cac9)
                         for i in board.keys():
-                            if board[i] == True and users[index][u][0][i] != True:
+                            if users[index][u][0][i] == False:
                                 if i == 'Choice' or i == '4 of a Kind' or i == 'Full House':
-                                    score_list.append(i)
-                                    embed.add_field(name=i, value=plus_all(dicelist), inline=False)
+                                    scorelist.append(i)
+                                    if board[i] == 0:
+                                        embed.add_field(name=i, value=0)
+                                    else:
+                                        embed.add_field(name=i, value=plus_all(dicelist))
                                 elif i == 'Small Straight':
-                                    score_list.append(i)
-                                    embed.add_field(name=i, value='15', inline=False)
+                                    scorelist.append(i)
+                                    if board[i] == 0:
+                                        embed.add_field(name=i, value=0)
+                                    else:
+                                        embed.add_field(name=i, value='15')
                                 elif i == 'Large Straight':
-                                    score_list.append(i)
-                                    embed.add_field(name=i, value='30', inline=False)
+                                    scorelist.append(i)
+                                    if board[i] == 0:
+                                        embed.add_field(name=i, value=0)
+                                    else:
+                                        embed.add_field(name=i, value='30')
                                 elif i=='Yacht':
-                                    score_list.append(i)
-                                    embed.add_field(name=i, value='50', inline=False)
+                                    scorelist.append(i)
+                                    if board[i] == 0:
+                                        embed.add_field(name=i, value=0)
+                                    else:
+                                        embed.add_field(name=i, value='50')
                                 else:
-                                    score_list.append(i)
+                                    scorelist.append(i)
                                     num = get_num(dicelist)
                                     for h in enum.keys():
                                         if enum[h] == i:
-                                            embed.add_field(name=i, value=str(int(h)*num[h]), inline=False)
+                                            if board[i] == 0:
+                                                embed.add_field(name=i, value=0)
+                                            else:
+                                                embed.add_field(name=i, value=str(int(h)*num[h]))
+                        
                         def reaction_check(reaction, user):
                             return user == team.author and str(reaction.emoji) == '1️⃣' or str(reaction.emoji) == '2️⃣' or str(reaction.emoji) == '3️⃣' or str(reaction.emoji) == '4️⃣' or str(reaction.emoji) == '5️⃣' or str(reaction.emoji) == '6️⃣' or str(reaction.emoji) == '✅' or str(reaction.emoji) == '💳' or str(reaction.emoji) == '🏠' or str(reaction.emoji) == '▶' or str(reaction.emoji) == '⏩' or str(reaction.emoji) == '🎰'
                         a = await channel.send(embed=embed)
-                        if score_list == []:
+                        if scorelist == []:
                             scorelist = emoji.keys()
-                        for i in score_list:
+                        for i in scorelist:
+                            if i == "Bonus":
+                                continue
                             await a.add_reaction(emoji[i])
                         await asyncio.sleep(1)
                         reaction, reactuser = await client.wait_for('reaction_add', check=reaction_check)
-                        def change_sheet(reaction):
+                        def change_sheet(reaction, board):
                             for i in emoji.keys():
                                 if emoji[i] == reaction.emoji:
                                     for j in enum.keys():
                                         if enum[j] == i:
-                                            users[index][u][0][i] = int(j)*num[j]
-                                            users[index][u][1]['score'] += int(j)*num[j]
-                                            users[index][u][1][int(j)] += int(j)*num[j]
-                                            break
+                                            if board[i] == 0:
+                                                users[index][u][0][i] = '[0]'
+                                                users[index][u][1]['score'] += 0
+                                                users[index][u][1][int(j)] += 0
+                                                break
+                                            else:
+                                                users[index][u][0][i] = int(j)*num[j]
+                                                users[index][u][1]['score'] += int(j)*num[j]
+                                                users[index][u][1][int(j)] += int(j)*num[j]
+                                                break
                                     if emoji[i] == '✅' or emoji[i] == '💳' or emoji[i] == '🏠':
-                                        users[index][u][0][i] = plus_all(dicelist)
-                                        users[index][u][1]['score'] += plus_all(dicelist)
-                                        break
+                                        if board[i] == 0:
+                                            users[index][u][0][i] = '[0]'
+                                            users[index][u][1]['score'] += 0
+                                            break
+                                        else:
+                                            users[index][u][0][i] = plus_all(dicelist)
+                                            users[index][u][1]['score'] += plus_all(dicelist)
+                                            break
 
                                     if emoji[i] == '▶':
-                                        users[index][u][0][i] = 15
-                                        users[index][u][1]['score'] += 15
-                                        break
+                                        if board[i] == 0:
+                                            users[index][u][0][i] = '[0]'
+                                            users[index][u][1]['score'] += 0
+                                            break
+                                        else:
+                                            users[index][u][0][i] = 15
+                                            users[index][u][1]['score'] += 15
+                                            break
                                     
                                     if emoji[i] == '⏩':
-                                        users[index][u][0][i] = 30
-                                        users[index][u][1]['score'] += 30
-                                        break
+                                        if board[i] == 0:
+                                            users[index][u][0][i] = '[0]'
+                                            users[index][u][1]['score'] += 0
+                                            break
+                                        else:
+                                            users[index][u][0][i] = 30
+                                            users[index][u][1]['score'] += 30
+                                            break
                                                 
                                     if emoji[i] == '🎰':
-                                        users[index][u][0][i] = 50
-                                        users[index][u][1]['score'] += 50
-                                        break
+                                        if board[i] == 0:
+                                            users[index][u][0][i] = '[0]'
+                                            users[index][u][1]['score'] += 0
+                                            break
+                                        else:
+                                            users[index][u][0][i] = 50
+                                            users[index][u][1]['score'] += 50
+                                            break
                                             
                         await a.delete()
-                        change_sheet(reaction)
-                        if homework(users[index][u][0]):
-                            users[index][u][0][i]
+                        change_sheet(reaction, board)
+                        user_dice[index] = {1: 1, 2:1, 3: 1, 4: 1, 5: 1} 
+                        if homework(users[index][u][1]):
+                            users[index][u][0]['Bonus'] = 35
                             users[index][u][1]['score'] += 35
                             await channel.send('숙제 완료')
 
@@ -562,11 +518,17 @@ async def yacht(guild, channel, user):
                                     embed.add_field(name=i, value=0)
                                 else:
                                     embed.add_field(name=i, value=users[index][u][0][i])
+                            embed.add_field(name='score', value=users[index][u][1]['score'], inline=False)
                             await channel.send(embed = embed)
+                        endFlag = True
                         break
 
                     else:
                         msg = list(reversed(team.content.split(',')))
+                        try:
+                            a = int(msg[0])
+                        except:
+                            continue
                         for i in msg:
                             if i == '' or int(i) > 5 or i == '0':
                                 continue
@@ -579,7 +541,10 @@ async def yacht(guild, channel, user):
                         break
                         
 
-                
+        if check_score(users[index]):
+            await channel.send("게임 종료")
+            if len(users[index]) == 2:
+                await channel.send(user[check_winner(users[index])])
 
                 
         

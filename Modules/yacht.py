@@ -3,7 +3,7 @@ from random import randint
 dice = {1: 1, 2:1, 3: 1, 4: 1, 5: 1}
 enum = {1:'ace', 2:'Deuces', 3:'Threes', 4:'Fours', 5:'Fives', 6:'Sixes'}
 numline = {1:0, 2:0, 3:0, 4:0,5:0, 6:0, 'score':0}
-scoreboard = {'ace':False, 'Deuces':False, 'Threes':False, 'Fours':False, 'Fives':False, 'Sixes':False, 'Choice':False, '4 of a Kind':False, 'Full House':False, 'Small Straight':False, 'Large Straight':False, 'Yacht':False}
+scoreboard = {'ace':False, 'Deuces':False, 'Threes':False, 'Fours':False, 'Fives':False, 'Sixes':False, 'Bonus':False, 'Choice':False, '4 of a Kind':False, 'Full House':False, 'Small Straight':False, 'Large Straight':False, 'Yacht':False}
 users = {}
 user_dice = {}
 
@@ -93,26 +93,51 @@ def get_num(dice):
     return num
 
 def dice_check(dice):
-    scoreboard = {'ace':False, 'Deuces':False, 'Threes':False, 'Fours':False, 'Fives':False, 'Sixes':False, 'Bonus':False, 'Choice':False, '4 of a Kind':False, 'Full House':False, 'Small Straight':False, 'Large Straight':False, 'Yacht':False}
+    scoreboard = {'ace':False, 'Deuces':False, 'Threes':False, 'Fours':False, 'Fives':False, 'Sixes':False, 'Bonus':False, 'Choice':True, '4 of a Kind':False, 'Full House':False, 'Small Straight':False, 'Large Straight':False, 'Yacht':False}
     
     num = get_num(dice)
 
     if check_yacht(num):
-        scoreboard['Yacht'] = True
+        scoreboard['Yacht'] = 50
+    else:
+        scoreboard['Yacht'] = 0
     
     if check_full_house(num):
         scoreboard['Full House'] = True
+    else:
+        scoreboard['Full House'] = 0
+
 
     if check_four_cards(num):
         scoreboard['4 of a Kind'] = True
+    else:
+        scoreboard['4 of a Kind'] = 0
 
     scoreboard = mod_scoreboard(check_numpart(num), scoreboard)
 
     if check_straight(num) == 5:
         scoreboard['Large Straight'] = True
+    else:
+        scoreboard['Large Straight'] = 0
 
     if check_straight(num) > 3:
-        scoreboard['Small Straight'] = True  
+        scoreboard['Small Straight'] = True 
+    else:
+        scoreboard['Small Straight'] = 0 
 
     return scoreboard
+
+def check_score(scoreboards):
+    for i in scoreboards:
+        for j in i[0].keys():
+            if i[0][j] == False:
+                return False
+    return True
+
+def check_winner(users):
+    if users[0][1]['score'] > users[1][1]['score']:
+        return 0
+    else:
+        return 1
+
              
