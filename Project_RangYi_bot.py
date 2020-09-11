@@ -11,14 +11,13 @@ from Modules.morning import Morning
 from Modules.help import Help
 from Modules.Annseq import Annseq
 from Modules.search import Search
-from Modules.user import UserLevel
+#from Modules.user import UserLevel
 from Modules.schoolcalendar import Calender
 from Modules.gamesave import Save
 from Modules.game_play import Game
 from Modules.setting import token
 from Modules.baseball import Baseball
 from Modules.yacht import *
-import threading
 
 # Variables
 client = discord.Client()
@@ -38,17 +37,17 @@ loop = asyncio.get_event_loop()
 
 
 # Music --
-def check_queue(qid, channel, info):
-    if queues[qid]:
-        song_there = os.path.isfile(".mp3")
-        if song_there:
-            os.remove("reservsong.mp3")
-        player = queues[qid].pop(0)
-        embed = discord.Embed(title="재생하겠느니라!!", description=musiclist[0] + "\n" + info["url"])
-        del musiclist[0]
-        say = channel.send(embed=embed)
-        asyncio.run_coroutine_threadsafe(say, client.loop)
-        voice.play(player, after=lambda: check_queue(guild.id, message.channel, info))
+# def check_queue(qid, channel, info):
+#     if queues[qid]:
+#         song_there = os.path.isfile(".mp3")
+#         if song_there:
+#             os.remove("reservsong.mp3")
+#         player = queues[qid].pop(0)
+#         embed = discord.Embed(title="재생하겠느니라!!", description=musiclist[0] + "\n" + info["url"])
+#         del musiclist[0]
+#         say = channel.send(embed=embed)
+#         asyncio.run_coroutine_threadsafe(say, client.loop)
+#         voice.play(player, after=lambda: check_queue(guild.id, message.channel, info))
 
 
 # Discord Client
@@ -77,7 +76,7 @@ async def on_message(message):
     free_chat = client.get_channel(514392468402208768)
     help = Help()
     save = Save()
-    userlevel = UserLevel()
+    #userlevel = UserLevel()
     hungry = Hungry()
     morningC = Morning()
     ann = Annseq()
@@ -397,7 +396,10 @@ async def yacht(guild, channel, user):
                 await channel.send(dice)
                 await channel.send('고정시킬 칸의 번호를 , 로 나눠서 입력해 주세요. 고정시킬게 없으면 0을 보내주시고 점수를 고르실려면 결정을 보내세요 예)1,3,4 or 1,2 or 3')
                 while True:
-                    team = await client.wait_for('message', check=check)
+                    try:
+                        team = await client.wait_for('message', timeout=15.0, check=check)
+                    except:
+                        return await channel.send("게임이 종료 됬느니라....")
                     if team.content == "결정" or turn == 2:
                         scorelist = []
                         embed = discord.Embed(title="점수 목록", color=0xf7cac9)
@@ -447,7 +449,10 @@ async def yacht(guild, channel, user):
                                 continue
                             await a.add_reaction(emoji[i])
                         await asyncio.sleep(1)
-                        reaction, reactuser = await client.wait_for('reaction_add', check=reaction_check)
+                        try:
+                            reaction, reactuser = await client.wait_for('reaction_add', timeout=15.0, check=reaction_check)
+                        except:
+                            return await channel.send("게임이 종료 됬느니라....")
                         def change_sheet(reaction, board):
                             for i in emoji.keys():
                                 if emoji[i] == reaction.emoji:
@@ -509,7 +514,7 @@ async def yacht(guild, channel, user):
                         if homework(users[index][u][1]):
                             users[index][u][0]['Bonus'] = 35
                             users[index][u][1]['score'] += 35
-                            await channel.send('숙제 완료')
+                            await channel.send(user[u] + '숙제 다 마쳤느니라!')
 
                         for asdf in range(len(user)):
                             embed = discord.Embed(title=user[asdf]+"님의 점수판", color=0xf7cac9)
@@ -542,7 +547,7 @@ async def yacht(guild, channel, user):
                         
 
         if check_score(users[index]):
-            await channel.send("게임 종료")
+            await channel.send("게임 모두 마쳐졌느니라!")
             if len(users[index]) == 2:
                 await channel.send(user[check_winner(users[index])])
 
