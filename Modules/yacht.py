@@ -21,7 +21,8 @@ def roll_dice(dice):
         if type(i) == str:
             continue
         else:
-            dice[i] = int(randint(1, 6))
+            for _ in range(int(randint(6))):
+                dice[i] = int(randint(1, 6))
     return dice
 
 def plus_all(dice):
