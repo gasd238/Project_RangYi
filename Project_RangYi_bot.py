@@ -13,8 +13,6 @@ from Modules.Annseq import Annseq
 from Modules.search import Search
 #from Modules.user import UserLevel
 from Modules.schoolcalendar import Calender
-from Modules.gamesave import Save
-from Modules.game_play import Game
 from Modules.setting import token
 from Modules.baseball import Baseball
 from Modules.yacht import *
