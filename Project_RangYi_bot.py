@@ -73,15 +73,12 @@ async def on_message(message):
     channel = message.channel
     free_chat = client.get_channel(514392468402208768)
     help = Help()
-    save = Save()
     #userlevel = UserLevel()
     hungry = Hungry()
     morningC = Morning()
     ann = Annseq()
     search = Search()
     cal = Calender()
-    save = Save()
-    game = Game()
     baseball = Baseball()
     player=0
     # Bot이 하는 말은 반응하지 않음  
