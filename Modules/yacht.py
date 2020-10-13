@@ -3,17 +3,18 @@ from random import randint
 dice = {1: 1, 2:1, 3: 1, 4: 1, 5: 1}
 enum = {1:'ace', 2:'Deuces', 3:'Threes', 4:'Fours', 5:'Fives', 6:'Sixes'}
 numline = {1:0, 2:0, 3:0, 4:0,5:0, 6:0, 'score':0}
-scoreboard = {'ace':False, 'Deuces':False, 'Threes':False, 'Fours':False, 'Fives':False, 'Sixes':False, 'Bonus':False, 'Choice':False, '4 of a Kind':False, 'Full House':False, 'Small Straight':False, 'Large Straight':False, 'Yacht':False}
 users = {}
 user_dice = {}
 
 def game_start(users, user):
+    scoreboard = {'ace':False, 'Deuces':False, 'Threes':False, 'Fours':False, 'Fives':False, 'Sixes':False, 'Bonus':False, 'Choice':False, '4 of a Kind':False, 'Full House':False, 'Small Straight':False, 'Large Straight':False, 'Yacht':False}
     index = len(users.keys())+1
     if len(user) == 2:
         users[index] = [[scoreboard, numline], [scoreboard, numline]]
     elif len(user) == 1:
         users[index] = [[scoreboard, numline]]
     user_dice[index] = dice
+    print(scoreboard)
     return users, user_dice, index
 
 def roll_dice(dice):

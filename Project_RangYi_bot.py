@@ -370,6 +370,8 @@ async def yacht(guild, channel, user):
     emoji = {'ace':"1️⃣", 'Deuces':'2️⃣', 'Threes':'3️⃣', 'Fours':'4️⃣', 'Fives':'5️⃣', 'Sixes':'6️⃣', 'Choice':'✅', '4 of a Kind':'💳', 'Full House':'🏠', 'Small Straight':'▶', 'Large Straight':'⏩', 'Yacht':'🎰'}
     users = {}
     users, user_dice, index = game_start(users, user)
+    print(users)
+    print(user_dice)
     while True:
         for u in range(len(user)):
             await channel.send(user[u]+"차례")
@@ -389,12 +391,17 @@ async def yacht(guild, channel, user):
                     else:
                         dice += str(dicelist[j])+' '
                 await channel.send(dice)
-                await channel.send('고정시킬 칸의 번호를 , 로 나눠서 입력해 주세요. 고정시킬게 없으면 0을 보내주시고 점수를 고르실려면 결정을 보내세요 예)1,3,4 or 1,2 or 3')
                 while True:
-                    try:
-                        team = await client.wait_for('message', timeout=15.0, check=check)
-                    except:
-                        return await channel.send("게임이 종료 됬느니라....")
+                    if turn < 2:
+                        await channel.send('고정시킬 칸의 번호를 , 로 나눠서 입력해 주세요. 고정시킬게 없으면 0을 보내주시고 점수를 고르실려면 결정을 보내세요 예)1,3,4 or 1,2 or 3')
+                        try:
+                            team = await client.wait_for('message', timeout=15.0, check=check)
+                        except:
+                            del users[index]
+                            del user_dice[index]
+                            print(users)
+                            print(user_dice)
+                            return await channel.send("게임이 종료 됬느니라....")
                     if team.content == "결정" or turn == 2:
                         scorelist = []
                         embed = discord.Embed(title="점수 목록", color=0xf7cac9)
@@ -447,6 +454,10 @@ async def yacht(guild, channel, user):
                         try:
                             reaction, reactuser = await client.wait_for('reaction_add', timeout=15.0, check=reaction_check)
                         except:
+                            del users[index]
+                            del user_dice[index]
+                            print(users)
+                            print(user_dice)
                             return await channel.send("게임이 종료 됬느니라....")
                         def change_sheet(reaction, board):
                             for i in emoji.keys():
@@ -542,6 +553,8 @@ async def yacht(guild, channel, user):
                         
 
         if check_score(users[index]):
+            del users[index]
+            del user_dice[index]
             await channel.send("게임 모두 마쳐졌느니라!")
             if len(users[index]) == 2:
                 await channel.send(user[check_winner(users[index])])
