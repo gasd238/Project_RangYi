@@ -82,7 +82,7 @@
 
 ~~**11. 레벨 관련 기능**~~ 현재 db가 꺼진 상태여서 사용을 하지 못합니다.
 
-~~우리가 디코로 대화 하면 그 양에 따라 레벨이 오르는 기능 레벨과 관련 기능은 [startergate](https://github.com/startergate)님의 도움으로 제작되었습니다. (setting.py 에 mongodb 주소를 넣어야합니다.) ~~
+~~우리가 디코로 대화 하면 그 양에 따라 레벨이 오르는 기능 레벨과 관련 기능은 [startergate](https://github.com/startergate)님의 도움으로 제작되었습니다. (setting.py 에 mongodb 주소를 넣~~ ~~어야합니다.) ~~
 
 **12. 야구 점수 출력**
 
