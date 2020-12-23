@@ -10,7 +10,7 @@ class Annseq:
         for _ in range(random.randint(0, 21)):
             random.shuffle(man)
         for j in range(len(man)):
-            sequence = sequence + str(j+1) +' '+ str(man[j])
+            sequence = sequence + str(j+1) +' - '+ str(man[j])
             if j % 2 == 1:
                 sequence += '\n'
             else:
