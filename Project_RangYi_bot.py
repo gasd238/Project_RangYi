@@ -159,9 +159,9 @@ async def on_message(message):
     if message.content.startswith('!발표'):
         msg1 = message.content.split(' ')
         if len(msg1) > 1:
-            annsequence = ann.rand_self(msg1[1:])
+            annsequence = ann.rand(msg1[1:])
         else:
-            annsequence = ann.rand()
+            annsequence = ann.rand([])
         embed = discord.Embed(title='발표순서이니라!!', description=annsequence, color=0xf7cac9)
         await channel.send(embed=embed)
 
