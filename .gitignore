@@ -70,6 +70,10 @@ fabric.properties
 *.py___jb_tmp___
 *.pyc
 Modules/__pycache__/*
+Modules/Annseq.py
+Modules/calendar.py
+Modules/hungry.py
+Modules/schoolcalendar.py
 
 
 venv/
@@ -78,3 +82,4 @@ Modules/setting.py
 
 Data/userdata.json
 Data/game_save.json
+uselesscode.txt
