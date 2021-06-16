@@ -11,11 +11,12 @@ from Modules.morning import Morning
 from Modules.help import Help
 from Modules.Annseq import Annseq
 from Modules.search import Search
-#from Modules.user import UserLevel
+from Modules.user import UserLevel
 from Modules.schoolcalendar import Calender
 from Modules.setting import token
 from Modules.baseball import Baseball
 from Modules.yacht import *
+import Modules.river as river
 
 # Variables
 client = discord.Client()
@@ -94,6 +95,10 @@ async def on_message(message):
     if message.content == "!설명":
         createdEmbed = help.create_help_embed()
         await channel.send(embed=createdEmbed)
+
+    #한강 수온
+    if message.content == '!한강':
+        await channel.send("한강 온도는 {}도이니라".format(river.get_temp()))
 
     # 급식 파싱
     if message.content == "!급식":
