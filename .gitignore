@@ -71,7 +71,7 @@ fabric.properties
 *.pyc
 Modules/__pycache__/*
 
-
+./github
 venv/
 
 Modules/setting.py
