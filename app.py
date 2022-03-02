@@ -7,17 +7,12 @@ import re
 import os
 
 # import json
-from Modules.hungry import Hungry
-from Modules.morning import Morning
 from Modules.help import Help
-from Modules.Annseq import Annseq
 from Modules.search import Search
 from Modules.user import UserLevel
-from Modules.schoolcalendar import Calender
 from Modules.setting import token
 from Modules.baseball import Baseball
 from Modules.yacht import *
-import Modules.river as river
 
 # Variables
 client = discord.Client()
