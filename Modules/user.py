@@ -1,12 +1,27 @@
 import pymongo
 import json
 import math
+import random
+import datetime
+import discord
 
 from Modules.setting import *  # Import Settings
 
 client = pymongo.MongoClient(database)
 db = client.rangyibot
 collection = db.user
+bancol = db.ban
+
+
+class Ban:
+    def banUser(self, user):
+        userid = user.id
+        result = bancol.find_one({"userid": user.id})
+        if not result:
+            result = {"userid": user.id, "time": datetime.datetime.now()}
+            bancol.insert_one(result)
+            return "밴 됨"
+        return "이미 밴 됨"
 
 
 class UserLevel:
@@ -18,41 +33,56 @@ class UserLevel:
             result = {
                 "userid": user.id,
                 "level": 1,
-                "currentxp": 0
+                "currentxp": random.randint(3, 15),
+                "time": datetime.datetime.now(),
             }
             collection.insert_one(result)
-        result['currentxp'] += len(message) // 4 + 1    
-        targetExp = self.LevelExpGetter(result['level'])
+        update_time = datetime.datetime.now()
+        if (update_time - result["time"]).seconds / 60 > 2:
+            result["currentxp"] += random.randint(3, 15)
+            result["time"] = update_time
+            targetExp = self.LevelExpGetter(result["level"])
 
-        while result['currentxp'] > targetExp:
-            result['level'] += 1
-            targetExp = self.LevelExpGetter(result['level'])
-            isLevelup = True
-        collection.update_one({"userid": userid}, {"$set": result})
-        return isLevelup
+            while result["currentxp"] > targetExp:
+                result["level"] += 1
+                targetExp = self.LevelExpGetter(result["level"])
+                isLevelup = True
+            collection.update_one({"userid": userid}, {"$set": result})
+            return isLevelup
 
-    def showLevel(self, user, isLevelUp=False):
+    def showLevel(self, user, profileurl, isLevelUp=False):
         result = collection.find_one({"userid": user.id})
         if isLevelUp:
-            strings = ":fireworks: **{}**가 **{} 레벨**이 되었느니라!!.\n다음 레벨까지 **{} XP** 남았느니라~~".format(user.name,
-                                                                                                  result['level'],
-                                                                                                  self.LevelExpGetter(
-                                                                                                      result['level']) -
-                                                                                                  result['currentxp'])
+            embed = discord.Embed(
+                title=":fireworks: 레벨 업!!",
+                description="**{}가 {} 레벨**이 되었느니라!!\n다음 레벨까지 **{} XP** 남았느니라~~".format(
+                    user.name,
+                    result["level"],
+                    self.LevelExpGetter(result["level"]) - result["currentxp"],
+                ),
+            )
+            embed.set_thumbnail(url=profileurl)
         else:
-            strings = "**{}**는 **{} 레벨**이니라~\n다음 레벨까지 **{} XP** 남았느니라~~".format(user.name, result['level'],
-                                                                                self.LevelExpGetter(result['level']) -
-                                                                                result['currentxp'])
-        return strings
+            embed = discord.Embed(
+                title="{}의 레벨이니라!".format(user.name),
+                description="**현재{} 레벨**이니라!!\n다음 레벨까지 **{} XP** 남았느니라~~".format(
+                    result["level"],
+                    self.LevelExpGetter(result["level"]) - result["currentxp"],
+                ),
+            )
+            embed.set_thumbnail(url=profileurl)
+        return embed
 
     def showRanking(self, server):
-        members = [str(x.id) for x in list(server.members)]
-        output = collection.find({"userid": {"$in": members}}).sort('currentxp', pymongo.DESCENDING)
+        members = [x.id for x in list(server.members)]
+        output = collection.find({"userid": {"$in": members}}).sort(
+            "currentxp", pymongo.DESCENDING
+        )
         return output
 
     def LevelExpGetter(self, currentLevel):
         currentLevel += 1
-        nextLevel = currentLevel ** 2
+        nextLevel = currentLevel**4
         nextLevel //= math.log2(nextLevel) / 2
 
-        return int((currentLevel + 100) * math.sqrt(currentLevel))
+        return int((nextLevel + 100) * math.sqrt(nextLevel))

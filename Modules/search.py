@@ -1,38 +1,46 @@
-import bs4
-import lxml
 import discord
 from urllib.request import urlopen, Request
 import urllib
 import random
+import json
 from youtube_search import YoutubeSearch
+from Modules.setting import id, secret
+
 
 class Search:
     def search_youtube(self, titleli):
-        title=''
+        title = ""
         for i in titleli:
-            title = title+i
+            title = title + i
         results = YoutubeSearch(title, max_results=10).to_dict()
-        embed = discord.Embed(title = "검색 결과", description = "목록", colour=0xF7CAC9)
+        embed = discord.Embed(title="검색 결과", description="목록", colour=0xF7CAC9)
         for i in range(len(results)):
-            embed.add_field(name=str(i+1)+". " + results[i-1]['title'], inline=False)
-            # value='https://www.youtube.com'+results[i-1]['link']
+            embed.add_field(
+                name=str(i + 1) + ". " + results[i - 1]["title"],
+                value="https://www.youtube.com" + results[i - 1]["url_suffix"],
+                inline=False,
+            )
         return embed
 
     def search_image(self, titleli):
-        title = ''
+        link = []
+        title = ""
         for i in titleli:
-            title = title + i + ' '
-        enc_location = urllib.parse.quote(title)
-        hdr = {'User-Agent': 'Mozilla/5.0'}
-        url = 'https://www.google.co.kr/search?hl=en&tbm=isch&q=' + enc_location
+            title = title + i + " "
+        name = urllib.parse.quote(title)
+        hdr = {"X-Naver-Client-Id": id, "X-Naver-Client-Secret": secret}
+        url = "https://openapi.naver.com/v1/search/image?sort=sim&display=100&query={}".format(
+            name
+        )
         req = Request(url, headers=hdr)
         html = urllib.request.urlopen(req)
-        bsObj = bs4.BeautifulSoup(html, "lxml")
+        imgs = json.loads(html.read())
+        for info in imgs["items"]:
+            link.append(info["link"])
         embed = discord.Embed(colour=0xF7CAC9)
-        imgfind1 = bsObj.find_all("img")
         try:
-            randomNum = random.randint(0, len(imgfind1) - 1)
-            imgsrc = imgfind1[randomNum].get('src')
+            randomNum = random.randint(0, len(link) - 1)
+            imgsrc = link[randomNum]
             embed.set_image(url=imgsrc)
         except ValueError:
             embed.add_field(name="검색된 사진이 없음...", value="사진이 없느니라...")
