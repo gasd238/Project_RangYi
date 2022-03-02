@@ -72,9 +72,10 @@ fabric.properties
 Modules/__pycache__/*
 
 .github/
-venv/
+env/
 
 Modules/setting.py
 
 Data/userdata.json
 Data/game_save.json
+.github/
