@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import nextcord
+import discord
 
 
 class Baseball:
@@ -36,7 +36,7 @@ class Baseball:
                     pitcher = i.select("div > div > span:nth-child(4)")
                     picture = i.select("span.image.emblem > img")
                     score = i.select("div.inner > div")
-                    embed1 = nextcord.Embed(
+                    embed1 = discord.Embed(
                         title=team[0].text + "\n" + pitcher[0].text,
                         description=score[0].text.replace("\t", "").replace("\n", ""),
                         colour=0xF7CAC9,
@@ -48,7 +48,7 @@ class Baseball:
                             .replace("&type=f28_28&refresh=1", "")
                         )
                     )
-                    embed2 = nextcord.Embed(
+                    embed2 = discord.Embed(
                         title=team[1].text + "\n" + pitcher[1].text,
                         description=score[1].text.replace("\t", "").replace("\n", ""),
                         colour=0xF7CAC9,
@@ -65,7 +65,7 @@ class Baseball:
                     team = i.find_all("span", class_="name")
                     pitcher = i.select("div > div > span:nth-child(3)")
                     picture = i.select("span.image.emblem > img")
-                    embed1 = nextcord.Embed(
+                    embed1 = discord.Embed(
                         title=team[0].text + "\n" + pitcher[0].text,
                         description=inning.text,
                         colour=0xF7CAC9,
@@ -77,7 +77,7 @@ class Baseball:
                             .replace("&type=f28_28&refresh=1", "")
                         )
                     )
-                    embed2 = nextcord.Embed(
+                    embed2 = discord.Embed(
                         title=team[1].text + "\n" + pitcher[1].text,
                         description=inning.text,
                         colour=0xF7CAC9,
@@ -114,7 +114,7 @@ class Baseball:
                         score1 = score[0].text.replace("\t", "").replace("\n", "")
                         score2 = score[1].text.replace("\t", "").replace("\n", "")
 
-                    embed1 = nextcord.Embed(
+                    embed1 = discord.Embed(
                         title=team[0].text + "\n" + pitcher1,
                         description=score1,
                         colour=0xF7CAC9,
@@ -126,7 +126,7 @@ class Baseball:
                             .replace("&type=f28_28&refresh=1", "")
                         )
                     )
-                    embed2 = nextcord.Embed(
+                    embed2 = discord.Embed(
                         title=team[1].text + "\n" + pitcher2,
                         description=score2,
                         colour=0xF7CAC9,

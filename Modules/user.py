@@ -3,7 +3,7 @@ import json
 import math
 import random
 import datetime
-import nextcord
+import discord
 import certifi
 
 from Modules.setting import *  # Import Settings
@@ -53,7 +53,7 @@ class UserLevel:
     def showLevel(self, user, profileurl, isLevelUp=False):
         result = collection.find_one({"userid": user.id})
         if isLevelUp:
-            embed = nextcord.Embed(
+            embed = discord.Embed(
                 title=":fireworks: 레벨 업!!",
                 description="**{}가 {} 레벨**이 되었느니라!!\n다음 레벨까지 **{} XP** 남았느니라~~".format(
                     user.name,
@@ -63,7 +63,7 @@ class UserLevel:
             )
             embed.set_thumbnail(url=profileurl)
         else:
-            embed = nextcord.Embed(
+            embed = discord.Embed(
                 title="{}의 레벨이니라!".format(user.name),
                 description="**현재{} 레벨**이니라!!\n다음 레벨까지 **{} XP** 남았느니라~~".format(
                     result["level"],

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import asyncio
-import nextcord
+import discord
 import datetime
 import re
 import pymongo
@@ -14,7 +14,7 @@ from Modules.doge import PrintDoge
 import emoji
 
 # Variables
-client = nextcord.Client(intents=nextcord.Intents.all())
+client = discord.Client(intents=discord.Intents.all())
 help = Help()
 search = Search()
 baseball = Baseball()
@@ -38,15 +38,15 @@ def rename(old_dict, old_name, new_name):
     return new_dict
 
 
-# nextcord Client
+# discord Client
 @client.event
 async def on_ready():
     print("Logged in as")
     print(client.user.name)
     print(client.user.id)
     print("-----------------------")
-    game = nextcord.Game("!설명으로 도움말")
-    await client.change_presence(status=nextcord.Status.online, activity=game)
+    game = discord.Game("!설명으로 도움말")
+    await client.change_presence(status=discord.Status.online, activity=game)
     loop.create_task(checkcoin())
 
 
@@ -128,7 +128,7 @@ async def on_message(message):
         #                     id__ = await client.fetch_user(int(id_[0]))
         #                     await channel.send(ban.banUser(id__))
 
-        #                 except nextcord.nextcordException:
+        #                 except discord.discordException:
         #                     await channel.send('그 사람은 조회가 불가능하니라...')
         #                 except TypeError:
         #                     await channel.send('그 사람은 조회가 불가능하니라...')
@@ -142,9 +142,9 @@ async def on_message(message):
             else:
                 rankLength = count
             if rankLength == 0:
-                embed = nextcord.Embed(title="서버의 랭킹이니라!", description="표시할 사람이 없습니다.")
+                embed = discord.Embed(title="서버의 랭킹이니라!", description="표시할 사람이 없습니다.")
             else:
-                embed = nextcord.Embed(
+                embed = discord.Embed(
                     title="서버의 랭킹이니라!", description="{}위까지 표시되느니라~".format(rankLength)
                 )
             count = 0
@@ -176,7 +176,7 @@ async def on_message(message):
         msg = message.content.split(" ")
         if len(msg) == 2:
             if msg[1] == "도움":
-                embed = nextcord.Embed(
+                embed = discord.Embed(
                     title="야추 도움말",
                     description="점수 계산법 보기",
                     url="https://namu.wiki/w/%EC%9A%94%ED%8A%B8(%EA%B2%8C%EC%9E%84)?from=%EC%95%BC%EC%B6%94#s-2.2",
@@ -225,7 +225,7 @@ async def on_message(message):
             else:
                 await message.delete()
                 await channel.send("100개 이상 메세지는 삭제할 수 없느니라....")
-        except nextcord.nextcordException:
+        except discord.discordException:
             return
 
     # # 주식 관련
@@ -236,7 +236,7 @@ async def on_message(message):
     #             await channel.send(stock.insert_stock(msg[2]) + "이니라")
     #         elif msg[1] == "삭제":
     #             stock.delete_stock(msg[2] + "이니라")
-    #     except nextcord.nextcordException:
+    #     except discord.discordException:
     #         return
 
     if message.content.startswith("!test"):
@@ -250,7 +250,7 @@ async def on_message(message):
                 await channel.send("그 사람은 조회가 불가능하니라...")
         else:
             profileurl = message.author.avatar_url
-        embed = nextcord.Embed(title="asdf", description="casasdf")
+        embed = discord.Embed(title="asdf", description="casasdf")
         embed.set_image(url=profileurl)
         await channel.send(embed=embed)
 
@@ -296,7 +296,7 @@ async def yacht(guild, channel, user):
     users = {}
     scorelist = []
     if guild == 1 and channel == 1 and user == 1:
-        embed = nextcord.Embed(
+        embed = discord.Embed(
                     title="야추 이모티콘",
                     description="각 이모티콘별 의미",
                     color=0xF7CAC9,
@@ -335,7 +335,7 @@ async def yacht(guild, channel, user):
                             return await channel.send("게임이 종료 됬느니라....")
                     if team.content == "결정" or turn == 2:
                         board = dice_check(user_dice[index])
-                        embed = nextcord.Embed(title="점수 목록", color=0xF7CAC9)
+                        embed = discord.Embed(title="점수 목록", color=0xF7CAC9)
                         for i in board.keys():
                             if users[index][u][0][i] == False:
                                 if (
@@ -488,7 +488,7 @@ async def yacht(guild, channel, user):
                             await channel.send(user[u] + "숙제 다 마쳤느니라!")
 
                         for asdf in range(len(user)):
-                            embed = nextcord.Embed(
+                            embed = discord.Embed(
                                 title=user[asdf] + "님의 점수판", color=0xF7CAC9
                             )
                             for i in users[index][asdf][0].keys():
@@ -567,7 +567,7 @@ async def on_message_delete(message):
     if message.content == "ㅂㄱㄷ ㅆㅅㄱ" or message.content == "건도씨께서 여론 조작을 시도하셨습니다.":
         try:
             async for entry in message.guild.audit_logs(
-                limit=1, action=nextcord.AuditLogAction.message_delete
+                limit=1, action=discord.AuditLogAction.message_delete
             ):
                 deleter = entry.user
             if deleter.id == 377796778180739072:

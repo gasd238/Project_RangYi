@@ -1,4 +1,4 @@
-import nextcord
+import discord
 from urllib.request import urlopen, Request
 import urllib
 import random
@@ -13,7 +13,7 @@ class Search:
         for i in titleli:
             title = title + i
         results = YoutubeSearch(title, max_results=10).to_dict()
-        embed = nextcord.Embed(title="검색 결과", description="목록", colour=0xF7CAC9)
+        embed = discord.Embed(title="검색 결과", description="목록", colour=0xF7CAC9)
         for i in range(len(results)):
             embed.add_field(
                 name=str(i + 1) + ". " + results[i - 1]["title"],
@@ -37,7 +37,7 @@ class Search:
         imgs = json.loads(html.read())
         for info in imgs["items"]:
             link.append(info["link"])
-        embed = nextcord.Embed(colour=0xF7CAC9)
+        embed = discord.Embed(colour=0xF7CAC9)
         try:
             randomNum = random.randint(0, len(link) - 1)
             imgsrc = link[randomNum]
