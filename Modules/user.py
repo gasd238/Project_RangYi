@@ -3,15 +3,15 @@ import json
 import math
 import random
 import datetime
-import discord
+import nextcord
+import certifi
 
 from Modules.setting import *  # Import Settings
 
-client = pymongo.MongoClient(database)
+client = pymongo.MongoClient(database, tlsCAFile=certifi.where())
 db = client.rangyibot
 collection = db.user
 bancol = db.ban
-
 
 class Ban:
     def banUser(self, user):
@@ -53,7 +53,7 @@ class UserLevel:
     def showLevel(self, user, profileurl, isLevelUp=False):
         result = collection.find_one({"userid": user.id})
         if isLevelUp:
-            embed = discord.Embed(
+            embed = nextcord.Embed(
                 title=":fireworks: 레벨 업!!",
                 description="**{}가 {} 레벨**이 되었느니라!!\n다음 레벨까지 **{} XP** 남았느니라~~".format(
                     user.name,
@@ -63,7 +63,7 @@ class UserLevel:
             )
             embed.set_thumbnail(url=profileurl)
         else:
-            embed = discord.Embed(
+            embed = nextcord.Embed(
                 title="{}의 레벨이니라!".format(user.name),
                 description="**현재{} 레벨**이니라!!\n다음 레벨까지 **{} XP** 남았느니라~~".format(
                     result["level"],
@@ -74,11 +74,9 @@ class UserLevel:
         return embed
 
     def showRanking(self, server):
-        members = [x.id for x in list(server.members)]
-        output = collection.find({"userid": {"$in": members}}).sort(
-            "currentxp", pymongo.DESCENDING
-        )
-        return output
+        members = [x.id for x in server.members]
+        output = collection.find({"userid": {"$in": members}}).sort('currentxp', pymongo.DESCENDING)
+        return list(output)
 
     def LevelExpGetter(self, currentLevel):
         currentLevel += 1

@@ -1,4 +1,4 @@
-import discord
+import nextcord
 from urllib.request import urlopen, Request
 import urllib
 import random
@@ -13,7 +13,7 @@ class Search:
         for i in titleli:
             title = title + i
         results = YoutubeSearch(title, max_results=10).to_dict()
-        embed = discord.Embed(title="검색 결과", description="목록", colour=0xF7CAC9)
+        embed = nextcord.Embed(title="검색 결과", description="목록", colour=0xF7CAC9)
         for i in range(len(results)):
             embed.add_field(
                 name=str(i + 1) + ". " + results[i - 1]["title"],
@@ -29,7 +29,7 @@ class Search:
             title = title + i + " "
         name = urllib.parse.quote(title)
         hdr = {"X-Naver-Client-Id": id, "X-Naver-Client-Secret": secret}
-        url = "https://openapi.naver.com/v1/search/image?sort=sim&display=100&query={}".format(
+        url = "https://openapi.naver.com/v1/search/image?&display=50&sort=sim&filter=large&query={}".format(
             name
         )
         req = Request(url, headers=hdr)
@@ -37,7 +37,7 @@ class Search:
         imgs = json.loads(html.read())
         for info in imgs["items"]:
             link.append(info["link"])
-        embed = discord.Embed(colour=0xF7CAC9)
+        embed = nextcord.Embed(colour=0xF7CAC9)
         try:
             randomNum = random.randint(0, len(link) - 1)
             imgsrc = link[randomNum]

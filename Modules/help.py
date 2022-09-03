@@ -1,16 +1,16 @@
 # -*-coding: UTF-8-*-
-import discord
+import nextcord
 
 
 class Help:
     def create_help_embed(self):
-        embed = discord.Embed(
+        embed = nextcord.Embed(
             title="나와 노는 법이니라!!",
             description="나를 이 서버에 초대해 주어서 정말 고맙느니라 너희들을 위해 많은 걸 준비했으니 많이많이 사용해 주거라~~",
             color=0xF7CAC9,
         )
         embed.add_field(
-            name="!분양", value="디코방에 나를 데려갈 수 있는 링크를 보내줄 것이니라~", inline=False
+            name="!초대", value="디코방에 나를 초대하는 방법 안내 이니라!", inline=False
         )
         embed.add_field(
             name="!삭제 [갯수]",

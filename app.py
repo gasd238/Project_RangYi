@@ -1,115 +1,182 @@
 # -*- coding: utf-8 -*-
 import asyncio
-import discord
-import youtube_dl
+import nextcord
 import datetime
 import re
-import os
-
-# import json
+import pymongo
 from Modules.help import Help
 from Modules.search import Search
-from Modules.user import UserLevel
-from Modules.setting import token
+from Modules.setting import *
 from Modules.baseball import Baseball
 from Modules.yacht import *
+from Modules.user import *
+from Modules.doge import PrintDoge
+import emoji
 
 # Variables
-client = discord.Client()
-queues = {}
-musiclist = []
-suedUser = {}
-sueingUser = {}
-fcheck = [0]
-players = []
-game_stat = {}
-game_channels = {}
-level = 0
-favper = 0
-choice = 0
+client = nextcord.Client(intents=nextcord.Intents.all())
+help = Help()
+search = Search()
+baseball = Baseball()
+userlevel = UserLevel()
+ban = Ban()
+doge = PrintDoge()
+
+custom_emoji = re.compile("([\:])(.*?)([\:])")
 
 loop = asyncio.get_event_loop()
 
+# 유지 보수시 레벨업 방지
+userFuncActive = True
 
-# Music --
-# def check_queue(qid, channel, info):
-#     if queues[qid]:
-#         song_there = os.path.isfile(".mp3")
-#         if song_there:
-#             os.remove("reservsong.mp3")
-#         player = queues[qid].pop(0)
-#         embed = discord.Embed(title="재생하겠느니라!!", description=musiclist[0] + "\n" + info["url"])
-#         del musiclist[0]
-#         say = channel.send(embed=embed)
-#         asyncio.run_coroutine_threadsafe(say, client.loop)
-#         voice.play(player, after=lambda: check_queue(guild.id, message.channel, info))
+# functions out of async
+def rename(old_dict, old_name, new_name):
+    new_dict = {}
+    for key, value in zip(old_dict.keys(), old_dict.values()):
+        new_key = key if key != old_name else new_name
+        new_dict[new_key] = old_dict[key]
+    return new_dict
 
 
-# Discord Client
+# nextcord Client
 @client.event
 async def on_ready():
     print("Logged in as")
     print(client.user.name)
     print(client.user.id)
     print("-----------------------")
-    game = discord.Game("!설명으로 도움말")
-    await client.change_presence(status=discord.Status.online, activity=game)
-
-    # loop.create_task(realtime())
+    game = nextcord.Game("!설명으로 도움말")
+    await client.change_presence(status=nextcord.Status.online, activity=game)
+    loop.create_task(checkcoin())
 
 
 @client.event
 async def on_message(message):
-    global level, favper, choice
     # 숫자만 가려내기 위해
     noma = re.compile("[0-9]+")
     now = datetime.datetime.now()
-    resings = ""
-    title = ""
-    guild = message.guild
+    try:
+        guild = message.guild
+        ad = guild.audit_logs()
+    except:
+        pass
     channel = message.channel
-    free_chat = client.get_channel(514392468402208768)
-    help = Help()
-    # userlevel = UserLevel()
-    hungry = Hungry()
-    morningC = Morning()
-    ann = Annseq()
-    search = Search()
-    cal = Calender()
-    baseball = Baseball()
-    player = 0
-    # Bot이 하는 말은 반응하지 않음
+    result = bancol.find_one({"userid": message.author.id})
 
+    # m = custom_emoji.match(message.content)
+
+    # Bot이 하는 말은 반응하지 않음
     if message.author.bot:
         return None
-
-    # 경험치 상승 처리
-    if userlevel.levelIncrease(message.author, message.content):
-        await channel.send(free_chat, userlevel.showLevel(message.author, True))
+    # 밴 된 사람은 반응하지
+    if result:
+        return None
 
     # 봇 설명
     if message.content == "!설명":
         createdEmbed = help.create_help_embed()
         await channel.send(embed=createdEmbed)
+    # # 급식 파싱
+    # if message.content == "!급식":
+    #     embed = hungry.hungry()
+    #     await channel.send(embed=embed)
+
+    #     # 한강 수온
+    #     if message.content == '!한강':
+    #         await channel.send("한강 온도는 {}도이니라".format(river.get_temp()))
+
+    # ㅂㄱㄷ ㅆㅅㄱ
+    if message.author.id == 377796778180739072:
+        if emoji.emoji_count(message.content) != 0:
+            await channel.send("ㅂㄱㄷ ㅆㅅㄱ")
+
+        if custom_emoji.findall(message.content) != []:
+            await channel.send("ㅂㄱㄷ ㅆㅅㄱ")
+
+    if userFuncActive:
+        # 경험치 상승 처리
+        if userlevel.levelIncrease(message.author, message.content):
+            await channel.send(
+                embed=userlevel.showLevel(
+                    message.author, message.author.avatar_url, True
+                )
+            )
+            # 유저 레벨 관련
+        if message.content.startswith("!레벨"):
+            msg1 = message.content.split(" ")
+            if len(msg1) > 1:
+                try:
+                    id_ = re.findall(noma, msg1[1])
+                    id__ = await client.fetch_user(int(id_[0]))
+                    profileurl = id__.avatar.url
+                    await channel.send(
+                        embed=userlevel.showLevel(id__, profileurl)
+                    )  # 유저 지정 처리
+                except TypeError:
+                    await channel.send("그 사람은 조회가 불가능하니라...")
+            else:
+                await channel.send(
+                    embed=userlevel.showLevel(message.author, message.author.avatar.url)
+                )
+
+        # 밴 관련
+        #         if message.content.startswith('!밴'):
+        #             msg1 = message.content.split(' ')
+        #             if len(msg1) > 1:
+        #                 try:
+        #                     id_ = re.findall(noma, msg1[1])
+        #                     id__ = await client.fetch_user(int(id_[0]))
+        #                     await channel.send(ban.banUser(id__))
+
+        #                 except nextcord.nextcordException:
+        #                     await channel.send('그 사람은 조회가 불가능하니라...')
+        #                 except TypeError:
+        #                     await channel.send('그 사람은 조회가 불가능하니라...')
+
+        # 서버 레벨 랭킹
+        if message.content == "!랭킹":
+            rank = userlevel.showRanking(guild)
+            count = len(rank)
+            if count > 10:
+                rankLength = 10
+            else:
+                rankLength = count
+            if rankLength == 0:
+                embed = nextcord.Embed(title="서버의 랭킹이니라!", description="표시할 사람이 없습니다.")
+            else:
+                embed = nextcord.Embed(
+                    title="서버의 랭킹이니라!", description="{}위까지 표시되느니라~".format(rankLength)
+                )
+            count = 0
+            for doc in rank:
+                count += 1
+                userobj = await client.fetch_user(doc["userid"])
+                embed.add_field(
+                    name="**" + "{}등 ".format(str(count)) + userobj.name + "**",
+                    value="{} 레벨\n현재 경험치: **{} XP**,"
+                    "다음 레벨까지 {} XP".format(
+                        doc["level"],
+                        doc["currentxp"],
+                        userlevel.LevelExpGetter(doc["level"]) - doc["currentxp"],
+                    ),
+                    inline=False,
+                )
+                if count > rankLength - 1:
+                    break
+
+            await channel.send(embed=embed)
 
     # 봇 분양 관련
     if message.content == "!분양":
-        embed = discord.Embed(
-            title="링크를 보내주겠느니라!!",
-            description="여기",
-            url="https://discordapp.com/api/oauth2/authorize"
-            "?client_id=517176814804926484&permissions=8&scope=bot",
-            colour=0xF7CAC9,
-        )
-        await channel.send(embed=embed)
+        await channel.send("내 프로필을 누르고 서버에 추가를 누르면 되느니라!!")
 
     if message.content.startswith("!야추"):
         a = []
         a.append(message.author.name)
         msg = message.content.split(" ")
-        if len(msg) > 1:
+        if len(msg) == 2:
             if msg[1] == "도움":
-                embed = discord.Embed(
+                embed = nextcord.Embed(
                     title="야추 도움말",
                     description="점수 계산법 보기",
                     url="https://namu.wiki/w/%EC%9A%94%ED%8A%B8(%EA%B2%8C%EC%9E%84)?from=%EC%95%BC%EC%B6%94#s-2.2",
@@ -117,23 +184,35 @@ async def on_message(message):
                 )
                 embed.add_field(
                     name="!야추 [플레이어 언급]",
-                    value="언급을 통해 친구와 2명이서 또는 !야추 입력으로 혼자하기가 가능하니라.",
+                    value="언급을 통해 친구와 2명이서 또는 !야추 혼자 입력으로 혼자하기가 가능하니라.",
                     inline=False,
                 )
                 embed.add_field(
                     name="규칙",
-                    value="51 Worldwide Games에 수록된 Yacht dice 의 규칙을 따르느니라\n 위에 점수 계산법 보기를 눌러서 점수 계산법을 익히고 오는게 좋으니라",
+                    value="Nintentdo Switch 51 Worldwide Games에 수록된 Yacht dice 의 규칙을 따르느니라\n 위에 점수 계산법 보기를 눌러서 점수 계산법을 익히고 오는게 좋으니라",
                     inline=False,
                 )
-                await channel.send(embed=embed)
-                return
-            try:
-                id_ = re.findall(noma, msg[1])
-                id_ = await client.fetch_user(id_[0])
-                a.append(id_.name)
-            except:
-                await channel.send("없는 유저 이거나 고를 수 없는 유저입니다. 다시 해주세요.")
-                return
+                embed.add_field(
+                    name="!야추 이모티콘",
+                    value="자신이 먹을 점수 선택시 이모티콘을 누르는 방식으로 고르게 되는데 각 이모티콘이 무엇을 의미하는지에 대한 설명이니라!",
+                    inline=False,
+                )
+                return await channel.send(embed=embed)
+
+            elif msg[1] == '이모티콘':            
+                return await channel.send(embed=await yacht(1,1,1))
+            else:
+                try:
+                    if msg[1] != "혼자":
+                        id_ = re.findall(noma, msg[1])
+                        id_ = await client.fetch_user(id_[0])
+                        a.append(id_.name)
+                except:
+                    return await channel.send("없는 유저거나 고를 수 없는 상대이니라..")
+
+        else:
+            return await channel.send("한명만 골라주거라...")
+
         await yacht(message.guild, message.channel, a)
 
     # 서버 글 삭제
@@ -146,8 +225,34 @@ async def on_message(message):
             else:
                 await message.delete()
                 await channel.send("100개 이상 메세지는 삭제할 수 없느니라....")
-        except discord.DiscordException:
+        except nextcord.nextcordException:
             return
+
+    # # 주식 관련
+    # if message.content.startswith("!주식"):
+    #     msg = message.content.split(" ")
+    #     try:
+    #         if msg[1] == "추가":
+    #             await channel.send(stock.insert_stock(msg[2]) + "이니라")
+    #         elif msg[1] == "삭제":
+    #             stock.delete_stock(msg[2] + "이니라")
+    #     except nextcord.nextcordException:
+    #         return
+
+    if message.content.startswith("!test"):
+        msg1 = message.content.split(" ")
+        if len(msg1) > 1:
+            try:
+                id_ = re.findall(noma, msg1[1])
+                id__ = await client.get_user_info(id_[0])
+                profileurl = id__.avatar_url
+            except:
+                await channel.send("그 사람은 조회가 불가능하니라...")
+        else:
+            profileurl = message.author.avatar_url
+        embed = nextcord.Embed(title="asdf", description="casasdf")
+        embed.set_image(url=profileurl)
+        await channel.send(embed=embed)
 
     # 유튜브 검색
     if message.content.startswith("!검색"):
@@ -159,86 +264,18 @@ async def on_message(message):
         msg1 = message.content.split(" ")
         await channel.send(embed=search.search_image(msg1[1:]))
 
-    # 유저 레벨 관련
-    if message.content.startswith("!레벨"):
-        msg1 = message.content.split(" ")
-        if len(msg1) > 1:
-            try:
-                id_ = re.findall(noma, msg1[1])
-                id__ = await client.get_user_info(id_[0])
-                await channel.send(userlevel.showLevel(id__))  # 유저 지정 처리
-            except discord.DiscordException:
-                await channel.send("그 사람은 조회가 불가능하니라...")
-            except TypeError:
-                await channel.send("그 사람은 조회가 불가능하니라...")
-        else:
-            await channel.send(userlevel.showLevel(message.author))
-
     if message.content.startswith("!야구"):
         msg1 = message.content.split(" ")
         if len(msg1) > 1:
             try:
-                inning, embed1, embed2 = baseball.showBaseballScore(msg1[1])
+                date, inning, embed1, embed2 = baseball.showBaseballScore(msg1[1])
+                if date != "":
+                    await channel.send(str(date))
                 await channel.send(str(inning))
                 await channel.send(embed=embed1)
                 await channel.send(embed=embed2)
             except:
-                await channel.send("팀명이 잘못됬거나 경기중이 아닙니다.")
-
-    # 서버 레벨 랭킹
-    if message.content == "!랭킹":
-        rank = userlevel.showRanking(guild)
-        if rank.count() > 10:
-            rankLength = 10
-        else:
-            rankLength = rank.count()
-        if rankLength == 0:
-            embed = discord.Embed(title="서버의 랭킹이니라!", description="표시할 사람이 없습니다.")
-        else:
-            embed = discord.Embed(
-                title="서버의 랭킹이니라!", description="{}위까지 표시되느니라~".format(rankLength)
-            )
-        count = 0
-        for doc in rank:
-            count += 1
-            userobj = await client.get_user_info(doc["userid"])
-            embed.add_field(
-                name="**" + userobj.name + "**",
-                value="{} 레벨\n현재 경험치: **{} XP**,"
-                "다음 레벨까지 {} XP".format(
-                    doc["level"],
-                    doc["currentxp"],
-                    userlevel.LevelExpGetter(doc["level"]) - doc["currentxp"],
-                ),
-                inline=False,
-            )
-            if count > rankLength - 1:
-                break
-
-        await channel.send(embed=embed)
-
-    # if message.content.startswith('!test'):
-    #     msg1 = message.content.split(' ')
-    #     if len(msg1) > 1:
-    #         try:
-    #             id_ = re.findall(noma, msg1[1])
-    #             id__ = await client.get_user_info(id_[0])
-    #             profileurl = id__.avatar_url
-    #         except:
-    #             await channel.send('그 사람은 조회가 불가능하니라...')
-    #     else:
-    #         profileurl = message.author.avatar_url
-    #     embed = discord.Embed(title='asdf', description='casasdf')
-    #     embed.set_image(url=profileurl)
-    #     await channel.send(embed=embed)
-
-
-def rename(old_dict, old_name, new_name):
-    new_dict = {}
-    for key, value in zip(old_dict.keys(), old_dict.values()):
-        new_key = key if key != old_name else new_name
-        new_dict[new_key] = old_dict[key]
-    return new_dict
+                await channel.send('팀명이 잘못됬거나 존재하지 않는 팀이니라..')
 
 
 async def yacht(guild, channel, user):
@@ -257,8 +294,17 @@ async def yacht(guild, channel, user):
         "Yacht": "🎰",
     }
     users = {}
+    scorelist = []
+    if guild == 1 and channel == 1 and user == 1:
+        embed = nextcord.Embed(
+                    title="야추 이모티콘",
+                    description="각 이모티콘별 의미",
+                    color=0xF7CAC9,
+                )
+        for i in emoji.keys():
+            embed.add_field(name = emoji[i], value = i)
+        return embed
     users, user_dice, index = game_start(users, user)
-
     while True:
         for u in range(len(user)):
             await channel.send(user[u] + "차례")
@@ -273,7 +319,6 @@ async def yacht(guild, channel, user):
                     break
                 dice = ""
                 dicelist = roll_dice(user_dice[index])
-                board = dice_check(dicelist)
                 for j in dicelist.keys():
                     if type(j) == str:
                         dice += "[" + str(dicelist[j]) + "]" + " "
@@ -283,21 +328,19 @@ async def yacht(guild, channel, user):
                 while True:
                     if turn < 2:
                         await channel.send(
-                            "고정시킬 칸의 번호를 , 로 나눠서 입력해 주세요. 고정시킬게 없으면 0을 보내주시고 점수를 고르실려면 결정을 보내세요 예)1,3,4 or 1,2 or 3"
+                            "고정시킬 칸의 번호를 , 로 나눠서 입력해 주거라. 고정시킬게 없으면 0을 보내고 점수를 고를거면 결정을 보내거라! 예)1,3,4 or 1,2 or 3\n한번더 입력시 고정 해제"
                         )
                         try:
                             team = await client.wait_for(
-                                "message", timeout=15.0, check=check
+                                "message", timeout=30.0, check=check
                             )
                         except:
                             del users[index]
                             del user_dice[index]
-                            print(users)
-                            print(user_dice)
                             return await channel.send("게임이 종료 됬느니라....")
                     if team.content == "결정" or turn == 2:
-                        scorelist = []
-                        embed = discord.Embed(title="점수 목록", color=0xF7CAC9)
+                        board = dice_check(dicelist)
+                        embed = nextcord.Embed(title="점수 목록", color=0xF7CAC9)
                         for i in board.keys():
                             if users[index][u][0][i] == False:
                                 if (
@@ -306,7 +349,7 @@ async def yacht(guild, channel, user):
                                     or i == "Full House"
                                 ):
                                     scorelist.append(i)
-                                    if board[i] == 0:
+                                    if board[i] == 0 and i != "Choice":
                                         embed.add_field(name=i, value=0)
                                     else:
                                         embed.add_field(
@@ -369,16 +412,14 @@ async def yacht(guild, channel, user):
                         await asyncio.sleep(1)
                         try:
                             reaction, reactuser = await client.wait_for(
-                                "reaction_add", timeout=15.0, check=reaction_check
+                                "reaction_add", timeout=30.0, check=reaction_check
                             )
                         except:
                             del users[index]
                             del user_dice[index]
-                            print(users)
-                            print(user_dice)
                             return await channel.send("게임이 종료 됬느니라....")
 
-                        def change_sheet(reaction, board):
+                        def change_sheet(reaction, users, board, index, u):
                             for i in emoji.keys():
                                 if emoji[i] == reaction.emoji:
                                     for j in enum.keys():
@@ -402,7 +443,7 @@ async def yacht(guild, channel, user):
                                         or emoji[i] == "💳"
                                         or emoji[i] == "🏠"
                                     ):
-                                        if board[i] == 0:
+                                        if board[i] == 0 and emoji[i] != "✅":
                                             users[index][u][0][i] = "[0]"
                                             users[index][u][1]["score"] += 0
                                             break
@@ -426,7 +467,7 @@ async def yacht(guild, channel, user):
                                     if emoji[i] == "⏩":
                                         if board[i] == 0:
                                             users[index][u][0][i] = "[0]"
-                                            users[index][u][1]["score"] += 0
+                                            users[index][u]["score"] += 0
                                             break
                                         else:
                                             users[index][u][0][i] = 30
@@ -442,32 +483,39 @@ async def yacht(guild, channel, user):
                                             users[index][u][0][i] = 50
                                             users[index][u][1]["score"] += 50
                                             break
+                            return users
 
                         await a.delete()
-                        change_sheet(reaction, board)
-                        user_dice[index] = {1: 1, 2: 1, 3: 1, 4: 1, 5: 1}
+                        users = change_sheet(reaction, users, board, index, u)
                         if homework(users[index][u][1]):
-                            users[index][u][0]["Bonus"] = 35
+                            users[index][u]["Bonus"] = 35
                             users[index][u][1]["score"] += 35
                             await channel.send(user[u] + "숙제 다 마쳤느니라!")
 
                         for asdf in range(len(user)):
-                            embed = discord.Embed(
+                            embed = nextcord.Embed(
                                 title=user[asdf] + "님의 점수판", color=0xF7CAC9
                             )
-                            for i in users[index][u][0].keys():
-                                if users[index][u][0][i] == False:
+                            for i in users[index][asdf][0].keys():
+                                if users[index][asdf][0][i] == False:
                                     embed.add_field(name=i, value=0)
                                 else:
-                                    embed.add_field(name=i, value=users[index][u][0][i])
+                                    embed.add_field(
+                                        name=i, value=users[index][asdf][0][i]
+                                    )
                             embed.add_field(
                                 name="score",
-                                value=users[index][u][1]["score"],
+                                value=users[index][asdf][1]["score"],
                                 inline=False,
                             )
                             await channel.send(embed=embed)
                         endFlag = True
                         break
+
+                    elif team.content == "종료":
+                        del users[index]
+                        del user_dice[index]
+                        return await channel.send("게임이 종료 됬느니라....")
 
                     else:
                         msg = list(reversed(team.content.split(",")))
@@ -493,9 +541,50 @@ async def yacht(guild, channel, user):
         if check_score(users[index]):
             del users[index]
             del user_dice[index]
-            await channel.send("게임 모두 마쳐졌느니라!")
+            await channel.send("게임이 모두 마쳐졌느니라!")
             if len(users[index]) == 2:
                 await channel.send(user[check_winner(users[index])])
+
+
+async def checkcoin():
+    await asyncio.sleep(0.01)
+    now = datetime.datetime.now()
+    t = datetime.time(now.hour, now.minute, now.second)
+    recentTimeStamp = (t.hour * 60 + t.minute) * 60 + t.second
+    timeToWait = 3600 - (recentTimeStamp % 3600)
+    while True:
+        await asyncio.sleep(timeToWait)
+        dogechannel = client.get_channel(892582083657080883)
+        successchannel = client.get_channel(676266745853509651)
+        try:
+            won, percent = doge.get_api_json()
+            await dogechannel.send(
+                "지금 도지는 {}원이고 전날 대비 {:.2f}퍼센트 이니라".format(won, percent)
+            )
+        except:
+            await dogechannel.send("정보를 불러올 수 없느니라....")
+        #await successchannel.send("ㅂㄱㄷ ㅆㅅㄱ")
+        timeToWait = 3600
+
+
+@client.event
+async def on_message_delete(message):
+    if message.content == "ㅂㄱㄷ ㅆㅅㄱ" or message.content == "건도씨께서 여론 조작을 시도하셨습니다.":
+        try:
+            async for entry in message.guild.audit_logs(
+                limit=1, action=nextcord.AuditLogAction.message_delete
+            ):
+                deleter = entry.user
+            if deleter.id == 377796778180739072:
+                await message.channel.send("건도씨께서 여론 조작을 시도하셨습니다.")
+        except:
+            pass
+
+
+@client.event
+async def on_reaction_add(reaction, user):
+    if user.id == 377796778180739072:
+        await reaction.message.channel.send("ㅂㄱㄷ ㅆㅅㄱ")
 
 
 client.run(token)

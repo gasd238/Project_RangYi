@@ -1,18 +1,18 @@
 import requests
 from bs4 import BeautifulSoup
-import discord
+import nextcord
 
 
 class Baseball:
     def showBaseballScore(self, teamName):
         if teamName == "기아" or teamName == "갸":
             teamName = "KIA"
-        elif teamName == "케이티" or teamName == "크트":
+        elif teamName == "케이티" or teamName == "크트" or teamName == "킅":
             teamName = "KT"
         elif teamName == "롯" or teamName == "꼴데" or teamName == "꼴":
-            teamName = ""
-        elif teamName == "에스케이" or teamName == "슼":
-            teamName = "SK"
+            teamName = "롯데"
+        elif teamName == "쓱" or teamName == "신세계":
+            teamName = "SSG"
         elif teamName == "엔시" or teamName == "엔씨":
             teamName = "NC"
         elif teamName == "엘쥐" or teamName == "엘지" or teamName == "쥐":
@@ -34,9 +34,9 @@ class Baseball:
                 if inning.text == "종료":
                     team = i.find_all("span", class_="name")
                     pitcher = i.select("div > div > span:nth-child(4)")
-                    picture = i.find_all("img", class_="emblem")
+                    picture = i.select("span.image.emblem > img")
                     score = i.select("div.inner > div")
-                    embed1 = discord.Embed(
+                    embed1 = nextcord.Embed(
                         title=team[0].text + "\n" + pitcher[0].text,
                         description=score[0].text.replace("\t", "").replace("\n", ""),
                         colour=0xF7CAC9,
@@ -48,7 +48,7 @@ class Baseball:
                             .replace("&type=f28_28&refresh=1", "")
                         )
                     )
-                    embed2 = discord.Embed(
+                    embed2 = nextcord.Embed(
                         title=team[1].text + "\n" + pitcher[1].text,
                         description=score[1].text.replace("\t", "").replace("\n", ""),
                         colour=0xF7CAC9,
@@ -64,8 +64,8 @@ class Baseball:
                 elif inning.text == "경기취소":
                     team = i.find_all("span", class_="name")
                     pitcher = i.select("div > div > span:nth-child(3)")
-                    picture = i.find_all("img", class_="emblem")
-                    embed1 = discord.Embed(
+                    picture = i.select("span.image.emblem > img")
+                    embed1 = nextcord.Embed(
                         title=team[0].text + "\n" + pitcher[0].text,
                         description=inning.text,
                         colour=0xF7CAC9,
@@ -77,7 +77,7 @@ class Baseball:
                             .replace("&type=f28_28&refresh=1", "")
                         )
                     )
-                    embed2 = discord.Embed(
+                    embed2 = nextcord.Embed(
                         title=team[1].text + "\n" + pitcher[1].text,
                         description=inning.text,
                         colour=0xF7CAC9,
@@ -99,8 +99,7 @@ class Baseball:
                         pitcher = i.select("div > div > span:nth-child(4)")
                     team = i.find_all("span", class_="name")
                     score = i.find_all("div", class_="score")
-                    picture = i.find_all("img", class_="emblem")
-                    # print(pitcher, score)
+                    picture = i.select("span.image.emblem > img")
                     if not pitcher:
                         pitcher1 = "TBD"
                         pitcher2 = "TBD"
@@ -115,7 +114,7 @@ class Baseball:
                         score1 = score[0].text.replace("\t", "").replace("\n", "")
                         score2 = score[1].text.replace("\t", "").replace("\n", "")
 
-                    embed1 = discord.Embed(
+                    embed1 = nextcord.Embed(
                         title=team[0].text + "\n" + pitcher1,
                         description=score1,
                         colour=0xF7CAC9,
@@ -127,7 +126,7 @@ class Baseball:
                             .replace("&type=f28_28&refresh=1", "")
                         )
                     )
-                    embed2 = discord.Embed(
+                    embed2 = nextcord.Embed(
                         title=team[1].text + "\n" + pitcher2,
                         description=score2,
                         colour=0xF7CAC9,
