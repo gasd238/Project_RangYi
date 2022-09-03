@@ -174,7 +174,6 @@ def diceset(dicelist):
             dice += "[" + str(dicelist[j]) + "]" + " "
         else:
             dice += str(dicelist[j]) + " "
-    print(dice)
     return dice
 
 
