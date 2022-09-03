@@ -6,7 +6,8 @@
 
 ## Requirements ##
 
-이번에 따로 requirements.txt 로 정리 해두었습니다. pip install -r requirements.txt로 실행해 다운받아주세요.
+이번에 따로 requirements.txt 로 정리 해두었습니다. pip install -r requirements.txt로 실행해 다운받아주세요.  
+python ver = 3.10.6
 
 ## 랑이봇 사용법 ##
 
