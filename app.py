@@ -317,15 +317,10 @@ async def yacht(guild, channel, user):
             for turn in range(3):
                 if endFlag == True:
                     break
-                dice = ""
-                dicelist = roll_dice(user_dice[index])
-                for j in dicelist.keys():
-                    if type(j) == str:
-                        dice += "[" + str(dicelist[j]) + "]" + " "
-                    else:
-                        dice += str(dicelist[j]) + " "
-                await channel.send(dice)
+                user_dice[index] = roll_dice(user_dice[index])
                 while True:
+                    dice = diceset(user_dice[index])
+                    await channel.send(dice)
                     if turn < 2:
                         await channel.send(
                             "고정시킬 칸의 번호를 , 로 나눠서 입력해 주거라. 고정시킬게 없으면 0을 보내고 점수를 고를거면 결정을 보내거라! 예)1,3,4 or 1,2 or 3\n한번더 입력시 고정 해제"
@@ -339,7 +334,7 @@ async def yacht(guild, channel, user):
                             del user_dice[index]
                             return await channel.send("게임이 종료 됬느니라....")
                     if team.content == "결정" or turn == 2:
-                        board = dice_check(dicelist)
+                        board = dice_check(user_dice[index])
                         embed = nextcord.Embed(title="점수 목록", color=0xF7CAC9)
                         for i in board.keys():
                             if users[index][u][0][i] == False:
@@ -353,7 +348,7 @@ async def yacht(guild, channel, user):
                                         embed.add_field(name=i, value=0)
                                     else:
                                         embed.add_field(
-                                            name=i, value=plus_all(dicelist)
+                                            name=i, value=plus_all(user_dice[index])
                                         )
                                 elif i == "Small Straight":
                                     scorelist.append(i)
@@ -375,7 +370,7 @@ async def yacht(guild, channel, user):
                                         embed.add_field(name=i, value="50")
                                 else:
                                     scorelist.append(i)
-                                    num = get_num(dicelist)
+                                    num = get_num(user_dice[index])
                                     for h in enum.keys():
                                         if enum[h] == i:
                                             if board[i] == 0:
@@ -448,9 +443,9 @@ async def yacht(guild, channel, user):
                                             users[index][u][1]["score"] += 0
                                             break
                                         else:
-                                            users[index][u][0][i] = plus_all(dicelist)
+                                            users[index][u][0][i] = plus_all(user_dice[index])
                                             users[index][u][1]["score"] += plus_all(
-                                                dicelist
+                                                user_dice[index]
                                             )
                                             break
 
@@ -519,24 +514,24 @@ async def yacht(guild, channel, user):
 
                     else:
                         msg = list(reversed(team.content.split(",")))
-                        try:
-                            a = int(msg[0])
-                        except:
-                            continue
+                        if "0" in msg:
+                            break
                         for i in msg:
-                            if i == "" or int(i) > 5 or i == "0":
-                                continue
-                            else:
-                                try:
-                                    user_dice[index][i] = user_dice[index][i]
-                                    user_dice[index] = rename(
-                                        user_dice[index], i, int(i)
-                                    )
-                                except:
-                                    user_dice[index] = rename(
-                                        user_dice[index], int(i), i
-                                    )
-                        break
+                            try:
+                                if int(i) > 5:
+                                    break
+                            except:
+                                break
+                            try:
+                                user_dice[index][i] = user_dice[index][i]
+                                user_dice[index] = rename(
+                                    user_dice[index], i, int(i)
+                                )
+                            except:
+                                user_dice[index] = rename(
+                                    user_dice[index], int(i), i
+                                )
+                        continue
 
         if check_score(users[index]):
             del users[index]

@@ -167,6 +167,16 @@ def get_num(dice):
                 num[j] += 1
     return num
 
+def diceset(dicelist):
+    dice = ""
+    for j in dicelist.keys():
+        if type(j) == str:
+            dice += "[" + str(dicelist[j]) + "]" + " "
+        else:
+            dice += str(dicelist[j]) + " "
+    print(dice)
+    return dice
+
 
 def dice_check(dice):
     board = {
