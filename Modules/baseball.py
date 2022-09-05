@@ -106,8 +106,11 @@ class Baseball:
                     else:
                         pitcher1 = pitcher[0].text
                         pitcher2 = pitcher[1].text
-
-                    if not score:
+                        
+                    if ":" in inning.text:
+                        score1 = ""
+                        score2 = ""
+                    elif not score:
                         score1 = "0"
                         score2 = "0"
                     else:
