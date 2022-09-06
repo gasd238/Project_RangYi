@@ -186,8 +186,6 @@ async def on_message(message):
             else:
                 try:
                     if msg[1] != "혼자":
-                        pass
-                    else:
                         id_ = re.findall(noma, msg[1])
                         id_ = await client.fetch_user(id_[0])
                         a.append(id_.name)
