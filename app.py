@@ -24,8 +24,6 @@ doge = PrintDoge()
 
 custom_emoji = re.compile("([\:])(.*?)([\:])")
 
-loop = asyncio.get_event_loop()
-
 # 유지 보수시 레벨업 방지
 userFuncActive = True
 
@@ -47,6 +45,8 @@ async def on_ready():
     print("-----------------------")
     game = discord.Game("!설명으로 도움말")
     await client.change_presence(status=discord.Status.online, activity=game)
+    asyncio.new_event_loop()
+    loop = asyncio.get_running_loop()
     loop.create_task(checkcoin())
 
 
@@ -167,7 +167,7 @@ async def on_message(message):
             await channel.send(embed=embed)
 
     # 봇 분양 관련
-    if message.content == "!분양":
+    if message.content == "!초대":
         await channel.send("내 프로필을 누르고 서버에 추가를 누르면 되느니라!!")
 
     if message.content.startswith("!야추"):
