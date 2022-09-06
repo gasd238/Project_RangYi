@@ -63,8 +63,6 @@ async def on_message(message):
     channel = message.channel
     result = bancol.find_one({"userid": message.author.id})
 
-    # m = custom_emoji.match(message.content)
-
     # Bot이 하는 말은 반응하지 않음
     if message.author.bot:
         return None
@@ -76,22 +74,6 @@ async def on_message(message):
     if message.content == "!설명":
         createdEmbed = help.create_help_embed()
         await channel.send(embed=createdEmbed)
-    # # 급식 파싱
-    # if message.content == "!급식":
-    #     embed = hungry.hungry()
-    #     await channel.send(embed=embed)
-
-    #     # 한강 수온
-    #     if message.content == '!한강':
-    #         await channel.send("한강 온도는 {}도이니라".format(river.get_temp()))
-
-    # ㅂㄱㄷ ㅆㅅㄱ
-    if message.author.id == 377796778180739072:
-        if emoji.emoji_count(message.content) != 0:
-            await channel.send("ㅂㄱㄷ ㅆㅅㄱ")
-
-        if custom_emoji.findall(message.content) != []:
-            await channel.send("ㅂㄱㄷ ㅆㅅㄱ")
 
     if userFuncActive:
         # 경험치 상승 처리
@@ -120,18 +102,18 @@ async def on_message(message):
                 )
 
         # 밴 관련
-        #         if message.content.startswith('!밴'):
-        #             msg1 = message.content.split(' ')
-        #             if len(msg1) > 1:
-        #                 try:
-        #                     id_ = re.findall(noma, msg1[1])
-        #                     id__ = await client.fetch_user(int(id_[0]))
-        #                     await channel.send(ban.banUser(id__))
+        if message.content.startswith('!밴'):
+            msg1 = message.content.split(' ')
+            if len(msg1) > 1:
+                try:
+                    id_ = re.findall(noma, msg1[1])
+                    id__ = await client.fetch_user(int(id_[0]))
+                    await channel.send(ban.banUser(id__))
 
-        #                 except discord.discordException:
-        #                     await channel.send('그 사람은 조회가 불가능하니라...')
-        #                 except TypeError:
-        #                     await channel.send('그 사람은 조회가 불가능하니라...')
+                except discord.discordException:
+                    await channel.send('그 사람은 조회가 불가능하니라...')
+                except TypeError:
+                    await channel.send('그 사람은 조회가 불가능하니라...')
 
         # 서버 레벨 랭킹
         if message.content == "!랭킹":
@@ -227,17 +209,6 @@ async def on_message(message):
                 await channel.send("100개 이상 메세지는 삭제할 수 없느니라....")
         except discord.discordException:
             return
-
-    # # 주식 관련
-    # if message.content.startswith("!주식"):
-    #     msg = message.content.split(" ")
-    #     try:
-    #         if msg[1] == "추가":
-    #             await channel.send(stock.insert_stock(msg[2]) + "이니라")
-    #         elif msg[1] == "삭제":
-    #             stock.delete_stock(msg[2] + "이니라")
-    #     except discord.discordException:
-    #         return
 
     if message.content.startswith("!test"):
         msg1 = message.content.split(" ")
@@ -549,8 +520,7 @@ async def checkcoin():
     timeToWait = 3600 - (recentTimeStamp % 3600)
     while True:
         await asyncio.sleep(timeToWait)
-        dogechannel = client.get_channel(892582083657080883)
-        successchannel = client.get_channel(676266745853509651)
+        dogechannel = client.get_channel("원하는 채팅방 ID")
         try:
             won, percent = doge.get_api_json()
             await dogechannel.send(
@@ -558,28 +528,6 @@ async def checkcoin():
             )
         except:
             await dogechannel.send("정보를 불러올 수 없느니라....")
-        #await successchannel.send("ㅂㄱㄷ ㅆㅅㄱ")
         timeToWait = 3600
-
-
-@client.event
-async def on_message_delete(message):
-    if message.content == "ㅂㄱㄷ ㅆㅅㄱ" or message.content == "건도씨께서 여론 조작을 시도하셨습니다.":
-        try:
-            async for entry in message.guild.audit_logs(
-                limit=1, action=discord.AuditLogAction.message_delete
-            ):
-                deleter = entry.user
-            if deleter.id == 377796778180739072:
-                await message.channel.send("건도씨께서 여론 조작을 시도하셨습니다.")
-        except:
-            pass
-
-
-@client.event
-async def on_reaction_add(reaction, user):
-    if user.id == 377796778180739072:
-        await reaction.message.channel.send("ㅂㄱㄷ ㅆㅅㄱ")
-
 
 client.run(token)
