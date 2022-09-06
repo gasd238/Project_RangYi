@@ -18,15 +18,3 @@ class PrintDoge:
             * 100
         )
         return self.price, self.percent
-
-    def get_stock(self, stock):
-        url = (
-            f"https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM:{stock}"
-        )
-        response = requests.get(url)
-        jsondata = json.loads(response.text)
-        name = jsondata["result"]["areas"][0]["datas"][0]["nm"]
-        price = jsondata["result"]["areas"][0]["datas"][0]["nv"]
-        prev_price = jsondata["result"]["areas"][0]["datas"][0]["sv"]
-        percent = (price - prev_price) / prev_price * 100
-        return name, price, percent

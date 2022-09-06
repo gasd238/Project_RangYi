@@ -186,6 +186,8 @@ async def on_message(message):
             else:
                 try:
                     if msg[1] != "혼자":
+                        pass
+                    else:
                         id_ = re.findall(noma, msg[1])
                         id_ = await client.fetch_user(id_[0])
                         a.append(id_.name)
@@ -209,21 +211,6 @@ async def on_message(message):
                 await channel.send("100개 이상 메세지는 삭제할 수 없느니라....")
         except discord.discordException:
             return
-
-    if message.content.startswith("!test"):
-        msg1 = message.content.split(" ")
-        if len(msg1) > 1:
-            try:
-                id_ = re.findall(noma, msg1[1])
-                id__ = await client.get_user_info(id_[0])
-                profileurl = id__.avatar_url
-            except:
-                await channel.send("그 사람은 조회가 불가능하니라...")
-        else:
-            profileurl = message.author.avatar_url
-        embed = discord.Embed(title="asdf", description="casasdf")
-        embed.set_image(url=profileurl)
-        await channel.send(embed=embed)
 
     # 유튜브 검색
     if message.content.startswith("!검색"):

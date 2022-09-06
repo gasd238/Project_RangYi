@@ -21,7 +21,6 @@ class Ban:
             result = {"userid": user.id, "time": datetime.datetime.now()}
             bancol.insert_one(result)
             return "밴 됨"
-        return "이미 밴 됨"
 
 
 class UserLevel:
