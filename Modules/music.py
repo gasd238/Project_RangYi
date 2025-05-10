@@ -7,7 +7,7 @@ from Modules.setting import *  # Import Settings
 
 client = pymongo.MongoClient(database, tlsCAFile=certifi.where())
 
-contents = open('/home/opc/rangyibot-host/Modules/cookies.txt').read()
+contents = open('./Modules/cookies.txt').read()
 
 cookies = StringIO(contents)
 
