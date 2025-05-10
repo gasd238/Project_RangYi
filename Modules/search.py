@@ -13,6 +13,7 @@ class Search:
         for i in titleli:
             title = title + i
         results = YoutubeSearch(title, max_results=10).to_dict()
+        print(results)
         embed = discord.Embed(title="검색 결과", description="목록", colour=0xF7CAC9)
         for i in range(len(results)):
             embed.add_field(

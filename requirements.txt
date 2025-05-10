@@ -4,3 +4,8 @@ discord.py
 youtube_search
 lxml
 pymongo
+dnspython
+emoji
+certifi
+yt_dlp
+PyNaCl

@@ -23,8 +23,6 @@ class Help:
         embed.add_field(
             name="!사진 [찾을 것]", value="찾는것에 대한 사진을 보내주는 기능이니라~", inline=False
         )
-        # embed.add_field(name='!고소 [할 사람 언급]', value='상대방과 합의방에서 1대1로 대화하게 해주는 기능이니라!', inline=False)
-        # embed.add_field(name='!취하 [할 사람 언급]', value='고소를 잘못했거나 끝났을 때 쓰는 기능이니라!', inline=False)
         embed.add_field(
             name="!레벨 [@유저]",
             value="자신의 레벨과 남은 경험치 또는 다른 사람의 레벨을 표시하는 기능이니라",
@@ -34,6 +32,11 @@ class Help:
         embed.add_field(
             name="!야구 [팀명]",
             value="야구 경기중에만 사용 가능한 기능으로 야구 경기 점수를 보여줍니다. ※(KIA 타이거즈라면 KIA만 입력해 주세요, 팀명이 영어면(kia, sk 등)영어로 입력해주세요)",
+            inline=False,
+        )
+        embed.add_field(
+            name="!음악방 생성 [음악방 이름]",
+            value="랑이가 드디어 노래를 부를 수 있게 되었느니라!! 음악방 이름으로 된 음악방이 생성되고 거기에 노래 제목을 입력하면 노래를 불러주겠노라!",
             inline=False,
         )
         embed.set_author(

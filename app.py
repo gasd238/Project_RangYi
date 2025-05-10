@@ -3,14 +3,14 @@ import asyncio
 import discord
 import datetime
 import re
-import pymongo
 from Modules.help import Help
 from Modules.search import Search
 from Modules.setting import *
 from Modules.baseball import Baseball
 from Modules.yacht import *
 from Modules.user import *
-from Modules.doge import PrintDoge
+from Modules.music import YTDLSource as YT
+from Modules.music import MusicChanDB as MDB
 import emoji
 
 # Variables
@@ -20,12 +20,60 @@ search = Search()
 baseball = Baseball()
 userlevel = UserLevel()
 ban = Ban()
-doge = PrintDoge()
+peekgd = Peekgundo()
+mdb = MDB()
+music_node = {}
 
-custom_emoji = re.compile("([\:])(.*?)([\:])")
+custom_emoji = re.compile("([:])(.*?)([:])")
 
 # 유지 보수시 레벨업 방지
 userFuncActive = True
+
+class ButtonFunction(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+ 
+    @discord.ui.button(label='스킵', style=discord.ButtonStyle.blurple, row=1)
+    async def button1(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await skipMusic(interaction.channel)
+        await interaction.response.send_message("스킵하였느니라~", delete_after=3)
+
+    @discord.ui.button(label='재생목록', style=discord.ButtonStyle.blurple, row=1)
+    async def button2(self, interaction: discord.Interaction, button: discord.ui.Button):
+        embed = discord.Embed(
+                    title="재생목록", description="재생목록을 보여주겠노라!(보기 힘들어서 10개까지만 표시함)"
+                )
+    
+        li = musicbot.musiclist[interaction.channel.guild.id]
+
+        if len(li) > 10:
+            li = li[:10]
+
+        for musiclist in li:
+            embed.add_field(
+                        name=musiclist["title"],
+                        value=musiclist["duration"],
+                        inline=False,
+                    )
+        await interaction.response.send_message(content= "재생목록", embed=embed, delete_after=10)
+
+class MusicBot:
+    def __init__(self):
+        self.musiclist = {}
+        self.musicChan = {}
+        self.musicClient = {}
+
+    def setMusicClient(self, guild, voice_client):
+        self.musicClient[guild.id] = voice_client
+
+    def makeMusicNode(self, guild):
+        self.musiclist[guild.id] = []
+    
+    def setMusicChan(self, message):
+        self.musicChan[message.guild.id] = message.id
+
+    def addMusicPlayList(self, guild, player, data):
+        self.musiclist[guild.id].append({"title" : data["name"], "player" : player, "duration" : data["duration"], "thumbnail" : data["thumbnail"]})
 
 # functions out of async
 def rename(old_dict, old_name, new_name):
@@ -35,6 +83,7 @@ def rename(old_dict, old_name, new_name):
         new_dict[new_key] = old_dict[key]
     return new_dict
 
+musicbot = MusicBot()
 
 # discord Client
 @client.event
@@ -45,10 +94,6 @@ async def on_ready():
     print("-----------------------")
     game = discord.Game("!설명으로 도움말")
     await client.change_presence(status=discord.Status.online, activity=game)
-    asyncio.new_event_loop()
-    loop = asyncio.get_running_loop()
-    loop.create_task(checkcoin())
-
 
 @client.event
 async def on_message(message):
@@ -66,9 +111,12 @@ async def on_message(message):
     # Bot이 하는 말은 반응하지 않음
     if message.author.bot:
         return None
-    # 밴 된 사람은 반응하지
+    # 밴 된 사람은 반응하지 않음
     if result:
         return None
+    
+    if mdb.isFromMusicChan(message.channel):
+        await makePlayList(message)
 
     # 봇 설명
     if message.content == "!설명":
@@ -100,20 +148,6 @@ async def on_message(message):
                 await channel.send(
                     embed=userlevel.showLevel(message.author, message.author.avatar.url)
                 )
-
-        # 밴 관련
-        if message.content.startswith('!밴'):
-            msg1 = message.content.split(' ')
-            if len(msg1) > 1:
-                try:
-                    id_ = re.findall(noma, msg1[1])
-                    id__ = await client.fetch_user(int(id_[0]))
-                    await channel.send(ban.banUser(id__))
-
-                except discord.discordException:
-                    await channel.send('그 사람은 조회가 불가능하니라...')
-                except TypeError:
-                    await channel.send('그 사람은 조회가 불가능하니라...')
 
         # 서버 레벨 랭킹
         if message.content == "!랭킹":
@@ -207,7 +241,7 @@ async def on_message(message):
             else:
                 await message.delete()
                 await channel.send("100개 이상 메세지는 삭제할 수 없느니라....")
-        except discord.discordException:
+        except discord.DiscordException:
             return
 
     # 유튜브 검색
@@ -233,6 +267,19 @@ async def on_message(message):
             except:
                 await channel.send('팀명이 잘못됬거나 존재하지 않는 팀이니라..')
 
+    if message.content.startswith("!음악방 생성"):
+        #skipbutton = discord.ui.Button(style="primary", custom_id="skip")
+        roomname = " ".join(message.content.split(" ")[2:])
+        if not mdb.IsAlreadyHasMusicChan(message.channel):
+            create_channel = await message.guild.create_text_channel(name = roomname, category = message.channel.category)
+            await channel.send('음악방을 생성하였느니라!!')
+            embed = discord.Embed(title="현재 재생중인 곡이 없느니라...", description="youtube 링크 혹은 제목을 입력해주거라!")
+            #embed.set_image(url=profileurl)
+            send_embed = await create_channel.send(embed=embed, view = ButtonFunction())
+            mdb.addMusicChan(create_channel, send_embed)
+        else:
+            await channel.send('이미 음악방이 존재하는 서버니라...')
+        
 
 async def yacht(guild, channel, user):
     emoji = {
@@ -496,23 +543,95 @@ async def yacht(guild, channel, user):
             if len(users[index]) == 2:
                 await channel.send(user[check_winner(users[index])])
 
+async def makePlayList(message):
+    guild = message.guild
+    channel = message.channel
+    voice = message.author.voice
 
-async def checkcoin():
-    await asyncio.sleep(0.01)
-    now = datetime.datetime.now()
-    t = datetime.time(now.hour, now.minute, now.second)
-    recentTimeStamp = (t.hour * 60 + t.minute) * 60 + t.second
-    timeToWait = 3600 - (recentTimeStamp % 3600)
-    while True:
-        await asyncio.sleep(timeToWait)
-        dogechannel = client.get_channel("원하는 채팅방 ID")
+    if voice is not None:
         try:
-            won, percent = doge.get_api_json()
-            await dogechannel.send(
-                "지금 도지는 {}원이고 전날 대비 {:.2f}퍼센트 이니라".format(won, percent)
-            )
+            voice_client = await voice.channel.connect()
         except:
-            await dogechannel.send("정보를 불러올 수 없느니라....")
-        timeToWait = 3600
+            voice_client = musicbot.musicClient.get(channel.guild.id, None)
+
+    if voice_client == None:
+        await message.delete()
+        return
+    
+    player, data = await YT.from_url(message.content, stream=True)
+
+    await message.delete()
+
+    musicinfo = {
+        "name" : data["title"],
+        "thumbnail" : data["thumbnails"][-1]["url"],
+        "duration" : data["duration_string"]
+    }
+
+    if len(musicinfo["duration"]) < 3:
+            musicinfo["duration"] = "00:" + musicinfo["duration"]
+
+    if musicbot.musiclist.get(guild.id, None) == None:
+        musicbot.makeMusicNode(guild)
+    musicbot.addMusicPlayList(guild, player, musicinfo)
+
+    embed = discord.Embed(title=musicinfo["name"], description=musicinfo["duration"])
+
+    await message.channel.send("음악을 추가했느니라!", embed = embed, delete_after=3)
+    if musicbot.musicClient.get(guild.id, None) == None:
+        musicbot.setMusicClient(guild, voice_client)
+        asyncio.create_task(MusicPlayer(channel, guild, voice_client))
+
+async def MusicPlayer(channel, guild, voice_client):
+    timer = 0
+    while True:
+        if not voice_client.is_playing():
+            if not musicbot.musiclist[guild.id]:
+                if timer == 0:
+                    msgid = mdb.getMusicChan(guild)
+                    msg = await channel.fetch_message(msgid)
+                    embed = discord.Embed(title="현재 재생중인 곡이 없느니라...", description="youtube 링크 혹은 제목을 입력해주거라!")
+                    await msg.edit(embed=embed, view = ButtonFunction())
+                await asyncio.sleep(1)
+                timer += 1
+                if timer > 180:
+                    del musicbot.musicClient[guild.id]
+                    await voice_client.disconnect()
+                    break
+                continue
+            
+        timer = 0
+        data = musicbot.musiclist[guild.id].pop(0)
+        title = data["title"]
+        duration = data["duration"]
+        player = data["player"]
+        thumbnail = data["thumbnail"]
+        msgid = mdb.getMusicChan(guild)
+        msg = await channel.fetch_message(msgid)
+        embed = discord.Embed(title=title, description=duration)
+        embed.set_image(url=thumbnail)
+        await msg.edit(embed=embed, view = ButtonFunction())
+        voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
+        voice_client.is_playing()
+
+        while voice_client.is_playing():
+            await asyncio.sleep(1)
+
+async def skipMusic(channel):
+    guild = channel.guild
+    voice_client = musicbot.musicClient.get(channel.guild.id, None)
+    voice_client.stop()
+    if len(musicbot.musiclist[channel.guild.id]) > 1:
+        data = musicbot.musiclist[guild.id].pop(0)
+        title = data["title"]
+        duration = data["duration"]
+        player = data["player"]
+        thumbnail = data["thumbnail"]
+        voice_client.play(player)
+        msgid = mdb.getMusicChan(channel.guild)
+        msg = await channel.fetch_message(msgid)
+        embed = discord.Embed(title=title, description=duration)
+        embed.set_image(url=thumbnail)
+        await msg.edit(embed=embed, view = ButtonFunction())
 
 client.run(token)
