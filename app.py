@@ -11,6 +11,7 @@ from Modules.yacht import *
 from Modules.user import *
 from Modules.music import YTDLSource as YT
 from Modules.music import MusicChanDB as MDB
+from discord.ui import Select, View
 import emoji
 
 # Variables
@@ -57,6 +58,34 @@ class ButtonFunction(discord.ui.View):
                     )
         await interaction.response.send_message(content= "재생목록", embed=embed, delete_after=10)
 
+class DynamicDropdown(discord.ui.Select):
+    def __init__(self, items: list[str]):
+        options = [
+            discord.SelectOption(label=item["name"], description=item["duration"], value=item["url"]) for item in items
+        ]
+
+        super().__init__(placeholder="재생할 곡을 선택하세요 선택하세요",
+                         min_values=1,
+                         max_values=1,
+                         options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        try:
+            await makePlayList(interaction.guild, interaction.channel, interaction.user.voice, self.values[0])
+        except:
+            await interaction.response.send_message(f"실패 ㅋ", ephemeral=True)
+        try:
+            await interaction.message.delete()
+        except discord.Forbidden:
+            print("메시지 삭제 권한이 없습니다.")
+        except discord.NotFound:
+            print("메시지를 찾을 수 없습니다.")
+
+class DynamicDropdownView(View):
+    def __init__(self, items: list[str]):
+        super().__init__()
+        self.add_item(DynamicDropdown(items))
+
 class MusicBot:
     def __init__(self):
         self.musiclist = {}
@@ -83,7 +112,6 @@ def rename(old_dict, old_name, new_name):
         new_dict[new_key] = old_dict[key]
     return new_dict
 
-musicbot = MusicBot()
 
 # discord Client
 @client.event
@@ -116,7 +144,17 @@ async def on_message(message):
         return None
     
     if mdb.isFromMusicChan(message.channel):
-        await makePlayList(message)
+        if not message.content.startswith("!검색"):
+            await makePlayList(guild, channel, message.author.voice, message.content, message)
+        
+        if message.content.startswith("!검색"):
+            msg1 = message.content.split(" ")
+            if len(msg1) > 1:
+                await message.delete()
+                view = DynamicDropdownView(search.search_youtube(" ".join(msg1[1:])))
+                await message.channel.send("옵션을 선택하세요:", view=view, delete_after=10)
+            else:
+                await message.delete()
 
     # 봇 설명
     if message.content == "!설명":
@@ -244,10 +282,6 @@ async def on_message(message):
         except discord.DiscordException:
             return
 
-    # 유튜브 검색
-    if message.content.startswith("!검색"):
-        msg1 = message.content.split(" ")
-        await channel.send(embed=search.search_youtube(msg1[1:]))
 
     # 사진 검색
     if message.content.startswith("!사진"):
@@ -543,24 +577,22 @@ async def yacht(guild, channel, user):
             if len(users[index]) == 2:
                 await channel.send(user[check_winner(users[index])])
 
-async def makePlayList(message):
-    guild = message.guild
-    channel = message.channel
-    voice = message.author.voice
+musicbot = MusicBot()
 
+async def makePlayList(guild, channel, voice, content, message = None):
     if voice is not None:
         try:
             voice_client = await voice.channel.connect()
         except:
             voice_client = musicbot.musicClient.get(channel.guild.id, None)
 
-    if voice_client == None:
+    if voice_client is None and message is not None:
         await message.delete()
         return
     
-    player, data = await YT.from_url(message.content, stream=True)
-
-    await message.delete()
+    player, data = await YT.from_url(content, stream=True)
+    if message is not None:
+        await message.delete()
 
     musicinfo = {
         "name" : data["title"],
@@ -577,7 +609,7 @@ async def makePlayList(message):
 
     embed = discord.Embed(title=musicinfo["name"], description=musicinfo["duration"])
 
-    await message.channel.send("음악을 추가했느니라!", embed = embed, delete_after=3)
+    await channel.send("음악을 추가했느니라!", embed = embed, delete_after=3)
     if musicbot.musicClient.get(guild.id, None) == None:
         musicbot.setMusicClient(guild, voice_client)
         asyncio.create_task(MusicPlayer(channel, guild, voice_client))

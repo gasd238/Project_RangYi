@@ -8,20 +8,13 @@ from Modules.setting import id, secret
 
 
 class Search:
-    def search_youtube(self, titleli):
-        title = ""
-        for i in titleli:
-            title = title + i
+    def search_youtube(self, title):
+        searchlist = []
         results = YoutubeSearch(title, max_results=10).to_dict()
-        print(results)
-        embed = discord.Embed(title="검색 결과", description="목록", colour=0xF7CAC9)
-        for i in range(len(results)):
-            embed.add_field(
-                name=str(i + 1) + ". " + results[i - 1]["title"],
-                value="https://www.youtube.com" + results[i - 1]["url_suffix"],
-                inline=False,
-            )
-        return embed
+        for result in results:
+            searchlist.append({"name":result["title"], "url":"https://www.youtube.com/watch?v=" + result["id"], "duration":result["duration"]})
+        
+        return searchlist
 
     def search_image(self, titleli):
         link = []

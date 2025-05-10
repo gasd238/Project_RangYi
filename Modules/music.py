@@ -7,7 +7,10 @@ from Modules.setting import *  # Import Settings
 
 client = pymongo.MongoClient(database, tlsCAFile=certifi.where())
 
-contents = open('./Modules/cookies.txt').read()
+try:
+    contents = open('/home/opc/rangyibot-host/Modules/cookies.txt').read()
+except:
+    contents = open('./Modules/cookies.txt').read()
 
 cookies = StringIO(contents)
 
@@ -15,7 +18,7 @@ youtube_dl.utils.bug_reports_message = lambda: ''
  
 ytdl_format_options = {
     'format': 'bestaudio/best',
-    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+    'outtmpl': '%(title)s.%(ext)s',
     'restrictfilenames': True,
     'noplaylist': True,
     'nocheckcertificate': True,
@@ -53,7 +56,6 @@ class YTDLSource(discord.PCMVolumeTransformer):
         data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
  
         if 'entries' in data:
-            # take first item from a playlist
             data = data['entries'][0]
  
         filename = data['url'] if stream else ytdl.prepare_filename(data)
